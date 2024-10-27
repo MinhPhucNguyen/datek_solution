@@ -28,7 +28,6 @@ class UserSeeder extends Seeder
                 'phone' => $faker->numerify('##########'),
                 'password' => Hash::make('password'),
                 'confirm_password' => $passwordMatch ? 'true' : 'false',
-                'avatar' => 'default.jpg',
                 'birth' => $faker->date(),
                 'status' => $faker->numberBetween(0,1),
                 'role_as' => $faker->numberBetween(0,1),
