@@ -18,12 +18,13 @@ class UserSeeder extends Seeder
         $faker = Faker::create();
         $passwordMatch = Hash::check('password', Hash::make('password'));
 
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             User::create([
                 'firstname' => $faker->firstName(),
                 'lastname' => $faker->lastName(),
                 'username' => $faker->userName(),
                 'gender' => $faker->numberBetween(0,1),
+                'email_verified_at' => now(),
                 'email' => $faker->unique()->safeEmail(),
                 'phone' => $faker->numerify('##########'),
                 'password' => Hash::make('password'),
