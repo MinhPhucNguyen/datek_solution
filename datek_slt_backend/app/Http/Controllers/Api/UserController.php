@@ -10,11 +10,13 @@ use App\Http\Requests\UserFormRequest;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
-{   
-    public function index(){
+{
+    public function index()
+    {
         $paginate = 10;
 
-        $getAllUsers = User::paginate($paginate);
+        $getAllUsers = User::with('addresses')
+            ->paginate($paginate);
 
         return new UserCollection($getAllUsers);
     }
@@ -27,7 +29,7 @@ class UserController extends Controller
         $user->username = $request->username;
         $user->gender = $request->gender;
         $user->email = $request->email;
-        $user->phone = '+84' . substr($request->phone , 1);
+        $user->phone = '+84' . substr($request->phone, 1);
         $user->password = Hash::make(trim($request->password));
         $user->confirm_password = $request->password == $request->confirm_password ? 'true' : 'false';
         $user->role_as = $request->role_as;
@@ -46,7 +48,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        if(!$user){
+        if (!$user) {
             return response()->json(
                 [
                     'message' => 'Không tìm thấy người dùng.'
@@ -61,7 +63,7 @@ class UserController extends Controller
             200
         );
     }
-    
+
     public function update(int $id, Request $request)
     {
         $validatedData = $request->validated();
@@ -95,7 +97,7 @@ class UserController extends Controller
     public function destroy(int $id)
     {
         $user = User::find($id);
-        if(!$user){
+        if (!$user) {
             return response()->json(
                 [
                     'message' => 'Không tìm thấy người dùng.'
@@ -111,5 +113,4 @@ class UserController extends Controller
             200
         );
     }
-
 }
