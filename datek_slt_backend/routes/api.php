@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserAddressesController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ProductTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,3 +47,10 @@ Route::post('categories/create', [CategoryController::class, 'store']);
 Route::get('categories/{id}/edit', [CategoryController::class, 'edit']);
 Route::put('categories/{id}/update', [CategoryController::class, 'update']);
 Route::delete('categories/{id}/delete', [CategoryController::class, 'destroy']);
+
+//ProductType routes
+Route::get('product-types', [ProductTypeController::class, 'index']);
+Route::post('product-types/create', [ProductTypeController::class, 'store']);
+Route::get('product-types/{id}/edit', [ProductTypeController::class, 'edit']);
+Route::put('product-types/{id}/update', [ProductTypeController::class, 'update']);
+Route::delete('product-types/{id}/delete', [ProductTypeController::class, 'destroy']);
