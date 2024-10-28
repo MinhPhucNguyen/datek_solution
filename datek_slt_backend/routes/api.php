@@ -28,10 +28,11 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('users/{id}/delete', 'destroy');
 });
 
-Route::controller(UserAddressesController::class)->group(function () {
-    Route::get('users/{user}/addresses', 'index');
-    Route::post('user-addresses/create', 'store');
-    Route::get('user-addresses/{id}/edit', 'edit');
-    Route::put('user-addresses/{id}/update', 'update');
-    Route::delete('user-addresses/{id}/delete', 'destroy');
-});
+ 
+Route::get('addresses', [UserAddressesController::class, 'index']);
+Route::get('users/{user}/addresses', [UserAddressesController::class, 'getAddressesByUserId']);
+Route::post('addresses/create', [UserAddressesController::class, 'store']);
+Route::get('addresses/{id}/edit', [UserAddressesController::class, 'edit']);
+Route::put('addresses/{id}/update', [UserAddressesController::class, 'update']);
+Route::delete('addresses/{id}/delete', [UserAddressesController::class, 'destroy']);
+Route::get('addresses/{id}', [UserAddressesController::class, 'show']);
