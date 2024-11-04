@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\UserAddressesController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductTypeController;
+use App\Http\Controllers\Api\ProductImagesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,3 +55,10 @@ Route::post('product-types/create', [ProductTypeController::class, 'store']);
 Route::get('product-types/{id}/edit', [ProductTypeController::class, 'edit']);
 Route::put('product-types/{id}/update', [ProductTypeController::class, 'update']);
 Route::delete('product-types/{id}/delete', [ProductTypeController::class, 'destroy']);
+
+//Product Images routes
+Route::get('products/{productId}/images', [ProductImagesController::class, 'index']);
+Route::post('products/{productId}/images/create', [ProductImagesController::class, 'store']);
+Route::get('products/{productId}/images/{id}', [ProductImagesController::class, 'show']);
+Route::put('products/{productId}/images/{id}/update', [ProductImagesController::class, 'update']);
+Route::delete('products/{productId}/images/{id}/delete', [ProductImagesController::class, 'destroy']);
