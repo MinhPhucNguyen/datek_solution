@@ -20,4 +20,19 @@ class Product extends Model
         'price',
         'status'
     ];
+
+    public function subCategories()
+    {
+        return $this->belongsToMany(SubCategory::class, 'product_sub_category');
+    }
+
+    public function productImages()
+    {
+        return $this->hasMany(ProductImages::class);
+    }
+
+    public function productTypes()
+    {
+        return $this->belongsTo(ProductType::class);
+    }
 }

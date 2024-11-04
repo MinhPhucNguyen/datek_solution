@@ -20,4 +20,9 @@ class ProductType extends Model
         'type_name',
         'description'
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
