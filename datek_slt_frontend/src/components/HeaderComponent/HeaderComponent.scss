@@ -1,0 +1,40 @@
+.page-header {
+  background: #146f7c;
+
+  .header-main-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+
+    .header-content-item {
+      display: inline-block;
+      margin-left: 16px;
+
+      &.top-search {
+        display: flex;
+        form {
+          display: flex;
+        }
+      }
+    }
+
+    .header-logo {
+      max-width: 25%;
+    }
+
+    .header-content {
+      max-width: 25%;
+      font-size: 15px;
+
+      a {
+        color: white;
+      }
+
+      .header-content-inner {
+        display: flex;
+      }
+    }
+  }
+}
