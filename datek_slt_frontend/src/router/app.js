@@ -13,6 +13,11 @@ const app = [
         component: () => import("@/pages/LoginPage/LoginPage.vue"),
         name: "login",
       },
+      {
+        path: "/customer/account/create",
+        component: () => import("@/pages/RegisterPage/RegisterPage.vue"),
+        name: "register",
+      },
     ],
   },
 ];

@@ -7,7 +7,9 @@
             <form action="">
               <div class="block-title">
                 <span class="active title">Đăng nhập</span>
-                <a class="title" href="#">Đăng ký</a>
+                <router-link class="title" to="/customer/account/create"
+                  >Đăng ký</router-link
+                >
               </div>
               <fieldset class="fieldset login">
                 <div class="field email required">
@@ -47,9 +49,7 @@
                     >
                       <span>Đăng nhập</span>
                     </button>
-                    <a
-                      class="action remind"
-                      href="#"
+                    <a class="action remind" href="#"
                       ><span>Quên mật khẩu</span></a
                     >
                   </div>
