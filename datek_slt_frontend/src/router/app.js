@@ -8,6 +8,11 @@ const app = [
         component: () => import("@/pages/HomePage.vue"),
         name: "home",
       },
+      {
+        path: "/customer/login",
+        component: () => import("@/pages/LoginPage/LoginPage.vue"),
+        name: "login",
+      },
     ],
   },
 ];

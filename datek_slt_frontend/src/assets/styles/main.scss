@@ -6,11 +6,16 @@
 
 body {
   color: black;
+  font-family: "Roboto", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .container {
-  width: 100%;
-  max-width: 1200px;
+  width: 70%;
   margin: 0 auto;
   padding: 15px 30px;
 }

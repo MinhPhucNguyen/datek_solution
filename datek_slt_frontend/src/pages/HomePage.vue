@@ -1,13 +1,7 @@
 <template>
-    <div>
-        <HeaderComponent />
-    </div>
+    <div>This is Home Page</div>
 </template>
 
-<script setup>
-import HeaderComponent from '@/components/HeaderComponent/HeaderComponent.vue'
-</script>
+<script setup></script>
 
-<style>
-    
-</style>
+<style></style>
