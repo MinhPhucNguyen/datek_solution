@@ -3,7 +3,7 @@
   height: 100vh;
 
   .login-container {
-    max-width: 430px;
+    max-width: 540px;
     width: 100%;
     margin: 100px auto;
 
@@ -81,6 +81,7 @@
       transition: color 500ms ease, background-color 500ms ease,
         border-color 500ms ease;
       border-radius: 10px;
+      font-weight: 700;
     }
 
     button.action {
