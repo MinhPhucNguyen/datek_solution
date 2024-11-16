@@ -29,7 +29,7 @@
               <form action="">
                 <div class="actions">
                   <button type="submit" title="Search" class="action search">
-                    <span>Tìm kiếm</span>
+                    <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
                   </button>
                 </div>
                 <div class="field search">
