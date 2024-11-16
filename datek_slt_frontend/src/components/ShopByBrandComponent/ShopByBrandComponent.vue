@@ -1,9 +1,6 @@
 <template>
   <div class="shop-by-brand-block">
     <div class="container">
-      <div class="shop-by-brand-title">
-        <p>Shop by Brand</p>
-      </div>
       <div class="shop-by-brand-content">
         <div class="brand-logos">
           <div class="brand-logo">
