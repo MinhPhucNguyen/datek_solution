@@ -1,0 +1,17 @@
+.navbar-block {
+  background-color: #4e43d8;
+
+  color: #ffffff;
+}
+
+.navbar-main-inner {
+  width: 100%;
+  display: flex;
+  gap: 40px;
+  color: #ffffff;
+  padding: 10px 0;
+
+  .navbar-item {
+    font-weight: 600;
+  }
+}
