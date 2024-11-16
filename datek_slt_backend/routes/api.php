@@ -26,7 +26,7 @@ use App\Http\Controllers\Auth\AuthController;
 
 //Auth routes
 Route::controller(AuthController::class)->group(function (){
-    Route::post('/customer/login', 'login')->name('login');
+    Route::post('/auth/login', 'login')->name('login');
     Route::post('/auth/register', 'register');
 });
 
