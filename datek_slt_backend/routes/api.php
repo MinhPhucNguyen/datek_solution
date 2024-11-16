@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserAddressesController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductTypeController;
 use App\Http\Controllers\Api\ProductImagesController;
+use App\Http\Controllers\Auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,12 @@ use App\Http\Controllers\Api\ProductImagesController;
 //     return $request->user();
 // });
 
+//Auth routes
+Route::controller(AuthController::class)->group(function (){
+    Route::post('/auth/login', 'login')->name('login');
+    Route::post('/auth/register', 'register');
+});
+
 // User routes
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index');
@@ -31,7 +38,6 @@ Route::controller(UserController::class)->group(function () {
     Route::put('users/{id}/update', 'update');
     Route::delete('users/{id}/delete', 'destroy');
 });
-
 
 // Address routes
 Route::get('addresses', [UserAddressesController::class, 'index']);
