@@ -32,7 +32,7 @@
                     <button @click="logout">Đăng xuất</button>
                   </template>
                   <template v-else>
-                    <router-link to="/customer/login">Đăng nhập</router-link>
+                    <router-link to="/customer/account/login">Đăng nhập</router-link>
                     <router-link to="/customer/account/create">Đăng ký</router-link>
                   </template>
                 </div>

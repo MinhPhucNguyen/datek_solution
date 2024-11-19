@@ -9,7 +9,7 @@ const app = [
         name: "home",
       },
       {
-        path: "/customer/login",
+        path: "/customer/account/login",
         component: () => import("@/pages/LoginPage/LoginPage.vue"),
         name: "login",
       },
