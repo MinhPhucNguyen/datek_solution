@@ -32,7 +32,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Đăng nhập thành công',
             'user' => $user,
-            'token' => $user->createToken('API Token of ' . $user->username)->accessToken,
+            'token' => $user->createToken('API token ')->accessToken,
         ], 200);
     }
 
@@ -55,7 +55,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => 'Đăng ký thành công.',
             'user' => $user,
-            'token' => $user->createToken('API Token of ' . $user->username)->accessToken,
+            'token' => $user->createToken('API token ')->accessToken,
         ], 200);
     }
 

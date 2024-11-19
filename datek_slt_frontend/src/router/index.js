@@ -8,4 +8,17 @@ const router = createRouter({
    routes: routes,
 });
 
+router.beforeEach((to, from, next) => {
+   const adminToken = localStorage.getItem("admin_token");
+
+   if (to.meta.requiresAuth && !adminToken) {
+      next({ name: "AdminLogin" });
+   } else if (to.name === "AdminLogin" && adminToken) {
+      next({ name: "Admin" });
+   } else {
+      next();
+   }
+});
+
+
 export default router;
