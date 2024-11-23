@@ -13,6 +13,10 @@
                 >
               </div>
               <fieldset class="fieldset login">
+                <div class="mt-1 text-danger text-center bg-white" v-if="errors && errors.global">
+                  <i class="fa-regular fa-circle-xmark mb-3" style="font-size: 30px"></i>
+                  <p class="fs-6">{{ errors.global }}</p>
+                </div>
                 <div class="field email required">
                   <div class="control">
                     <input
@@ -24,7 +28,11 @@
                         class="input-text"
                         title="Email"
                         placeholder="Email"
+                        @input="clearError('email')"
                     />
+                    <small v-if="errors && errors.email" class="text-danger">
+                      {{ errors.email[0] }}
+                    </small>
                   </div>
                 </div>
                 <div class="field password required">
@@ -38,7 +46,11 @@
                         id="password"
                         title="Password"
                         placeholder="Mật khẩu"
+                        @input="clearError('password')"
                     />
+                    <small v-if="errors && errors.password" class="text-danger">
+                      {{ errors.password[0] }}
+                    </small>
                   </div>
                 </div>
                 <div class="actions-toolbar">
@@ -76,6 +88,7 @@ const credentials = ref({
   password: "",
 });
 const router = useRouter();
+const errors = ref(null);
 
 const loginSubmit = () => {
   store
@@ -86,9 +99,23 @@ const loginSubmit = () => {
             : router.push({name: "home"});
       })
       .catch((e) => {
-        console.error(e);
+        if (e) {
+          errors.value = e.response.data.errors;
+          if (!errors.value.email && !errors.value.password) {
+            errors.value = {global: e.response.data.errors};
+          }
+          console.error(e);
+        }
       });
 };
+
+const clearError = (field) => {
+  if (errors.value) {
+    delete errors.value[field];
+    errors.value = null;
+  }
+};
+
 </script>
 
 <style scoped>

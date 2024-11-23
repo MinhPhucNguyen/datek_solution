@@ -18,7 +18,11 @@
                         type="text"
                         class="input-text"
                         title="Tên"
+                        @input="clearError('firstname')"
                     />
+                    <small v-if="errors.firstname" class="text-danger">
+                      {{ errors.firstname[0] }}
+                    </small>
                   </div>
                   <div class="control required">
                     <label>Họ</label>
@@ -30,7 +34,11 @@
                         type="text"
                         class="input-text"
                         title="Họ"
+                        @input="clearError('lastname')"
                     />
+                    <small v-if="errors.lastname" class="text-danger">
+                      {{ errors.lastname[0] }}
+                    </small>
                   </div>
                 </div>
                 <div class="field email required">
@@ -44,7 +52,11 @@
                         type="email"
                         class="input-text"
                         title="Email"
+                        @input="clearError('email')"
                     />
+                    <small v-if="errors.email" class="text-danger">
+                      {{ errors.email[0] }}
+                    </small>
                   </div>
                 </div>
                 <div class="field password required">
@@ -58,7 +70,11 @@
                         class="input-text"
                         id="password"
                         title="Mật khẩu"
+                        @input="clearError('password')"
                     />
+                    <small v-if="errors.password" class="text-danger">
+                      {{ errors.password[0] }}
+                    </small>
                   </div>
                 </div>
                 <div class="field confirm-password required">
@@ -72,7 +88,11 @@
                         class="input-text"
                         id="confirm_password"
                         title="Xác nhận mật khẩu"
+                        @input="clearError('confirm_password')"
                     />
+                    <small v-if="errors.confirm_password" class="text-danger">
+                      {{ errors.confirm_password[0] }}
+                    </small>
                   </div>
                 </div>
                 <div class="field choice">
@@ -82,6 +102,7 @@
                       id="show-password"
                       class="checkbox"
                       title="Hiển thị mật khẩu"
+                      @change="showPassword"
                   />
                   <label for="show-password" class="label"
                   ><span>Hiển thị mật khẩu</span></label
@@ -115,6 +136,7 @@ import {useRouter} from "vue-router";
 
 const store = useStore();
 const router = useRouter();
+const errors = ref({});
 const formRegister = ref({
   firstname: "",
   lastname: "",
@@ -130,10 +152,26 @@ const registerSubmit = () => {
         router.push({name: "home"});
       })
       .catch((e) => {
+        errors.value = e.response.data.errors;
         console.error(e);
       });
 };
 
+const clearError = (field) => {
+  delete errors.value[field];
+};
+
+const showPassword = (e) => {
+  const password = document.getElementById("password");
+  const confirm_password = document.getElementById("confirm_password");
+  if (e.target.checked) {
+    password.type = "text";
+    confirm_password.type = "text";
+  } else {
+    password.type = "password";
+    confirm_password.type = "password";
+  }
+};
 
 </script>
 
