@@ -28,6 +28,8 @@ use App\Http\Controllers\Auth\AuthController;
 Route::controller(AuthController::class)->group(function (){
     Route::post('/auth/login', 'login')->name('login.api');
     Route::post('/auth/register', 'register')->name('register.api');
+    Route::middleware('auth:api')->get('/user', 'getUserInfo');
+    Route::middleware('auth:api')->post('/logout', 'logout');
 });
 
 // User routes

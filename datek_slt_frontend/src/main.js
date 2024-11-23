@@ -7,6 +7,8 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
 import store from "./store/store";
 import axios from "axios";
+import jquery from "jquery";
+window.$ = window.jQuery = jquery;
 
 library.add(fas);
 

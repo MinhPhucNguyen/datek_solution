@@ -5,31 +5,31 @@
         <div class="register-container">
           <div class="block-customer-register">
             <h3 class="block-title">Đăng ký</h3>
-            <form action="">
+            <form @submit.prevent="registerSubmit()" id="register-form">
               <fieldset class="fieldset register">
                 <div class="field name">
                   <div class="control required">
                     <label>Tên</label>
                     <input
-                      name="firstname"
-                      value=""
-                      autocomplete="off"
-                      id="firstname"
-                      type="text"
-                      class="input-text"
-                      title="Tên"
+                        name="firstname"
+                        v-model="formRegister.firstname"
+                        autocomplete="off"
+                        id="firstname"
+                        type="text"
+                        class="input-text"
+                        title="Tên"
                     />
                   </div>
                   <div class="control required">
                     <label>Họ</label>
                     <input
-                      name="lastname"
-                      value=""
-                      autocomplete="off"
-                      id="lastname"
-                      type="text"
-                      class="input-text"
-                      title="Họ"
+                        name="lastname"
+                        v-model="formRegister.lastname"
+                        autocomplete="off"
+                        id="lastname"
+                        type="text"
+                        class="input-text"
+                        title="Họ"
                     />
                   </div>
                 </div>
@@ -37,13 +37,13 @@
                   <div class="control">
                     <label>Email</label>
                     <input
-                      name="email"
-                      value=""
-                      autocomplete="off"
-                      id="email"
-                      type="email"
-                      class="input-text"
-                      title="Email"
+                        name="email"
+                        v-model="formRegister.email"
+                        autocomplete="off"
+                        id="email"
+                        type="email"
+                        class="input-text"
+                        title="Email"
                     />
                   </div>
                 </div>
@@ -51,12 +51,13 @@
                   <div class="control">
                     <label>Mật khẩu</label>
                     <input
-                      name="password"
-                      type="password"
-                      autocomplete="off"
-                      class="input-text"
-                      id="password"
-                      title="Mật khẩu"
+                        v-model="formRegister.password"
+                        name="password"
+                        type="password"
+                        autocomplete="off"
+                        class="input-text"
+                        id="password"
+                        title="Mật khẩu"
                     />
                   </div>
                 </div>
@@ -64,34 +65,35 @@
                   <div class="control">
                     <label>Xác nhận mật khẩu</label>
                     <input
-                      name="confirm-password"
-                      type="password"
-                      autocomplete="off"
-                      class="input-text"
-                      id="password"
-                      title="Xác nhận mật khẩu"
+                        v-model="formRegister.confirm_password"
+                        name="confirm-password"
+                        type="password"
+                        autocomplete="off"
+                        class="input-text"
+                        id="confirm_password"
+                        title="Xác nhận mật khẩu"
                     />
                   </div>
                 </div>
                 <div class="field choice">
                   <input
-                    type="checkbox"
-                    name="show-password"
-                    id="show-password"
-                    class="checkbox"
-                    title="Hiển thị mật khẩu"
+                      type="checkbox"
+                      name="show-password"
+                      id="show-password"
+                      class="checkbox"
+                      title="Hiển thị mật khẩu"
                   />
                   <label for="show-password" class="label"
-                    ><span>Hiển thị mật khẩu</span></label
+                  ><span>Hiển thị mật khẩu</span></label
                   >
                 </div>
                 <div class="actions-toolbar">
                   <div class="primary">
                     <button
-                      type="submit"
-                      class="action register primary"
-                      name="send"
-                      id="send2"
+                        type="submit"
+                        class="action register primary"
+                        name="send"
+                        id="send2"
                     >
                       <span>Đăng ký</span>
                     </button>
@@ -106,7 +108,34 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import {ref} from "vue";
+import {useStore} from "vuex";
+import {useRouter} from "vue-router";
+
+const store = useStore();
+const router = useRouter();
+const formRegister = ref({
+  firstname: "",
+  lastname: "",
+  password: "",
+  email: "",
+  confirm_password: "",
+});
+
+const registerSubmit = () => {
+  store
+      .dispatch("auth/register", formRegister.value)
+      .then(() => {
+        router.push({name: "home"});
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+};
+
+
+</script>
 
 <style scoped>
 @import url(RegisterPage.scss);

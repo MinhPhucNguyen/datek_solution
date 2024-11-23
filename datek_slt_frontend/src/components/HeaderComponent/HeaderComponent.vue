@@ -25,11 +25,13 @@
                 <font-awesome-icon :icon="['fas', 'user']"/>
                 <div
                     v-if="isUserMenuVisible"
-                    class="dropdown-menu"
+                    class="user-dropdown-menu"
                 >
                   <template v-if="isLoggedIn">
-                    <button @click="goToProfile">Trang cá nhân</button>
-                    <button @click="logout">Đăng xuất</button>
+                    <ul>
+                      <li @click="goToProfile">Trang cá nhân</li>
+                      <li @click="logout" class="logout">Đăng xuất</li>
+                    </ul>
                   </template>
                   <template v-else>
                     <router-link to="/customer/account/login">Đăng nhập</router-link>
@@ -78,14 +80,26 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import {useStore} from "vuex";
+import {useRouter} from "vue-router";
 import NavbarComponent from "../NavbarComponent/NavbarComponent.vue";
+
+const store = useStore();
+const router = useRouter();
+const isLoggedIn = computed(() => store.getters["auth/isAuthenticated"]);
 
 const isUserMenuVisible = ref(false);
 
 function toggleUserMenu() {
   isUserMenuVisible.value = !isUserMenuVisible.value;
 }
+
+const logout = () => {
+  store.dispatch("auth/logout").then(() => {
+    router.push({name: "login"});
+  });
+};
 
 </script>
 

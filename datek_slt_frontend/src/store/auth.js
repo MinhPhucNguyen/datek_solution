@@ -40,13 +40,12 @@ const auth = {
     },
     actions: {
         async register({dispatch}, registerForm) {
-            const response = await axios.post("register", registerForm);
+            const response = await axios.post("auth/register", registerForm);
             dispatch("attempt", response.data.token);
             return response;
         },
-
         async login({dispatch}, credentials) {
-            const response = await axios.post("login", credentials);
+            const response = await axios.post("auth/login", credentials);
             return dispatch("attempt", response.data.token);
         },
         async attempt({commit, state}, token) {
@@ -61,12 +60,9 @@ const auth = {
             try {
                 const response = await axios.get("user");
                 commit("SET_USER", response.data);
-                // dispatch("users/fetchUserById", response.data.id, { root: true });
-                commit("users/SET_USER", response.data, {root: true});
             } catch (e) {
                 commit("SET_TOKEN", null);
                 commit("SET_USER", null);
-                commit("users/SET_USER", null, {root: true});
             }
         },
 
@@ -74,14 +70,12 @@ const auth = {
             return await axios.post("logout").then(() => {
                 commit("SET_TOKEN", null);
                 commit("SET_USER", null);
-                commit("users/SET_USER", null, {root: true});
             });
         },
 
         async sendForgotPasswordEmail(ctx, payload) {
             try {
-                const response = await axios.post("/forgot-password", payload);
-                return response;
+                return await axios.post("/forgot-password", payload);
             } catch (error) {
                 alert(error);
             }
@@ -89,8 +83,7 @@ const auth = {
 
         async resetPassword(ctx, payload) {
             try {
-                const response = await axios.post("/reset-password", payload);
-                return response;
+                return await axios.post("/reset-password", payload);
             } catch (error) {
                 alert(error);
             }
