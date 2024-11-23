@@ -49,7 +49,7 @@ const auth = {
             const response = await axios.post("login", credentials);
             return dispatch("attempt", response.data.token);
         },
-        async attempt({commit, state, dispatch}, token) {
+        async attempt({commit, state}, token) {
             if (token) {
                 commit("SET_TOKEN", token);
             }
