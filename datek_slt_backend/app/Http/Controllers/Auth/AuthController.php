@@ -32,7 +32,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Đăng nhập thành công',
             'user' => $user,
-            'token' => $user->createToken('API token ')->accessToken,
+            'token' => $user->createToken('API token ' . $user->name)->accessToken,
         ], 200);
     }
 
@@ -44,9 +44,13 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $validatedData = $request->validated();
+
+        $name = $validatedData['firstname'] . ' ' . $validatedData['lastname'];
+
         $user = User::create([
             'firstname' => $validatedData['firstname'],
             'lastname' => $validatedData['lastname'],
+            'name' => $name,
             'email' => $validatedData['email'],
             'password' => Hash::make(trim($validatedData['password'])),
             'confirm_password' => $validatedData['confirm_password'] == $validatedData['password'] ? '1' : '0',
@@ -55,7 +59,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => 'Đăng ký thành công.',
             'user' => $user,
-            'token' => $user->createToken('API token ')->accessToken,
+            'token' => $user->createToken('API token ' . $user->name)->accessToken,
         ], 200);
     }
 

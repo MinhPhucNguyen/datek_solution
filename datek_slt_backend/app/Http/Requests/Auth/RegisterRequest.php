@@ -41,7 +41,6 @@ class RegisterRequest extends FormRequest
             'password' => [
                 'required',
                 'min:8',
-                'regex:/^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/',
                 'unique:users,password',
             ],
             'confirm_password' => [
@@ -67,7 +66,6 @@ class RegisterRequest extends FormRequest
             'password.required' => '*Vui lòng nhập mật khẩu',
             'password.min' => '*Mật khẩu phải có độ dài ít nhất là 8 ký tự',
             'password.unique' => '*Mật khẩu đã tồn tại.',
-            'password.regex' => '*Mật khẩu phải có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 số và 1 ký tự đặc biệt',
             'confirm_password.required' => '*Vui lòng nhập lại mật khẩu',
             'confirm_password.same' => '*Mật khẩu nhập lại không khớp',
         ];
