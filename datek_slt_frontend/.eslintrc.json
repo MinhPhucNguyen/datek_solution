@@ -20,6 +20,6 @@
     },
     "globals": {
         "$": "readonly",
-        "jQuery": "readonly",
+        "jQuery": "readonly"
     }
 }
