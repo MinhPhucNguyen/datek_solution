@@ -11,6 +11,11 @@ const app = [
         name: "home",
       },
       {
+        path: "/product_detail",
+        component: () => import("@/pages/ProductDetailPage/ProductDetailPage.vue"),
+        name: "product_detail",
+      },
+      {
         path: "/customer/account/login",
         component: () => import("@/pages/LoginPage/LoginPage.vue"),
         name: "login",
@@ -28,7 +33,10 @@ const app = [
           requiresAuth: true,
         },
         beforeEnter: (to, from, next) => {
-          if (useStore().getters["auth/getUser"] && to.path === "/customer/account/manage") {
+          if (
+            useStore().getters["auth/getUser"] &&
+            to.path === "/customer/account/manage"
+          ) {
             next();
           }
         },
