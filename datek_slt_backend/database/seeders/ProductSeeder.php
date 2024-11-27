@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Brand;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
@@ -24,6 +25,7 @@ class ProductSeeder extends Seeder
                 'description' => $faker->sentence(),
                 'status' => $faker->numberBetween(0,1),
                 'product_type_id' => $faker->numberBetween(1, 3),
+                'brand_id' =>  Brand::all()->random()->id
             ]);
         }
     }

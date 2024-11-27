@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -28,11 +29,14 @@ class ProductController extends Controller
         $product->save();
         return response()->json($product);
     }
-
-    public function show($id)
+    public function show(Request $request)
     {
-        $product = Product::find($id);
-        return response()->json($product);
+        $productId = $request->input('product_id');
+        if (!$productId) {
+            return response()->json(['error' => 'Không tìm thấy sản phẩm'], 400);
+        }
+        $product = Product::findOrFail($productId);
+        return new ProductResource($product);
     }
 
     public function update(Request $request, $id)

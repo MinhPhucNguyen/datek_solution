@@ -61,6 +61,7 @@ Route::delete('categories/{id}/delete', [CategoryController::class, 'destroy']);
 //Product routes
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/latest', [ProductController::class, 'getLatestProducts']);
+Route::get('product/detail', [ProductController::class, 'show']);
 Route::post('products/create', [ProductController::class, 'store']);
 Route::get('products/{id}/edit', [ProductController::class, 'edit']);
 Route::put('products/{id}/update', [ProductController::class, 'update']);

@@ -18,8 +18,14 @@ class Product extends Model
         'description',
         'quantity',
         'price',
+        'product_type_id',
         'status'
     ];
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 
     public function subCategories()
     {
@@ -31,8 +37,8 @@ class Product extends Model
         return $this->hasMany(ProductImages::class);
     }
 
-    public function productTypes()
+    public function productType()
     {
-        return $this->belongsTo(ProductType::class);
+        return $this->belongsTo(ProductType::class, 'product_type_id');
     }
 }
