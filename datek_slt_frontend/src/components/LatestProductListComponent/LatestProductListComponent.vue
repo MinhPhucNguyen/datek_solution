@@ -6,7 +6,11 @@
       </div>
       <div class="latest-product-list-content">
         <div class="product-list">
-          <ProductItemComponent v-for="index in 5" :key="index" />
+          <ProductItemComponent
+            v-for="product in latestProducts"
+            :key="product.id"
+            :product="product"
+          />
         </div>
       </div>
 
@@ -35,7 +39,24 @@
 </template>
 
 <script setup>
+import axios from "axios";
+import { ref, onMounted } from "vue";
 import ProductItemComponent from "../ProductItemComponent/ProductItemComponent.vue";
+
+const latestProducts = ref([]);
+
+const fetchProducts = async () => {
+  try {
+    const latestResponse = await axios.get("products/latest");
+    latestProducts.value = latestResponse.data;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+};
+
+onMounted(() => {
+  fetchProducts();
+});
 </script>
 
 <style scoped>

@@ -11,9 +11,10 @@ const app = [
         name: "home",
       },
       {
-        path: "/product_detail",
-        component: () => import("@/pages/ProductDetailPage/ProductDetailPage.vue"),
-        name: "product_detail",
+        path: "/:slug/:id",
+        component: () =>
+          import("@/pages/ProductDetailPage/ProductDetailPage.vue"),
+        name: "product-detail",
       },
       {
         path: "/customer/account/login",
@@ -28,7 +29,7 @@ const app = [
       {
         path: "/customer/account/manage",
         component: () => import("@/pages/AccountPage/AccountPage.vue"),
-        name: "account_page",
+        name: "account-page",
         meta: {
           requiresAuth: true,
         },

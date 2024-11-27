@@ -125,6 +125,12 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const productId = route.params.id;
+
+console.log(productId);
 
 const product = {
   title: "Apple iPhone 16 128GB Teal",
@@ -169,8 +175,6 @@ const infoRows = [
   { label: "Brand", value: "Lenovo" },
   { label: "Guarantee", value: "36 months" },
 ];
-
-
 </script>
 
 <style scoped>

@@ -1,28 +1,33 @@
 <template>
-  <div class="product-item">
+  <div class="product-item" v-if="product && product.status == 1">
     <div class="product-item-image">
       <a href="">
         <img src="https://via.placeholder.com/150" alt="product-image" />
       </a>
     </div>
     <div class="product-item-title">
-      <a href="">
-        <p>Product Title</p>
-      </a>
+      <router-link
+        :to="{
+          name: 'product-detail',
+          params: {
+            slug: product.name.toLowerCase().replace(/\s+/g, '-'),
+            id: product.id,
+          },
+        }"
+        class="car-item"
+      >
+        <p>{{ product.name }}</p>
+      </router-link>
     </div>
     <div class="product-item-price">
-      <p>$100</p>
+      <p>{{ formatCurrency(product.price) }}</p>
     </div>
     <div class="action">
       <div class="quantity-control">
         <button class="quantity-btn decrease-btn" @click="decrementQuantity">
           <font-awesome-icon :icon="['fas', 'minus']" />
         </button>
-        <input
-          type="number"
-          v-model="quantity"
-          class="quantity-input"
-        />
+        <input type="number" v-model="quantity" class="quantity-input" />
         <button class="quantity-btn increase-btn" @click="incrementQuantity">
           <font-awesome-icon :icon="['fas', 'plus']" />
         </button>
@@ -35,7 +40,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, defineProps } from "vue";
+import { formatCurrency } from "@/utils/formatCurrency";
+
+defineProps({
+  product: {
+    type: Object,
+    required: true,
+  },
+});
 
 const quantity = ref(1);
 
@@ -48,7 +61,6 @@ const decrementQuantity = () => {
     quantity.value--;
   }
 };
-
 </script>
 
 <style scoped>
