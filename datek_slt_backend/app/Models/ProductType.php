@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductType extends Model
 {
     use HasFactory;
-    
+
     protected $primaryKey = 'id';
 
     /**
@@ -18,6 +18,7 @@ class ProductType extends Model
      */
     protected $fillable = [
         'type_name',
+        'product_type_code',
         'description'
     ];
 

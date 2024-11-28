@@ -21,6 +21,13 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    public function getProductsBySubCategory(Request $request)
+    {
+        $subCategorySlug = $request->input('slug');
+        $products = Product::where('slug', $subCategorySlug)->get();
+        return response()->json($products);
+    }
+
     public function store(Request $request)
     {
         $product = new Product();

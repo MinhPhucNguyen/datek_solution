@@ -17,6 +17,7 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'sku' => $this->sku,
             'brand' => $this->brand->brand_name,
             'price' => $this->price,
             'sub_categories' => $this->subCategories,

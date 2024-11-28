@@ -20,14 +20,12 @@
 
         <!-- Product Information Section -->
         <div class="product-info">
-          <h1>{{ product.title }}</h1>
-          <p class="sku">Mã sản phẩm: {{ product.sku }}</p>
-          <p class="price">€{{ product.price }}</p>
-          <ul class="product-features">
-            <li v-for="(feature, index) in product.features" :key="index">
-              {{ feature }}
-            </li>
-          </ul>
+          <h1>{{ productDetail.name }}</h1>
+          <p class="sku">Mã sản phẩm: {{ productDetail.sku }}</p>
+          <p class="price">{{ formatCurrency(productDetail.price) }}</p>
+          <div class="product-description">
+              <p>{{productDetail.description}}</p>
+          </div>
 
           <div class="actions">
             <div class="quantity-control">
@@ -129,27 +127,31 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import axios from "axios";
+import {ref, onMounted} from "vue";
 import {useRoute} from "vue-router";
+import {formatCurrency} from "@/utils/formatCurrency";
 import CartSideBar from "@/components/SidebarCartComponent/SidebarCartComponent.vue"
 
 const route = useRoute();
-const productId = route.params.id;
+const productDetail = ref({});
+const errorMessage = ref("");
+const productId = ref(null);
 
-console.log(productId);
-
-const product = {
-  title: "Apple iPhone 16 128GB Teal",
-  sku: "195949822551",
-  price: 2049,
-  features: [
-    "Apple Intelligence - pomaže pisati, izražavati se i obavljati stvari bez napora",
-    "Preuzmite potpunu kontrolu kamere",
-    "A18 superčip skače dvije generacije ispred A16 Bionic čipa u iPhoneu 15",
-    "Dulje trajanje baterije uz reprodukciju videozapisa do 22 sata",
-    "iPhone 16 ima čvrst aluminijski dizajn za zrakoplove",
-  ],
+productId.value = route.params.id;
+const getProductDetail = async () => {
+  try {
+    const response = await axios.get(`product/detail?product_id=${productId.value}`);
+    if (response.status === 200) {
+      productDetail.value = response.data.data;
+    } else {
+      throw new Error("Something went wrong");
+    }
+  } catch (error) {
+    errorMessage.value = error;
+  }
 };
+getProductDetail();
 
 const productImages = [
   "https://via.placeholder.com/500",
@@ -200,6 +202,10 @@ const addToCart = () => {
 const closeCart = () => {
   isCartVisible.value = false;
 };
+
+onMounted(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 </script>
 
