@@ -4,16 +4,16 @@
       <div class="product-detail-container">
         <div class="product-images">
           <div class="main-image">
-            <img :src="currentImage" alt="Main Product Image" />
+            <img :src="currentImage" alt="Main Product Image"/>
           </div>
           <div class="thumbnail-images">
             <img
-              v-for="(image, index) in productImages"
-              :key="index"
-              :src="image"
-              alt="Thumbnail Image"
-              @click="setCurrentImage(image)"
-              :class="{ 'active-thumbnail': currentImage === image }"
+                v-for="(image, index) in productImages"
+                :key="index"
+                :src="image"
+                alt="Thumbnail Image"
+                @click="setCurrentImage(image)"
+                :class="{ 'active-thumbnail': currentImage === image }"
             />
           </div>
         </div>
@@ -32,20 +32,22 @@
           <div class="actions">
             <div class="quantity-control">
               <button
-                class="quantity-btn decrease-btn"
-                @click="decrementQuantity"
+                  class="quantity-btn decrease-btn"
+                  @click="decrementQuantity"
               >
-                <font-awesome-icon :icon="['fas', 'minus']" />
+                <font-awesome-icon :icon="['fas', 'minus']"/>
               </button>
-              <input type="number" v-model="quantity" class="quantity-input" />
+              <input type="number" v-model="quantity" class="quantity-input"/>
               <button
-                class="quantity-btn increase-btn"
-                @click="incrementQuantity"
+                  class="quantity-btn increase-btn"
+                  @click="incrementQuantity"
               >
-                <font-awesome-icon :icon="['fas', 'plus']" />
+                <font-awesome-icon :icon="['fas', 'plus']"/>
               </button>
             </div>
-            <button class="add-to-cart-btn">Thêm vào giỏ hàng</button>
+            <button class="add-to-cart-btn" @click="addToCart">
+              Thêm vào giỏ hàng
+            </button>
           </div>
         </div>
       </div>
@@ -57,44 +59,44 @@
           <ul>
             <li>
               <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Series: ThinkCentre</font
-                ></font
+              ><font style="vertical-align: inherit"
+              >Series: ThinkCentre</font
+              ></font
               >
             </li>
             <li>
               <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Model: ThinkCentre neo 50 SFF</font
-                ></font
+              ><font style="vertical-align: inherit"
+              >Model: ThinkCentre neo 50 SFF</font
+              ></font
               >
             </li>
             <li>
               <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Warranty Term (month) : 36 month(s)</font
-                ></font
+              ><font style="vertical-align: inherit"
+              >Warranty Term (month) : 36 month(s)</font
+              ></font
               >
             </li>
             <li>
               <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Pack Weight Gross (kg): 1.11 kg</font
-                ></font
+              ><font style="vertical-align: inherit"
+              >Pack Weight Gross (kg): 1.11 kg</font
+              ></font
               >
             </li>
             <li>
               <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Pieces in pack: 1</font
-                ></font
+              ><font style="vertical-align: inherit"
+              >Pieces in pack: 1</font
+              ></font
               >
             </li>
             <li>
               <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Box Weight Gross (kg): 1 kg</font
-                ></font
+              ><font style="vertical-align: inherit"
+              >Box Weight Gross (kg): 1 kg</font
+              ></font
               >
             </li>
           </ul>
@@ -107,25 +109,29 @@
         <div class="section-content">
           <table class="info-table">
             <tbody>
-              <tr
+            <tr
                 v-for="(row, index) in infoRows"
                 :key="index"
                 :class="{ 'odd-row': index % 2 !== 0 }"
-              >
-                <td class="label">{{ row.label }}</td>
-                <td class="value">{{ row.value }}</td>
-              </tr>
+            >
+              <td class="label">{{ row.label }}</td>
+              <td class="value">{{ row.value }}</td>
+            </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
+
+    <CartSideBar :isCartVisible="isCartVisible" :cartItems="cartItems" @closeCart="closeCart"/>
+
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRoute } from "vue-router";
+import {ref} from "vue";
+import {useRoute} from "vue-router";
+import CartSideBar from "@/components/SidebarCartComponent/SidebarCartComponent.vue"
 
 const route = useRoute();
 const productId = route.params.id;
@@ -170,11 +176,31 @@ const setCurrentImage = (image) => {
 };
 
 const infoRows = [
-  { label: "Code", value: "12LN003SZY" },
-  { label: "Color", value: "Indeterminate" },
-  { label: "Brand", value: "Lenovo" },
-  { label: "Guarantee", value: "36 months" },
+  {label: "Code", value: "12LN003SZY"},
+  {label: "Color", value: "Indeterminate"},
+  {label: "Brand", value: "Lenovo"},
+  {label: "Guarantee", value: "36 months"},
 ];
+
+const isCartVisible = ref(false);
+const cartItems = ref([]);
+
+const addToCart = () => {
+  const newItem = {
+    name: "Sản phẩm mẫu",
+    image: "path/to/image.jpg",
+    quantity: 1,
+    price: 100,
+  };
+
+  cartItems.value.push(newItem);
+  isCartVisible.value = true;
+};
+
+const closeCart = () => {
+  isCartVisible.value = false;
+};
+
 </script>
 
 <style scoped>
