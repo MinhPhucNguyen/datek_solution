@@ -1,14 +1,6 @@
 <template>
    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-      <!-- <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-         <i class="fa fa-bars"></i>
-      </button> -->
-
       <div class="w-100 d-flex align-items-center justify-content-end">
-         <router-link to="/" class="btn btn-success float-right shadow-sm fw-bolder"
-            >Visit Website</router-link
-         >
-
          <ul class="navbar-nav ml-3">
             <li class="nav-item dropdown no-arrow d-sm-none">
                <a
