@@ -15,24 +15,68 @@ class UserController extends Controller
     {
         $paginate = 10;
 
-        $getAllUsers = User::with('addresses')
+        $selected_role = request('selected_role', 'all');
+
+        $search = request('search', '');
+
+        $sort_direction = request('sort_direction', 'desc');
+        if (!in_array($sort_direction, ['asc', 'desc'])) {
+            $sort_direction = 'desc';
+        }
+
+        $sort_field = request('sort_field', 'created_at');
+        if (!in_array($sort_field, ['id', 'fullname', 'username', 'email', 'phone'])) {
+            $sort_field = 'created_at';
+        }
+        $getAllUsers = User::search(trim($search))
+            ->when($selected_role !== 'all', function ($query) use ($selected_role) {
+                $query->where('role_as', $selected_role);
+            })
+            ->when($sort_field, function ($query) use ($sort_direction, $sort_field) {
+                if ($sort_field == 'fullname') {
+                    $query->orderBy('firstname', $sort_direction)
+                        ->orderBy('lastname', $sort_direction);
+                } else {
+                    $query->orderBy($sort_field, $sort_direction);
+                }
+            })
             ->paginate($paginate);
 
         return new UserCollection($getAllUsers);
     }
 
-    public function store(Request $request)
+    /**
+     * Get all id of user
+     * @return \Illuminate\Support\Collection
+     */
+    public function selectAllUser()
     {
+        return User::pluck('id');
+    }
+
+    public function getUserById($id)
+    {
+        $user = User::findOrFail($id);
+        return response()->json(
+            [
+                'user' => $user
+            ],
+            200
+        );
+    }
+
+    public function createUser(UserFormRequest $request)
+    {
+        $validatedInputs = $request->validated();
+
         $user = new User();
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
-        $user->username = $request->username;
-        $user->gender = $request->gender;
-        $user->email = $request->email;
-        $user->phone = '+84' . substr($request->phone, 1);
-        $user->password = Hash::make(trim($request->password));
-        $user->confirm_password = $request->password == $request->confirm_password ? 'true' : 'false';
-        $user->role_as = $request->role_as;
+        $user->firstname = $validatedInputs['firstname'];
+        $user->lastname = $validatedInputs['lastname'];
+        $user->email = $validatedInputs['email'];
+        $user->phone = '+84' . substr($validatedInputs['phone'], 1);
+        $user->password = Hash::make(trim($validatedInputs['password']));
+        $user->confirm_password = $validatedInputs['password'] == $validatedInputs['confirm_password'] ? 'true' : 'false';
+        $user->role_as = $validatedInputs['role_as'];
 
         $user->save();
 
@@ -45,23 +89,35 @@ class UserController extends Controller
         );
     }
 
-    public function edit($id)
+    public function editUser($id, UserFormRequest $request)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(
-                [
-                    'message' => 'Không tìm thấy người dùng.'
-                ],
-                404
-            );
+        $validatedData = $request->validated();
+        $user = User::findOrFail($id);
+        if ($user) {
+            $user->firstname = $validatedData['firstname'];
+            $user->lastname = $validatedData['lastname'];
+            $user->gender = $request->gender;
+            $user->email = $validatedData['email'];
+            $user->phone = '+84' . substr($validatedData['phone'], 1);
+            $user->address = $validatedData['address'];
+            $user->role_as = $validatedData['role_as'];
+
+            if (empty($validatedData['password']) && empty($validatedData['confirm_password'])) {
+                unset($validatedData['password']);
+                unset($validatedData['confirm_password']);
+            } else {
+                $user->password = Hash::make($validatedData['password']);
+                $user->confirm_password = $validatedData['confirm_password'] == $validatedData['password'] ? 'true' : 'false';
+            }
+            $user->update();
+            return response()->json([
+                'message' => "Update user successfully"
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => "User not found"
+            ], 404);
         }
-        return response()->json(
-            [
-                'user' => $user
-            ],
-            200
-        );
     }
 
     public function update(int $id, Request $request)
@@ -94,17 +150,9 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(int $id)
+    public function deleteUser($id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(
-                [
-                    'message' => 'Không tìm thấy người dùng.'
-                ],
-                404
-            );
-        }
+        $user = User::findOrFail($id);
         $user->delete();
         return response()->json(
             [
@@ -112,5 +160,17 @@ class UserController extends Controller
             ],
             200
         );
+    }
+
+    public function deleteMultiUser($users)
+    {
+        $usersIdArray = explode(',', $users);
+        $users = User::whereIn('id', $usersIdArray)->get();
+        foreach ($users as $user) {
+            $user->delete();
+        }
+        return response()->json([
+            'message' => 'Xóa ' . count($usersIdArray) . ' người dùng thành công.'
+        ], 200);
     }
 }

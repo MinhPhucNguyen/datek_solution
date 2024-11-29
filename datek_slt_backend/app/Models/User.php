@@ -58,4 +58,17 @@ class User extends Authenticatable
     public function addresses(){
         return $this->hasMany(UserAddresses::class);
     }
+
+    public function scopeSearch($query, $search)
+    {
+        $search = "%$search%";
+
+        $query->where(function ($query) use ($search) {
+            $query->where('name', 'like', $search)
+                ->orWhere('firstname', 'like', $search)
+                ->orWhere('lastname', 'like', $search)
+                ->orWhere('email', 'like', $search)
+                ->orWhere('phone', 'like', $search);
+        });
+    }
 }

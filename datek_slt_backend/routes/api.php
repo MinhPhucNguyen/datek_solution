@@ -36,10 +36,13 @@ Route::controller(AuthController::class)->group(function (){
 // User routes
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index');
-    Route::post('users/create', 'store');
-    Route::get('users/{id}/edit', 'edit');
+    Route::get('users/all', 'selectAllUser');
+    Route::get('users/{id}', 'getUserById');
+    Route::post('users/create', 'createUser');
+    Route::put('users/{id}/edit', 'editUser');
     Route::put('users/{id}/update', 'update');
-    Route::delete('users/{id}/delete', 'destroy');
+    Route::delete('users/{id}/delete', 'deleteUser');
+    Route::delete('users/delete-multi-user/{users}', 'deleteMultiUser');
 });
 
 // Address routes
