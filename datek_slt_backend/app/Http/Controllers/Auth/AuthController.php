@@ -29,6 +29,13 @@ class AuthController extends Controller
             ], 401);
         }
 
+        $isAdmin = $user->role_as == 1;
+        if(!$isAdmin) {
+            return response()->json([
+                'errors' => 'Email hoặc mật khẩu không chính xác hoặc Bạn không có quyền truy cập.'
+            ], 401);
+        }
+
         return response()->json([
             'message' => 'Đăng nhập thành công',
             'user' => $user,

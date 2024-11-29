@@ -4,6 +4,7 @@ const admin = [
         name: "Admin",
         component: () => import("@/layouts/admin.vue"),
         meta: {
+            permission: "admin",
             requiresAuth: true,
         }
     },
