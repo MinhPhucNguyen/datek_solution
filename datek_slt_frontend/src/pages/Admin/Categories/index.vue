@@ -3,7 +3,7 @@
     <ToastMessage :message="successMessage" />
 
     <my-modal
-      @clickTo="handleDeleteBrand"
+      @clickTo="handleDeleteCategory"
       idModal="deleteConfirmModal"
       bgColor="danger"
     >
@@ -20,7 +20,7 @@
         >
           <span class="visually-hidden">Loading...</span>
         </div>
-        Delete
+        Xóa
       </template>
     </my-modal>
 
@@ -59,14 +59,14 @@
                   {{ category.category_name }}
                 </td>
                 <td class="text-center">
-                  {{
-                    category.description
-                      ? category.description
-                      : "_"
-                  }}
+                  {{ category.description ? category.description : "_" }}
                 </td>
                 <td class="text-center">
-                  {{ category.parent_id ? getParentCategoryName(category.parent_id) : '_' }}
+                  {{
+                    category.parent_id
+                      ? getParentCategoryName(category.parent_id)
+                      : "_"
+                  }}
                 </td>
                 <td
                   class="text-center"
@@ -91,7 +91,7 @@
                         <button
                           type="button"
                           class="dropdown-item mb-3 fs-6 text-success bg-white"
-                          @click="editBrand(brand)"
+                          @click="editCategory(category)"
                         >
                           <i class="fa-solid fa-pen-to-square"></i>
                           <span class="ml-2">Sửa</span>
@@ -101,7 +101,7 @@
                         <button
                           type="button"
                           class="dropdown-item fs-6 text-danger bg-white"
-                          @click="deleteBrand(brand)"
+                          @click="deleteCategory(category)"
                         >
                           <i class="fa-solid fa-trash"></i>
                           <span class="ml-2">Xóa</span>
@@ -150,7 +150,7 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form @submit.prevent="brandSubmit">
+              <form @submit.prevent="categorySubmit">
                 <div class="form-group">
                   <label for="" class="text-dark fw-bold">Tên danh mục</label>
                   <input
@@ -187,6 +187,30 @@
                   <small class="text-danger" v-if="errors && errors.slug[0]">{{
                     errors.slug[0]
                   }}</small>
+                </div>
+                <div class="form-group">
+                  <label for="" class="text-dark fw-bold">Danh mục cha</label>
+                  <div class="input-group">
+                    <select
+                      class="form-select"
+                      id="inputGroupSelect02"
+                      name="parent_id"
+                      v-model="model.parent_id"
+                    >
+                      <option value="NULL" selected>Gỡ danh mục cha</option>
+                      <option
+                        v-for="parent in parentCategories"
+                        :key="parent.id"
+                        :value="parent.id"
+                      >
+                        {{ parent.category_name }}
+                      </option>
+                    </select>
+                  </div>
+                  <span
+                    >*Chỉ chọn nếu muốn tạo một danh mục cấp con. Để trống nếu
+                    muốn tạo một danh mục cấp cha.</span
+                  >
                 </div>
                 <div class="form-group">
                   <label for="" class="text-dark fw-bold">Mô tả</label>
@@ -253,9 +277,8 @@
   </div>
 </template>
 
-
 <script setup>
-import { computed, onBeforeMount, ref } from "vue";
+import { computed, onBeforeMount, onMounted, ref } from "vue";
 import axios from "axios";
 import MyModal from "@/components/Modals/Modal.vue";
 import ToastMessage from "@/components/Toast/Toast.vue";
@@ -265,6 +288,7 @@ const categories = ref([]);
 const model = ref({
   category_name: "",
   slug: "",
+  parent_id: null,
   description: "",
   status: 1,
 });
@@ -291,6 +315,7 @@ const resetForm = () => {
     slug: "",
     description: "",
     status: 1,
+    parent_id: null,
   };
 };
 
@@ -338,11 +363,120 @@ const flatCategories = computed(() => {
 });
 
 const getParentCategoryName = (parent_id) => {
-  if (!parent_id) return "-";
-  const parentCategory = categories.value.find(cat => cat.id === parent_id);
+  if (!parent_id) return "_";
+  const parentCategory = categories.value.find((cat) => cat.id === parent_id);
   return parentCategory ? parentCategory.category_name : "_";
 };
 
+const parentCategories = computed(() => {
+  return categories.value.filter((category) => category.parent_id === null);
+});
+
+const addNewCategory = () => {
+  const formData = new FormData();
+  isLoading.value = true;
+
+  for (const key in model.value) {
+    if (Object.prototype.hasOwnProperty.call(model.value, key)) {
+      const value = model.value[key];
+      formData.append(key, value);
+    }
+  }
+
+  axios
+    .post("/categories/create", formData)
+    .then((response) => {
+      successMessage.value = response.data.message;
+      getCategories().then(() => {
+        isLoading.value = false;
+        $("#categoryFormModal").modal("hide");
+        $(".toast").toast("show");
+        resetForm();
+      });
+    })
+    .catch((e) => {
+      if (e.response) {
+        isLoading.value = false;
+        $("#categoryFormModal").modal("show");
+        errors.value = e.response.data.errors;
+      }
+    });
+};
+
+const editCategory = (category) => {
+  isEditing.value = true;
+  resetForm();
+  $("#categoryFormModal").modal("show");
+  model.value = { ...category };
+};
+
+const updateCategory = () => {
+  const formData = new FormData();
+  isLoading.value = true;
+
+  for (const key in model.value) {
+    if (Object.prototype.hasOwnProperty.call(model.value, key)) {
+      const value = model.value[key];
+      formData.append(key, value);
+    }
+  }
+
+  axios
+    .put(`/categories/${model.value.id}/update`, formData, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      console.log(response);
+      successMessage.value = response.data.message;
+      getCategories().then(() => {
+        isLoading.value = false;
+        $("#categoryFormModal").modal("hide");
+        $(".toast").toast("show");
+        resetForm();
+      });
+    })
+    .catch((e) => {
+      if (e.response) {
+        isLoading.value = false;
+        $("#categoryFormModal").modal("show");
+        errors.value = e.response.data.errors;
+      }
+    });
+};
+
+const categorySubmit = () => {
+  if (isEditing.value) {
+    updateCategory();
+  } else {
+    addNewCategory();
+  }
+};
+
+const deleteCategory = (category) => {
+  model.value = { ...category };
+  $("#deleteConfirmModal").modal("show");
+};
+
+const handleDeleteCategory = () => {
+  isLoading.value = true;
+  axios.delete(`/categories/${model.value.id}/delete`).then((response) => {
+    getCategories().then(() => {
+      isLoading.value = false;
+      successMessage.value = response.data.message;
+      $("#deleteConfirmModal").modal("hide");
+      $(".toast").toast("show");
+    });
+  });
+};
+
+onMounted(() => {
+  $("#categoryFormModal").on("hide.bs.modal", () => {
+    errors.value = null;
+  });
+});
 </script>
 
 <style scoped>

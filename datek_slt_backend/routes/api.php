@@ -49,7 +49,7 @@ Route::controller(UserController::class)->group(function () {
 Route::get('categories', [CategoryController::class, 'index']);
 Route::post('categories/create', [CategoryController::class, 'store']);
 Route::get('categories/{id}/edit', [CategoryController::class, 'edit']);
-Route::put('categories/{id}/update', [CategoryController::class, 'update']);
+Route::put('categories/{id}/update', [CategoryController::class, 'updateCategory']);
 Route::delete('categories/{id}/delete', [CategoryController::class, 'destroy']);
 
 //Product routes
