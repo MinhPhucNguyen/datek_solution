@@ -7,6 +7,7 @@ const admin = [
       permission: "admin",
       requiresAuth: true,
     },
+    redirect: { name: "admin.dashboard" },
     children: [
       {
         path: "dashboard",

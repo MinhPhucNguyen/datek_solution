@@ -27,6 +27,7 @@ class User extends Authenticatable
         'lastname',
         'gender',
         'birth',
+        'address',
         'phone',
         'password',
         'confirm_password',
@@ -54,10 +55,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function addresses(){
-        return $this->hasMany(UserAddresses::class);
-    }
 
     public function scopeSearch($query, $search)
     {

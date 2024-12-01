@@ -47,7 +47,7 @@
                               value="1"
                               v-model="user.gender"
                            />
-                           <label class="form-check-label" for="male"> Name </label>
+                           <label class="form-check-label" for="male"> Nam </label>
                         </div>
                         <div style="width: 10px; display: inline-block"></div>
                         <div class="form-check d-inline-block">

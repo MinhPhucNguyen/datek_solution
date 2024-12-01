@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Http\Resources\UserCollection;
 use Illuminate\Support\Facades\Hash;
@@ -72,8 +73,11 @@ class UserController extends Controller
         $user = new User();
         $user->firstname = $validatedInputs['firstname'];
         $user->lastname = $validatedInputs['lastname'];
+        $user->name = $validatedInputs['firstname'] . ' ' . $validatedInputs['lastname'];
         $user->email = $validatedInputs['email'];
-        $user->phone = '+84' . substr($validatedInputs['phone'], 1);
+        $user->address = $validatedInputs['address'];
+        $user->gender = $request->gender ?? 1;
+        $user->phone = $validatedInputs['phone'];
         $user->password = Hash::make(trim($validatedInputs['password']));
         $user->confirm_password = $validatedInputs['password'] == $validatedInputs['confirm_password'] ? 'true' : 'false';
         $user->role_as = $validatedInputs['role_as'];
@@ -96,10 +100,11 @@ class UserController extends Controller
         if ($user) {
             $user->firstname = $validatedData['firstname'];
             $user->lastname = $validatedData['lastname'];
-            $user->gender = $request->gender;
+            $user->name = $validatedData['firstname'] . ' ' . $validatedData['lastname'];
             $user->email = $validatedData['email'];
-            $user->phone = '+84' . substr($validatedData['phone'], 1);
             $user->address = $validatedData['address'];
+            $user->gender = $request->gender ?? 1;
+            $user->phone = $validatedData['phone'];
             $user->role_as = $validatedData['role_as'];
 
             if (empty($validatedData['password']) && empty($validatedData['confirm_password'])) {
@@ -111,11 +116,11 @@ class UserController extends Controller
             }
             $user->update();
             return response()->json([
-                'message' => "Update user successfully"
+                'message' => "Cập nhật người dùng thành công.",
             ], 200);
         } else {
             return response()->json([
-                'message' => "User not found"
+                'message' => "Không tìm thấy người dùng."
             ], 404);
         }
     }

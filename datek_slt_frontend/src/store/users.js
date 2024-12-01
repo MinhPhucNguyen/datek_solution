@@ -84,6 +84,7 @@ const users = {
         .post("/users/create", user, {
           headers: {
             "Content-Type": "application/json",
+            "Accept": "application/json",
           },
         })
         .then(() => {

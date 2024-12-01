@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\UserAddressesController;
+use App\Http\Controllers\Api\AddressesController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductTypeController;
 use App\Http\Controllers\Api\ProductImagesController;
@@ -44,15 +44,6 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('users/{id}/delete', 'deleteUser');
     Route::delete('users/delete-multi-user/{users}', 'deleteMultiUser');
 });
-
-// Address routes
-Route::get('addresses', [UserAddressesController::class, 'index']);
-Route::get('users/{user}/addresses', [UserAddressesController::class, 'getAddressesByUserId']);
-Route::post('addresses/create', [UserAddressesController::class, 'store']);
-Route::get('addresses/{id}/edit', [UserAddressesController::class, 'edit']);
-Route::put('addresses/{id}/update', [UserAddressesController::class, 'update']);
-Route::delete('addresses/{id}/delete', [UserAddressesController::class, 'destroy']);
-Route::get('addresses/{id}', [UserAddressesController::class, 'show']);
 
 // Category routes
 Route::get('categories', [CategoryController::class, 'index']);
