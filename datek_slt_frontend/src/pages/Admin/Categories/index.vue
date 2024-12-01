@@ -47,12 +47,13 @@
                 <th class="text-center">ID</th>
                 <th class="text-center">Tên danh mục</th>
                 <th class="text-center">Mô tả</th>
+                <th class="text-center">Danh mục cha</th>
                 <th class="text-center">Trạng thái</th>
                 <th class="text-center"></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="category in categories" :key="category.id">
+              <tr v-for="category in flatCategories" :key="category.id">
                 <td class="text-center">{{ category.id }}</td>
                 <td class="text-center">
                   {{ category.category_name }}
@@ -61,8 +62,11 @@
                   {{
                     category.description
                       ? category.description
-                      : "Không có mô tả"
+                      : "_"
                   }}
+                </td>
+                <td class="text-center">
+                  {{ category.parent_id ? getParentCategoryName(category.parent_id) : '_' }}
                 </td>
                 <td
                   class="text-center"
@@ -83,14 +87,6 @@
                       Thao tác
                     </button>
                     <ul class="dropdown-menu">
-                      <li>
-                        <a
-                          class="dropdown-item mb-3 fs-6 text-warning bg-white"
-                        >
-                          <i class="fa-solid fa-eye"></i>
-                          <span class="ml-2">Xem chi tiết</span>
-                        </a>
-                      </li>
                       <li>
                         <button
                           type="button"
@@ -116,7 +112,7 @@
                 </td>
               </tr>
               <tr v-if="categories.length === 0">
-                <td colspan="5" class="text-center">
+                <td colspan="6" class="text-center">
                   <stateLoading />
                 </td>
               </tr>
@@ -125,6 +121,7 @@
         </div>
       </div>
 
+      <!-- Category Form Modal -->
       <div
         class="modal fade"
         id="categoryFormModal"
@@ -159,7 +156,7 @@
                   <input
                     type="text"
                     class="form-control"
-                    name="brand_name"
+                    name="category_name"
                     v-model="model.category_name"
                   />
                   <small
@@ -167,6 +164,29 @@
                     v-if="errors && errors.category_name[0]"
                     >{{ errors.category_name[0] }}</small
                   >
+                </div>
+                <div class="form-group">
+                  <label for="" class="text-dark fw-bold">Slug</label>
+                  <div class="d-flex align-items-center">
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="slug"
+                      v-model="model.slug"
+                      :style="{ width: '75%' }"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-light ms-2"
+                      @click="generateSlug"
+                    >
+                      <i class="fa-solid fa-rotate"></i>
+                      Tạo slug
+                    </button>
+                  </div>
+                  <small class="text-danger" v-if="errors && errors.slug[0]">{{
+                    errors.slug[0]
+                  }}</small>
                 </div>
                 <div class="form-group">
                   <label for="" class="text-dark fw-bold">Mô tả</label>
@@ -233,6 +253,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { computed, onBeforeMount, ref } from "vue";
 import axios from "axios";
@@ -275,12 +296,12 @@ const resetForm = () => {
 
 const getCategories = async () => {
   return await axios.get("/categories").then((response) => {
-    categories.value = response.data.data.categories;
+    categories.value = response.data.categories;
   });
 };
 
 /**
- * todo: ADD BRAND
+ * todo: ADD CATEGORY
  */
 const addCategory = () => {
   isEditing.value = false;
@@ -291,6 +312,37 @@ const addCategory = () => {
 onBeforeMount(() => {
   getCategories();
 });
+
+/**
+ * todo: GENERATE SLUG
+ */
+const generateSlug = () => {
+  if (model.value.category_name) {
+    model.value.slug = model.value.category_name
+      .toLowerCase()
+      .trim()
+      .replace(/[\s\W-]+/g, "-");
+  } else {
+    model.value.slug = "";
+  }
+};
+
+const flatCategories = computed(() => {
+  return categories.value.reduce((acc, category) => {
+    acc.push(category);
+    if (category.sub_categories && category.sub_categories.length) {
+      acc.push(...category.sub_categories);
+    }
+    return acc;
+  }, []);
+});
+
+const getParentCategoryName = (parent_id) => {
+  if (!parent_id) return "-";
+  const parentCategory = categories.value.find(cat => cat.id === parent_id);
+  return parentCategory ? parentCategory.category_name : "_";
+};
+
 </script>
 
 <style scoped>

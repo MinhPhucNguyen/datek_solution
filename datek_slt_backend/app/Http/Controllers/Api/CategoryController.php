@@ -11,8 +11,10 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
-        return new CategoryCollection($categories);
+        $categories = Category::with('subCategories')->whereNull('parent_id')->get();
+        return response()->json([
+            'categories' => $categories
+        ]);
     }
 
     public function store(Request $request)
