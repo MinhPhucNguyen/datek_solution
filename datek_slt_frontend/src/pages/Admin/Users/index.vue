@@ -267,7 +267,7 @@
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      Action
+                      Thao tác
                     </button>
                     <ul class="dropdown-menu">
                       <li>

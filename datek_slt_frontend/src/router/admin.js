@@ -35,6 +35,11 @@ const admin = [
         name: "admin.users.profile",
         redirect: { name: "admin.users.mainProfile" },
      },
+     {
+      path: "categories",
+      component: () => import("@/pages/Admin/Categories/index.vue"),
+      name: "admin.categories",
+    },
     ],
   },
   {

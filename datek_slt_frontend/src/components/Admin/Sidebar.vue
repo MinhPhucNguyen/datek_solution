@@ -30,21 +30,35 @@
         class="nav-link collapsed fw-bold text-dark"
       >
         <i class="fas fa-fw fa-user"></i>
-        <span>QL Người dùng</span>
+        <span>Quản lý người dùng</span>
       </router-link>
     </li>
 
     <li class="nav-item border-bottom">
       <a class="nav-link collapsed fw-bold text-dark" href="#">
         <i class="fa-solid fa-box mr-2"></i>
-        <span>QL Sản phẩm</span>
+        <span>Quản lý sản phẩm</span>
+      </a>
+    </li>
+
+    <li class="nav-item border-bottom">
+      <router-link :to="{name: 'admin.categories' }" class="nav-link collapsed fw-bold text-dark" href="#">
+        <i class="fa-solid fa-list mr-2"></i>
+        <span>Quản lý danh mục sản phẩm</span>
+      </router-link>
+    </li>
+
+    <li class="nav-item border-bottom">
+      <a class="nav-link collapsed fw-bold text-dark" href="#">
+        <i class="fa-solid fa-box mr-2"></i>
+        <span>Quản lý giảm giá</span>
       </a>
     </li>
 
     <li class="nav-item border-bottom">
       <a class="nav-link collapsed fw-bold text-dark" href="#">
         <i class="fa-solid fa-box mr-2"></i>
-        <span>QL Hãng</span>
+        <span>Quản lý hãng</span>
       </a>
     </li>
 
@@ -71,4 +85,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style scope>
+.sidebar {
+  width: 20rem !important;
+}
+
+.sidebar .nav-item .nav-link {
+  width: 100% !important;
+}
+</style>
