@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductCollection;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
@@ -14,8 +15,12 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
-        return response()->json($products);
+        $paginate = 10;
+        $search = request('search', '');
+        $products = Product::search(trim($search))
+            ->with('productImages', 'categories.subCategories')
+            ->paginate($paginate);;
+        return new ProductCollection($products);
     }
 
     public function getLatestProducts()
@@ -45,7 +50,7 @@ class ProductController extends Controller
             'status' => $validatedData['status']
         ]);
 
-        if($validatedData['images']) {
+        if ($validatedData['images']) {
             foreach ($request->file('images') as $image) {
                 $cloudinaryImage = $image->storeOnCloudinary('products');
                 $uploadedFileUrl = $cloudinaryImage->getSecurePath();

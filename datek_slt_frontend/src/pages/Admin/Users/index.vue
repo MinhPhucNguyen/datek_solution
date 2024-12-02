@@ -315,7 +315,7 @@
                   :idModal="`deleteConfirmModal${user.id}`"
                   bgColor="danger"
                 >
-                  <template v-slot:title>Delete user</template>
+                  <template v-slot:title>Xóa người dùng</template>
                   <h6 class="text-dark text-center fs-5 mt-4">
                     Bạn có chắc chắn muốn xóa người dùng này không?
                   </h6>

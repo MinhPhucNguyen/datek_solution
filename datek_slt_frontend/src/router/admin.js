@@ -28,18 +28,28 @@ const admin = [
         path: "users/:id/edit",
         component: () => import("@/pages/Admin/Users/edit.vue"),
         name: "admin.users.edit",
-     },
-     {
+      },
+      {
         path: "users/:id/profile",
         component: () => import("@/pages/Admin/Users/profile.vue"),
         name: "admin.users.profile",
         redirect: { name: "admin.users.mainProfile" },
-     },
-     {
-      path: "categories",
-      component: () => import("@/pages/Admin/Categories/index.vue"),
-      name: "admin.categories",
-    },
+      },
+      {
+        path: "categories",
+        component: () => import("@/pages/Admin/Categories/index.vue"),
+        name: "admin.categories",
+      },
+      {
+        path: "products",
+        component: () => import("@/pages/Admin/Products/index.vue"),
+        name: "admin.products",
+      },
+      {
+        path: "products/create",
+        component: () => import("@/pages/Admin/Products/create.vue"),
+        name: "admin.products.create",
+      },
     ],
   },
   {

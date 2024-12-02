@@ -35,10 +35,10 @@
     </li>
 
     <li class="nav-item border-bottom">
-      <a class="nav-link collapsed fw-bold text-dark" href="#">
+      <router-link :to="{name: 'admin.products'}" class="nav-link collapsed fw-bold text-dark" href="#">
         <i class="fa-solid fa-box mr-2"></i>
         <span>Quản lý sản phẩm</span>
-      </a>
+      </router-link>
     </li>
 
     <li class="nav-item border-bottom">

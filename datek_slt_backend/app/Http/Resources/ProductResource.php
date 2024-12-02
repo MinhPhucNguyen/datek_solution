@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'product_types' => $this->productType,
             'description' => $this->description,
+            'quantity' => $this->quantity,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at

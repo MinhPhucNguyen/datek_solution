@@ -46,4 +46,17 @@ class Product extends Model
     {
         return $this->hasMany(SaleDetails::class);
     }
+
+    public function scopeSearch($query, $search)
+    {
+        $search = "%$search%";
+
+        $query->where(function ($query) use ($search) {
+            $query->where('products.name', 'like', $search)
+                ->orWhere('products.id', 'like', $search)
+                ->orWhere('products.sku', 'like', $search);
+        })->orWhereHas('brand', function ($query) use ($search) {
+            $query->where('brand_name', 'like', $search);
+        });
+    }
 }
