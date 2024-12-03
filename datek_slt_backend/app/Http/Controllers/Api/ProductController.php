@@ -36,8 +36,10 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function store(ProductRequest $request)
+    public function createProduct(ProductRequest $request)
     {
+        var_dump($request->all());
+        die();
         $validatedData = $request->validated();
         $product = Product::create([
             'sub_category_id' => $validatedData['sub_category_id'],
@@ -65,7 +67,8 @@ class ProductController extends Controller
         }
 
         return response()->json([
-            'message' => 'Create car successfully!'
+            'message' => 'Tạo sản phẩm thành công',
+            'product' => $product
         ], 200);
     }
     public function show(Request $request)
@@ -74,7 +77,7 @@ class ProductController extends Controller
         if (!$productId) {
             return response()->json(['error' => 'Không tìm thấy sản phẩm'], 400);
         }
-        $product = Product::findOrFail($productId);
+        $product = Product::findOrFail($productId)->with('productImages', 'categories.subCategories');
         return new ProductResource($product);
     }
 

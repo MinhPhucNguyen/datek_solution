@@ -57,7 +57,7 @@ Route::get('products', [ProductController::class, 'index']);
 Route::get('products/latest', [ProductController::class, 'getLatestProducts']);
 Route::get('products/sub-category', [ProductController::class, 'getProductsBySubCategory']);
 Route::get('product/detail', [ProductController::class, 'show']);
-Route::post('products/create', [ProductController::class, 'store']);
+Route::post('products/create', [ProductController::class, 'createProduct']);
 Route::get('products/{id}/edit', [ProductController::class, 'edit']);
 Route::put('products/{id}/update', [ProductController::class, 'update']);
 Route::delete('products/{id}/delete', [ProductController::class, 'destroy']);

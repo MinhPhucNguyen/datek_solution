@@ -145,24 +145,42 @@
                 </div>
               </div>
 
-              <div class="tab-pane fade mt-3" id="image-tab-pane" role="tabpanel" aria-labelledby="image-tab"
-                     tabindex="0">
-                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                           <h5 class="mb-4">Tải ảnh lên</h5>
-                           <input ref="filesInput" type="file" multiple name="image[]" class="form-control file-input"
-                              @change="uploadProductImage" />
-                           <div class="display_image mb-4" v-if="imagesUrl.length > 0">
-                              <div class="product_image_input" v-for="(src, index) in imagesUrl" :key="index">
-                                 <img :src="src" alt="" class="image_input" />
-                                 <button class="btn btn-danger remove_btn" @click.prevent="removeImage(index)">
-                                    Xóa
-                                 </button>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
+              <div
+                class="tab-pane fade mt-3"
+                id="image-tab-pane"
+                role="tabpanel"
+                aria-labelledby="image-tab"
+                tabindex="0"
+              >
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <h5 class="mb-4">Tải ảnh lên</h5>
+                    <input
+                      ref="filesInput"
+                      type="file"
+                      multiple
+                      name="image[]"
+                      class="form-control file-input"
+                      @change="uploadProductImage"
+                    />
+                    <div class="display_image mb-4" v-if="imagesUrl.length > 0">
+                      <div
+                        class="product_image_input"
+                        v-for="(src, index) in imagesUrl"
+                        :key="index"
+                      >
+                        <img :src="src" alt="" class="image_input" />
+                        <button
+                          class="btn btn-danger remove_btn"
+                          @click.prevent="removeImage(index)"
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </div>
                   </div>
+                </div>
+              </div>
             </div>
             <button
               class="btn btn-success p-3 fw-bold float-end"
@@ -190,6 +208,7 @@
 import Editor from "@tinymce/tinymce-vue";
 import { ref, watch } from "vue";
 import ToastMessage from "@/components/Toast/Toast.vue";
+import axios from "axios";
 
 const brandsList = ref([]);
 const successMessage = ref(null);
@@ -230,80 +249,95 @@ const editorConfig = {
   tinycomments_mode: "embedded",
   table_style_by_css: true,
   table_merge_content_on_paste: true,
-  table_background_color_map: [
-    { title: "Red", value: "FF0000" },
-    { title: "White", value: "FFFFFF" },
-    { title: "Yellow", value: "F1C40F" },
-  ],
 };
 
-const createNewProduct = async () => {
-   const formData = new FormData();
+const isFilledForm = ref(true);
 
-   for (const key in model.value) {
-      if (Object.prototype.hasOwnProperty.call(model.value, key)) {
-         //Xác định xem đối tượng có chứa thuộc tính được chỉ định hay không
-         const value = model.value[key];
-         if (Array.isArray(value)) {
-            for (const item of value) {
-               formData.append(`${key}[]`, item);
-            }
-         } else {
-            formData.append(key, value);
-         }
-      }
-   }
-
-   isLoading.value = true;
-};
-
-watch(() => model.value.product_images, () => {
-   console.log(model.value.product_images);
+watch(model.value, () => {
+  isFilledForm.value = false;
 });
 
-const uploadProductImage = (event) => {
-   for (const file of event.target.files) {
-      const imageURL = URL.createObjectURL(file);
-      imagesUrl.value.push(imageURL);
-      model.value.product_images.push(file);
+const createNewProduct = async () => {
+  const formData = new FormData();
 
-      console.log("product_images after add:", model.value.product_images);
-   }
+  for (const key in model.value) {
+    if (Object.prototype.hasOwnProperty.call(model.value, key)) {
+      const value = model.value[key];
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          formData.append(`${key}[]`, item);
+        }
+      } else {
+        formData.append(key, value);
+      }
+    }
+  }
+
+  isLoading.value = true;
+  await axios
+    .post("products/create", formData, {
+      "Content-Type": "multipart/form-data",
+    })
+    .then((response) => {
+      successMessage.value = response.data.message;
+      $(".toast").toast("show");
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      errors.value = error.response.data.errors;
+      console.log(errors.value);
+      isLoading.value = false;
+    });
+};
+
+watch(
+  () => model.value.product_images,
+  () => {
+    console.log(model.value.product_images);
+  }
+);
+
+const uploadProductImage = (event) => {
+  for (const file of event.target.files) {
+    const imageURL = URL.createObjectURL(file);
+    imagesUrl.value.push(imageURL);
+    model.value.product_images.push(file);
+  }
 };
 
 /**
  * TODO: Remove product image before create new car
  * @param {*} index
  */
- const removeImage = (index) => {
-   imagesUrl.value.splice(index, 1);
+const removeImage = (index) => {
+  imagesUrl.value.splice(index, 1);
 
-   const newFileList = new DataTransfer();
+  const newFileList = new DataTransfer();
 
-   for (let i = 0; i < filesInput.value.files.length; i++) {
-      if (i !== index) {
-         newFileList.items.add(filesInput.value.files[i]);
-      }
-   }
-   filesInput.value.files = newFileList.files;
+  for (let i = 0; i < filesInput.value.files.length; i++) {
+    if (i !== index) {
+      newFileList.items.add(filesInput.value.files[i]);
+    }
+  }
+  filesInput.value.files = newFileList.files;
 };
-
 </script>
 
 <style lang="scss" scoped>
 .product_image_input {
-   border-radius: 20px;
-   margin-right: 20px;
-   margin-top: 20px;
-   margin-left: 12px;
-   display: inline-block;
-   text-align: center;
+  border-radius: 20px;
+  margin-right: 20px;
+  margin-top: 20px;
+  margin-left: 12px;
+  display: inline-block;
+  text-align: center;
 }
 
 .product_image_input > .image_input {
-   width: 120px;
-   height: 120px;
-   object-fit: cover;
-   border-radius: 20px;
-   display: block;
-}</style>
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+</style>
