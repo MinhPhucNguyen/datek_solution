@@ -42,7 +42,7 @@ class ProductController extends Controller
         die();
         $validatedData = $request->validated();
         $product = Product::create([
-            'sub_category_id' => $validatedData['sub_category_id'],
+            'category_ids' => $validatedData['sub_category_ids'],
             'brand_id' => $validatedData['brand_id'],
             'name' => $validatedData['name'],
             'sku' => $validatedData['sku'],

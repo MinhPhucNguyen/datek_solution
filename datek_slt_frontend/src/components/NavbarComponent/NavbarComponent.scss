@@ -1,15 +1,97 @@
 .navbar-block {
   background-color: #4e43d8;
+  color: #fff;
+  padding: 5px 20px;
+  position: relative; 
+  z-index: 100;
+}
+
+.shop-by-department {
+  position: relative;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.dropdown-menu-categories {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  top: 44px;
+  color: #000000;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 99999; 
+  display: block; 
+  width: 300px;
+}
+
+.menu-title {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fff;
+  color: #000;
+  font-weight: bold;
+}
+
+.dropdown-menu-categories ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-menu-categories li {
+  padding: 10px 15px;
+  position: relative;
+  color: #000000;
+}
+
+.menu-link {
+  text-decoration: none;
+  color: #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-link:hover {
+  background-color: #f8f8f8;
+  color: #e63946;
+}
+
+.submenu-icon {
+  font-size: 12px;
+  color: #999;
+}
+
+.sub-dropdown-menu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background-color: #fff;
+  width: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sub-menu-link {
+  text-decoration: none;
+  color: #000;
+  padding: 10px 15px;
+  display: block;
+}
+
+.sub-menu-link:hover {
+  background-color: #f8f8f8;
+}
+
+.dropdown-menu-categories li:hover{
+  background-color: #4e43d8;
   color: #ffffff;
 }
 
-.navbar-main-inner {
-  width: 100%;
-  display: flex;
-  gap: 40px;
-  color: #ffffff;
-
-  .navbar-item {
-    font-weight: 600;
-  }
+.sub-dropdown-menu li:hover {
+  color: #4e43d8; 
+  background-color: #ffffff; 
 }
