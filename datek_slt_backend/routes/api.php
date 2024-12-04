@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ProductTypeController;
 use App\Http\Controllers\Api\ProductImagesController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Api\BrandController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,9 @@ Route::post('categories/create', [CategoryController::class, 'store']);
 Route::get('categories/{id}/edit', [CategoryController::class, 'edit']);
 Route::put('categories/{id}/update', [CategoryController::class, 'updateCategory']);
 Route::delete('categories/{id}/delete', [CategoryController::class, 'destroy']);
+
+//Brand routes
+Route::get('brands', [BrandController::class, 'index']);
 
 //Product routes
 Route::get('products', [ProductController::class, 'index']);

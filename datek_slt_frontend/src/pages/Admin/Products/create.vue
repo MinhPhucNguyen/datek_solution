@@ -22,10 +22,10 @@
                   class="nav-link text-success fw-bold active"
                   id="home-tab"
                   data-bs-toggle="tab"
-                  data-bs-target="#car-tab-pane"
+                  data-bs-target="#product-tab-pane"
                   type="button"
                   role="tab"
-                  aria-controls="car-tab-pane"
+                  aria-controls="product-tab-pane"
                   aria-selected="true"
                 >
                   <i class="fa-solid fa-circle-info mr-1"></i>
@@ -51,7 +51,7 @@
             <div class="tab-content" id="myTabContent">
               <div
                 class="tab-pane fade show mt-3 active"
-                id="car-tab-pane"
+                id="product-tab-pane"
                 role="tabpanel"
                 aria-labelledby="home-tab"
                 tabindex="0"
@@ -64,8 +64,8 @@
                       <option value="">--Chọn hãng--</option>
                       <option
                         v-for="brand in brandsList"
-                        :key="brand.brand_id"
-                        :value="brand.brand_id"
+                        :key="brand.id"
+                        :value="brand.id"
                       >
                         {{ brand.brand_name }}
                       </option>
@@ -92,7 +92,7 @@
                       type="text"
                       name="sku"
                       class="form-control"
-                      v-model="model.year"
+                      v-model="model.sku"
                     />
                     <small class="text-danger" v-if="errors.sku">{{
                       errors.sku[0]
@@ -250,6 +250,15 @@ const editorConfig = {
   table_style_by_css: true,
   table_merge_content_on_paste: true,
 };
+
+const getBrandsList = async () => {
+  await axios.get("brands").then((response) => {
+    console.log(response);
+    brandsList.value = response.data.brands;
+  });
+};
+
+getBrandsList();
 
 const isFilledForm = ref(true);
 
