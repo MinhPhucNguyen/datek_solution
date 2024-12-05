@@ -35,6 +35,21 @@
               <li class="nav-item" role="presentation">
                 <button
                   class="nav-link text-success fw-bold"
+                  id="product-categories-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#product-categories-tab-pane"
+                  type="button"
+                  role="tab"
+                  aria-controls="product-categories-tab-pane"
+                  aria-selected="false"
+                >
+                  <i class="fa-solid fa-list"></i>
+                  Danh mục sản phẩm
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link text-success fw-bold"
                   id="profile-tab"
                   data-bs-toggle="tab"
                   data-bs-target="#image-tab-pane"
@@ -99,6 +114,22 @@
                     }}</small>
                   </div>
                   <div class="col-md-4 mb-3">
+                    <label for="product_type">Loại sản phẩm</label>
+                    <select class="form-control" name="product_type" v-model="model.product_type">
+                      <option value="">--Chọn loại sản phẩm--</option>
+                      <option
+                        v-for="brand in brandsList"
+                        :key="brand.id"
+                        :value="brand.id"
+                      >
+                        {{ brand.brand_name }}
+                      </option>
+                    </select>
+                    <small class="text-danger" v-if="errors.product_type">{{
+                      errors.product_type[0]
+                    }}</small>
+                  </div>
+                  <div class="col-md-4 mb-3">
                     <label for="quantity">Số lượng</label>
                     <input
                       type="text"
@@ -144,7 +175,60 @@
                   </div>
                 </div>
               </div>
-
+              <div
+                class="tab-pane fade mt-3"
+                id="product-categories-tab-pane"
+                role="tabpanel"
+                aria-labelledby="product-categories-tab"
+                tabindex="0"
+              >
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <ul>
+                      <li
+                        class="category-checkbox"
+                        v-for="category in categories"
+                        :key="category.id"
+                      >
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="category"
+                            :value="category.id"
+                            @change="
+                              updateSelectedCategories(category.id, false)
+                            "
+                            :checked="model.category_ids.includes(category.id)"
+                          />
+                          {{ category.category_name }}
+                        </label>
+                        <ul v-if="category.sub_categories.length">
+                          <li
+                            class="category-checkbox"
+                            v-for="subCategory in category.sub_categories"
+                            :key="subCategory.id"
+                          >
+                            <label>
+                              <input
+                                type="checkbox"
+                                name="category"
+                                :value="subCategory.id"
+                                @change="
+                                  updateSelectedCategories(subCategory.id, true)
+                                "
+                                :checked="
+                                  model.category_ids.includes(subCategory.id)
+                                "
+                              />
+                              {{ subCategory.category_name }}
+                            </label>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
               <div
                 class="tab-pane fade mt-3"
                 id="image-tab-pane"
@@ -205,11 +289,12 @@
 </template>
 
 <script setup>
-import Editor from "@tinymce/tinymce-vue";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import ToastMessage from "@/components/Toast/Toast.vue";
+import Editor from "@tinymce/tinymce-vue";
 import axios from "axios";
 
+const categories = ref([]);
 const brandsList = ref([]);
 const successMessage = ref(null);
 const errors = ref({});
@@ -225,6 +310,7 @@ const model = ref({
   price: "",
   description: "",
   status: 0,
+  category_ids: [],
   product_images: [],
 });
 
@@ -253,12 +339,9 @@ const editorConfig = {
 
 const getBrandsList = async () => {
   await axios.get("brands").then((response) => {
-    console.log(response);
     brandsList.value = response.data.brands;
   });
 };
-
-getBrandsList();
 
 const isFilledForm = ref(true);
 
@@ -298,6 +381,39 @@ const createNewProduct = async () => {
       isLoading.value = false;
     });
 };
+
+const getAllCategories = async () => {
+  await axios.get("categories").then((response) => {
+    categories.value = response.data.categories;
+  });
+};
+
+onMounted(() => {
+  getBrandsList();
+  getAllCategories();
+});
+
+const updateSelectedCategories = (categoryId, isSubCategory) => {
+  if (isSubCategory) {
+    const index = model.value.category_ids.indexOf(categoryId);
+    if (index === -1) {
+      model.value.category_ids.push(categoryId);
+    } else {
+      model.value.category_ids.splice(index, 1);
+    }
+  } else {
+    const index = model.value.category_ids.indexOf(categoryId);
+    if (index === -1) {
+      model.value.category_ids.push(categoryId);
+    } else {
+      model.value.category_ids.splice(index, 1);
+    }
+  }
+};
+
+watch(model.value, () => {
+  console.log(model.value);
+});
 
 watch(
   () => model.value.product_images,
@@ -348,5 +464,16 @@ const removeImage = (index) => {
   object-fit: cover;
   border-radius: 20px;
   display: block;
+}
+
+.category-checkbox {
+  label {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  label > input {
+    margin-right: 10px;
+  }
 }
 </style>

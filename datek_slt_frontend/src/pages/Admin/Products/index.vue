@@ -3,7 +3,7 @@
     <ToastMessage :message="successMessage" />
 
     <my-modal
-      @clickTo="deleteMultiUser"
+      @clickTo="deleteMultiProduct"
       :idModal="'deleteConfirmModal'"
       bgColor="danger"
     >
@@ -250,6 +250,45 @@ watch(searchInput, () => {
 onBeforeMount(() => {
   getProductList();
 });
+
+const deleteConfirm = () => {
+  $("#deleteConfirmModal").modal("show");
+};
+
+const deleteProduct = (product_id) => {
+  axios.delete(`/products/${product_id}`)
+      .then((response) => {
+         checked.value = checked.value.filter((id) => id != product_id);
+         successMessage.value = response.data.message;
+         getProductList();
+         $(`#deleteConfirmModal${product_id}`).modal("hide");
+         $(".toast").toast("show");
+      })
+      .catch((e) => {
+         if (e.response) {
+            alert(e.response.data.message);
+         }
+      });
+};
+
+const deleteMultiProduct = () => {
+   axios
+      .delete("/products/delete-multi-product/" + checked.value)
+      .then((response) => {
+         checked.value = [];
+         selectPage.value = false;
+         successMessage.value = response.data.message;
+         getProductList();
+         $("#deleteConfirmModal").modal("hide");
+         $(".toast").toast("show");
+      })
+      .catch((e) => {
+         if (e.response) {
+            console.error(e.response.data.message);
+         }
+      });
+};
+
 </script>
 
 <style lang="scss" scoped>
