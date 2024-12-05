@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->unsignedBigInteger('brand_id')->after('id');
             $table->foreign('brand_id')->references('id')->on('brands');
-            $table->unsignedBigInteger('product_type_id')->after('id');
+            $table->unsignedBigInteger('product_type_id')->after('id')->nullable();
             $table->foreign('product_type_id')->references('id')->on('product_types');
         });
     }

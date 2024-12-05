@@ -65,6 +65,7 @@ Route::post('products/create', [ProductController::class, 'createProduct']);
 Route::get('products/{id}/edit', [ProductController::class, 'edit']);
 Route::put('products/{id}/update', [ProductController::class, 'update']);
 Route::delete('products/{id}/delete', [ProductController::class, 'destroy']);
+Route::delete('products/delete-multi-product/{products}', [ProductController::class, 'deleteMultiProduct']);
 
 //ProductType routes
 Route::get('product-types', [ProductTypeController::class, 'index']);

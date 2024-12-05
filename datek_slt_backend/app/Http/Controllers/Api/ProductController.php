@@ -38,17 +38,13 @@ class ProductController extends Controller
 
     public function createProduct(ProductRequest $request)
     {
-        var_dump($request->all());
-        die();
         $validatedData = $request->validated();
         $product = Product::create([
-            'category_ids' => $validatedData['sub_category_ids'],
             'brand_id' => $validatedData['brand_id'],
             'name' => $validatedData['name'],
             'sku' => $validatedData['sku'],
             'quantity' => $validatedData['quantity'],
             'price' => $validatedData['price'],
-            'product_type_id' => $validatedData['product_type_id'],
             'status' => $validatedData['status']
         ]);
 
@@ -77,7 +73,7 @@ class ProductController extends Controller
         if (!$productId) {
             return response()->json(['error' => 'Không tìm thấy sản phẩm'], 400);
         }
-        $product = Product::findOrFail($productId)->with('productImages', 'categories.subCategories');
+        $product = Product::findOrFail($productId);
         return new ProductResource($product);
     }
 
@@ -95,5 +91,17 @@ class ProductController extends Controller
         $product = Product::find($id);
         $product->delete();
         return response()->json($product);
+    }
+
+    public function deleteMultiProduct($products)
+    {
+        $productsIdArray = explode(',', $products);
+        $products = Product::whereIn('id', $productsIdArray)->get();
+        foreach ($products as $product) {
+            $product->delete();
+        }
+        return response()->json([
+            'message' => 'Xóa ' . count($productsIdArray) . ' sản phẩm thành công.'
+        ], 200);
     }
 }
