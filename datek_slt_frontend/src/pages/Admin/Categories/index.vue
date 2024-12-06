@@ -429,7 +429,6 @@ const updateCategory = () => {
       },
     })
     .then((response) => {
-      console.log(response);
       successMessage.value = response.data.message;
       getCategories().then(() => {
         isLoading.value = false;

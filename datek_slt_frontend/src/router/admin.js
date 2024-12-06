@@ -50,6 +50,11 @@ const admin = [
         component: () => import("@/pages/Admin/Products/create.vue"),
         name: "admin.products.create",
       },
+      {
+        path: "products/:id/edit",
+        component: () => import("@/pages/Admin/Products/edit.vue"),
+        name: "admin.products.edit",
+      },
     ],
   },
   {

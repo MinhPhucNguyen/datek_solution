@@ -13,7 +13,7 @@ class ProductTypeController extends Controller
         $productTypes = ProductType::all();
         return response()->json(
             [
-                'product-types' => $productTypes
+                'product_types' => $productTypes
             ],
             200
         );

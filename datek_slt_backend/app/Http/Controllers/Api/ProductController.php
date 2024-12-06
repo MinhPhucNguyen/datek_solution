@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImages;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 use App\Http\Resources\ProductResource;
 
@@ -45,11 +46,15 @@ class ProductController extends Controller
             'sku' => $validatedData['sku'],
             'quantity' => $validatedData['quantity'],
             'price' => $validatedData['price'],
-            'status' => $validatedData['status']
+            'product_type_id' => $validatedData['product_type_id'],
+            'status' => $request->boolean('status', true) ? 1 : 0,
+            'description' => $request->input('description')
         ]);
 
-        if ($validatedData['images']) {
-            foreach ($request->file('images') as $image) {
+        $product->categories()->sync($validatedData['category_ids']);
+
+        if ($request->hasFile('product_images')) {
+            foreach ($request->file('product_images') as $image) {
                 $cloudinaryImage = $image->storeOnCloudinary('products');
                 $uploadedFileUrl = $cloudinaryImage->getSecurePath();
                 $publicId = $cloudinaryImage->getPublicId();
@@ -77,6 +82,17 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        if (!$product) {
+            return response()->json([
+                'message' => 'Không tìm thấy sản phẩm.'
+            ], 404);
+        }
+        return new ProductResource($product);
+    }
+
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
@@ -89,6 +105,14 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
+        if (!$product) {
+            return response()->json([
+                'message' => 'Không tìm thấy sản phẩm.'
+            ], 404);
+        }
+        $productImages = ProductImages::where('product_id', $product->id)->get();
+        $this->removeProductImagesInCloudinary($productImages);
+        ProductImages::where('product_id', $product->id)->delete();
         $product->delete();
         return response()->json($product);
     }
@@ -98,10 +122,24 @@ class ProductController extends Controller
         $productsIdArray = explode(',', $products);
         $products = Product::whereIn('id', $productsIdArray)->get();
         foreach ($products as $product) {
+            $productImages = ProductImages::where('product_id', $product->id)->get();
+            $this->removeProductImagesInCloudinary($productImages);
+            ProductImages::where('product_id', $product->id)->delete();
             $product->delete();
         }
         return response()->json([
             'message' => 'Xóa ' . count($productsIdArray) . ' sản phẩm thành công.'
         ], 200);
+    }
+
+    protected function removeProductImagesInCloudinary($images)
+    {
+        if (!empty($images)) {
+            foreach ($images as $image) {
+                if ($image->image_public_id) {
+                    Cloudinary::destroy($image->image_public_id);
+                }
+            }
+        }
     }
 }

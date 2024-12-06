@@ -9,7 +9,7 @@
     >
       <template v-slot:title>Xóa người dùng</template>
       <h6 class="text-dark text-center fs-5 mt-4">
-        Bạn có chắc chắn muốn xóa {{ checked.length }} người dùng mà bạn chọn
+        Bạn có chắc chắn muốn xóa {{ checked.length }} sản phẩm mà bạn chọn
       </h6>
       <template v-slot:buttonName>Xóa</template>
     </my-modal>
@@ -118,7 +118,13 @@
                   />
                 </td>
                 <td class="text-center">{{ product.id }}</td>
-                <td class="text-center"><img alt="product"/></td>
+                <td class="text-center">
+                  <img
+                  class="product-image"
+                    alt="product_image"
+                    :src="product.product_images?.[0]?.image_url || ''"
+                  />
+                </td>
                 <td class="text-center">{{ product.name }}</td>
                 <td class="text-center">{{ product.sku }}</td>
                 <td class="text-center">{{ product.brand }}</td>
@@ -126,9 +132,7 @@
                 <td class="text-center">{{ formatCurrency(product.price) }}</td>
                 <td
                   class="text-center"
-                  :class="
-                    product.status === 1 ? 'text-success' : 'text-danger'
-                  "
+                  :class="product.status === 1 ? 'text-success' : 'text-danger'"
                 >
                   {{ product.status ? "Hiển thị" : "Ẩn" }}
                 </td>
@@ -146,7 +150,7 @@
                       <li>
                         <router-link
                           :to="{
-                            name: 'admin.users.edit',
+                            name: 'admin.products.edit',
                             params: { id: product.id },
                           }"
                           class="dropdown-item mb-3 fs-6 text-success bg-white"
@@ -256,43 +260,51 @@ const deleteConfirm = () => {
 };
 
 const deleteProduct = (product_id) => {
-  axios.delete(`/products/${product_id}`)
-      .then((response) => {
-         checked.value = checked.value.filter((id) => id != product_id);
-         successMessage.value = response.data.message;
-         getProductList();
-         $(`#deleteConfirmModal${product_id}`).modal("hide");
-         $(".toast").toast("show");
-      })
-      .catch((e) => {
-         if (e.response) {
-            alert(e.response.data.message);
-         }
-      });
+  isLoading.value = true;
+  axios
+    .delete(`/products/${product_id}/delete`)
+    .then((response) => {
+      checked.value = checked.value.filter((id) => id != product_id);
+      successMessage.value = response.data.message;
+      isLoading.value = false;
+      getProductList();
+      $(`#deleteConfirmModal${product_id}`).modal("hide");
+      $(".toast").toast("show");
+    })
+    .catch((e) => {
+      if (e.response) {
+        isLoading.value = false;
+        alert(e.response.data.message);
+      }
+    });
 };
 
 const deleteMultiProduct = () => {
-   axios
-      .delete("/products/delete-multi-product/" + checked.value)
-      .then((response) => {
-         checked.value = [];
-         selectPage.value = false;
-         successMessage.value = response.data.message;
-         getProductList();
-         $("#deleteConfirmModal").modal("hide");
-         $(".toast").toast("show");
-      })
-      .catch((e) => {
-         if (e.response) {
-            console.error(e.response.data.message);
-         }
-      });
+  axios
+    .delete("/products/delete-multi-product/" + checked.value)
+    .then((response) => {
+      checked.value = [];
+      selectPage.value = false;
+      successMessage.value = response.data.message;
+      getProductList();
+      $("#deleteConfirmModal").modal("hide");
+      $(".toast").toast("show");
+    })
+    .catch((e) => {
+      if (e.response) {
+        console.error(e.response.data.message);
+      }
+    });
 };
-
 </script>
 
 <style lang="scss" scoped>
 .checked-announce {
   padding: 0 1.5rem;
+}
+.product-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
 }
 </style>

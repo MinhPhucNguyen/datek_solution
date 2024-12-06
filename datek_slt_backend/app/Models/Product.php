@@ -12,14 +12,14 @@ class Product extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'sub_category_id',
-        'product_name',
-        'slug',
-        'description',
-        'quantity',
-        'price',
         'product_type_id',
-        'status'
+        'brand_id',
+        'name',
+        'sku',
+        'price',
+        'quantity',
+        'description',
+        'status',
     ];
 
     public function brand()

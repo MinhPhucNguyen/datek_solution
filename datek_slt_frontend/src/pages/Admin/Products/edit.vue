@@ -5,7 +5,9 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-header bg-transparent border-0">
-          <div class="d-inline-block fw-bold text-dark fs-4">Thêm sản phẩm</div>
+          <div class="d-inline-block fw-bold text-dark fs-4">
+            Cập nhật sản phẩm
+          </div>
           <router-link
             :to="{ name: 'admin.products' }"
             class="btn btn-danger fw-bold float-right"
@@ -15,7 +17,7 @@
           </router-link>
         </div>
         <div class="card-body mt-0">
-          <form @submit.prevent="createNewProduct">
+          <form @submit.prevent="updateProduct">
             <ul class="nav nav-tabs" id="myTab" role="tablist">
               <li class="nav-item" role="presentation">
                 <button
@@ -75,7 +77,11 @@
                 <div class="row">
                   <div class="col-md-4 mb-3">
                     <label for="brand">Hãng</label>
-                    <select class="form-control" name="brand" v-model="model.brand_id">
+                    <select
+                      class="form-control"
+                      name="brand"
+                      v-model="model.brand_id"
+                    >
                       <option value="">--Chọn hãng--</option>
                       <option
                         v-for="brand in brandsList"
@@ -115,7 +121,11 @@
                   </div>
                   <div class="col-md-4 mb-3">
                     <label for="product_type">Loại sản phẩm</label>
-                    <select class="form-control" name="product_type" v-model="model.product_type_id">
+                    <select
+                      class="form-control"
+                      name="product_type"
+                      v-model="model.product_type_id"
+                    >
                       <option value="">--Chọn loại sản phẩm--</option>
                       <option
                         v-for="productType in productTypes"
@@ -247,10 +257,13 @@
                       class="form-control file-input"
                       @change="uploadProductImage"
                     />
-                    <div class="display_image mb-4" v-if="imagesUrl.length > 0">
+                    <div
+                      class="display_image mb-4"
+                      v-if="imagesUrls.length > 0"
+                    >
                       <div
                         class="product_image_input"
-                        v-for="(src, index) in imagesUrl"
+                        v-for="(src, index) in imagesUrls"
                         :key="index"
                       >
                         <img :src="src" alt="" class="image_input" />
@@ -279,7 +292,7 @@
               >
                 <span class="visually-hidden">Loading...</span>
               </div>
-              Thêm sản phẩm
+              Lưu thay đổi
             </button>
           </form>
         </div>
@@ -301,9 +314,11 @@ const brandsList = ref([]);
 const successMessage = ref(null);
 const errors = ref({});
 const isLoading = ref(false);
-const imagesUrl = ref([]);
+const imagesUrls = ref([]);
 const filesInput = ref(null);
 const router = useRouter();
+
+const id = router.currentRoute.value.params.id;
 
 const model = ref({
   brand_id: "",
@@ -353,7 +368,41 @@ watch(model.value, () => {
   isFilledForm.value = false;
 });
 
-const createNewProduct = async () => {
+const getProductDetailById = async () => {
+  await axios.get(`products/${id}/edit`).then((response) => {
+    for (const key in model.value) {
+      if (Object.prototype.hasOwnProperty.call(model.value, key)) {
+        if (Array.isArray(model.value[key])) {
+          if(key === "category_ids") {
+            const categoryIds = response.data.data.categories;
+            for (const item of categoryIds) {
+              model.value[key].push(item.id);
+            }
+          }
+
+          if (key === "product_images") {
+            const productImages = response.data.data.product_images;
+            const getImagePath = productImages.map((image) => image.image_url);
+            for (const item of getImagePath) {
+              model.value[key].push(item);
+              imagesUrls.value.push(item);
+            }
+          }
+        } else {
+          if (key === "brand_id") {
+            model.value[key] = response.data.data.brand.brand_id;
+          } else if (key === "product_type_id") {
+            model.value[key] = response.data.data.product_type.id;
+          } else {
+            model.value[key] = response.data.data[key];
+          }
+        }
+      }
+    }
+  });
+};
+
+const updateProduct = async () => {
   const formData = new FormData();
 
   for (const key in model.value) {
@@ -403,6 +452,7 @@ onMounted(() => {
   getBrandsList();
   getAllCategories();
   getAllProductType();
+  getProductDetailById();
 });
 
 const updateSelectedCategories = (categoryId, isSubCategory) => {
@@ -426,7 +476,7 @@ const updateSelectedCategories = (categoryId, isSubCategory) => {
 const uploadProductImage = (event) => {
   for (const file of event.target.files) {
     const imageURL = URL.createObjectURL(file);
-    imagesUrl.value.push(imageURL);
+    imagesUrls.value.push(imageURL);
     model.value.product_images.push(file);
   }
 };
@@ -436,7 +486,7 @@ const uploadProductImage = (event) => {
  * @param {*} index
  */
 const removeImage = (index) => {
-  imagesUrl.value.splice(index, 1);
+  imagesUrls.value.splice(index, 1);
 
   const newFileList = new DataTransfer();
 
