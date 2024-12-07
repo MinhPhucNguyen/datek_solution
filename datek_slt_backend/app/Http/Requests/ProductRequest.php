@@ -22,13 +22,13 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'brand_id' => 'required',
-            'name' => 'required',
-            'sku' => 'required',
-            'quantity' => 'required',
-            'price' => 'required',
-            'category_ids' => 'required',
-            'product_type_id' => 'required',
+            'brand_id' => 'required | sometimes',
+            'name' => 'required | sometimes',
+            'sku' => 'required | sometimes',
+            'quantity' => 'required | sometimes',
+            'price' => 'required | sometimes',
+            'category_ids' => 'required | sometimes',
+            'product_type_id' => 'required | sometimes',
         ];
     }
 }

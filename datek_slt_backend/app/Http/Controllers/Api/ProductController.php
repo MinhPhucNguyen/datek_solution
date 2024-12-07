@@ -93,13 +93,51 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        $product = Product::find($id);
-        $product->name = $request->name;
-        $product->price = $request->price;
+        $product = Product::findOrFail($id);
+
+        if (!$product) {
+            return response()->json([
+                'message' => 'Không tìm thấy sản phẩm.'
+            ], 404);
+        }
+
+        $validatedData = $request->validated();
+
+        $product->brand_id = $validatedData['brand_id'];
+        $product->name = $validatedData['name'];
+        $product->sku = $validatedData['sku'];
+        $product->quantity = $validatedData['quantity'];
+        $product->price = $validatedData['price'];
+        $product->product_type_id = $validatedData['product_type_id'];
+        $product->status = $request->boolean('status', true) ? 1 : 0;
+        $product->description = $request->input('description');
         $product->save();
-        return response()->json($product);
+
+        if (isset($validatedData['category_ids'])) {
+            $product->categories()->sync($validatedData['category_ids']);
+        }
+
+        if ($request->hasFile('product_images')) {
+            foreach ($request->file('product_images') as $image) {
+                Cloudinary::destroy($product->image_public_id);
+                $cloudinaryImage = $image->storeOnCloudinary('products');
+                $uploadedFileUrl = $cloudinaryImage->getSecurePath();
+                $publicId = $cloudinaryImage->getPublicId();
+
+                ProductImages::updateOrCreate([
+                    'product_id' => $product->id,
+                    'image_url' => $uploadedFileUrl,
+                    'image_public_id' => $publicId
+                ]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Cập nhật sản phẩm thành công',
+            'product' => $product
+        ], 200);
     }
 
     public function destroy($id)
@@ -132,7 +170,8 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function destroyImage($image_id){
+    public function destroyImage($image_id)
+    {
         $productImage = ProductImages::find($image_id);
         if (!$productImage) {
             return response()->json([
