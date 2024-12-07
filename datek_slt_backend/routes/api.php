@@ -27,7 +27,7 @@ use App\Http\Controllers\Api\BrandController;
 // });
 
 //Auth routes
-Route::controller(AuthController::class)->group(function (){
+Route::controller(AuthController::class)->group(function () {
     Route::post('/auth/login', 'login')->name('login.api');
     Route::post('/auth/register', 'register')->name('register.api');
     Route::middleware('auth:api')->get('/user', 'getUserInfo');
@@ -66,6 +66,7 @@ Route::get('products/{id}/edit', [ProductController::class, 'edit']);
 Route::put('products/{id}/update', [ProductController::class, 'update']);
 Route::delete('products/{id}/delete', [ProductController::class, 'destroy']);
 Route::delete('products/delete-multi-product/{products}', [ProductController::class, 'deleteMultiProduct']);
+Route::delete('products/remove-image/{image_id}', action: [ProductController::class, 'destroyImage']);
 
 //ProductType routes
 Route::get('product-types', [ProductTypeController::class, 'index']);

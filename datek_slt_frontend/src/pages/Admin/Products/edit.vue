@@ -263,16 +263,46 @@
                     >
                       <div
                         class="product_image_input"
-                        v-for="(src, index) in imagesUrls"
-                        :key="index"
+                        v-for="image in imagesUrls"
+                        :key="image.id"
                       >
-                        <img :src="src" alt="" class="image_input" />
+                        <img
+                          :src="image.image_url"
+                          alt=""
+                          class="image_input"
+                        />
                         <button
                           class="btn btn-danger remove_btn"
-                          @click.prevent="removeImage(index)"
+                          @click.prevent="removeImage(image.id)"
                         >
                           Xóa
                         </button>
+
+                        <MyModal
+                          @clickTo="handleRemoveImage(image.id)"
+                          :idModal="`deleteConfirmModal${image.id}`"
+                          bgColor="danger"
+                        >
+                          <template v-slot:title>Xóa ảnh sản phẩm</template>
+                          <h6 class="text-dark text-center fs-5 mt-4">
+                            Bạn chắc chắn muốn xóa ảnh này
+                          </h6>
+                          <template v-slot:buttonName>
+                            <div
+                              class="spinner-border"
+                              role="status"
+                              style="
+                                width: 24px;
+                                height: 24px;
+                                margin-right: 10px;
+                              "
+                              v-if="isRemoveImageLoading"
+                            >
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
+                            Xóa
+                          </template>
+                        </MyModal>
                       </div>
                     </div>
                   </div>
@@ -307,6 +337,7 @@ import ToastMessage from "@/components/Toast/Toast.vue";
 import Editor from "@tinymce/tinymce-vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import MyModal from "@/components/Modals/Modal.vue";
 
 const productTypes = ref([]);
 const categories = ref([]);
@@ -373,7 +404,7 @@ const getProductDetailById = async () => {
     for (const key in model.value) {
       if (Object.prototype.hasOwnProperty.call(model.value, key)) {
         if (Array.isArray(model.value[key])) {
-          if(key === "category_ids") {
+          if (key === "category_ids") {
             const categoryIds = response.data.data.categories;
             for (const item of categoryIds) {
               model.value[key].push(item.id);
@@ -382,9 +413,13 @@ const getProductDetailById = async () => {
 
           if (key === "product_images") {
             const productImages = response.data.data.product_images;
-            const getImagePath = productImages.map((image) => image.image_url);
+            const getImagePath = productImages.map((image) => ({
+              id: image.id,
+              image_url: image.image_url,
+            }));
+
             for (const item of getImagePath) {
-              model.value[key].push(item);
+              model.value[key].push(item.path);
               imagesUrls.value.push(item);
             }
           }
@@ -417,23 +452,6 @@ const updateProduct = async () => {
       }
     }
   }
-
-  isLoading.value = true;
-  await axios
-    .post("products/create", formData, {
-      "Content-Type": "multipart/form-data",
-    })
-    .then((response) => {
-      successMessage.value = response.data.message;
-      $(".toast").toast("show");
-      isLoading.value = false;
-      router.push({ name: "admin.products" });
-    })
-    .catch((error) => {
-      errors.value = error.response.data.errors;
-      console.error(errors.value);
-      isLoading.value = false;
-    });
 };
 
 const getAllCategories = async () => {
@@ -482,20 +500,31 @@ const uploadProductImage = (event) => {
 };
 
 /**
- * TODO: Remove product image before create new car
+ * TODO: Remove product image before create new product
  * @param {*} index
  */
-const removeImage = (index) => {
-  imagesUrls.value.splice(index, 1);
+const isRemoveImage = ref(false);
+const removeImage = (id) => {
+  isLoading.value = false;
+  isRemoveImage.value = false;
+  $(`#deleteConfirmModal${id}`).modal("show");
+};
 
-  const newFileList = new DataTransfer();
+const handleRemoveImage = (id) => {
+  axios
+    .delete(`products/remove-image/${id}`)
+    .then((response) => {
+      imagesUrls.value.splice(id, 1);
+      model.value.product_images.splice(id, 1);
+      isRemoveImage.value = false;
+      console.log(response);
 
-  for (let i = 0; i < filesInput.value.files.length; i++) {
-    if (i !== index) {
-      newFileList.items.add(filesInput.value.files[i]);
-    }
-  }
-  filesInput.value.files = newFileList.files;
+      $(`#deleteConfirmModal${id}`).modal("hide");
+    })
+    .catch((error) => {
+      console.error(error);
+      isRemoveImage.value = false;
+    });
 };
 </script>
 

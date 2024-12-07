@@ -127,7 +127,7 @@
                 </td>
                 <td class="text-center">{{ product.name }}</td>
                 <td class="text-center">{{ product.sku }}</td>
-                <td class="text-center">{{ product.brand }}</td>
+                <td class="text-center">{{ product.brand.name }}</td>
                 <td class="text-center">{{ product.quantity }}</td>
                 <td class="text-center">{{ formatCurrency(product.price) }}</td>
                 <td

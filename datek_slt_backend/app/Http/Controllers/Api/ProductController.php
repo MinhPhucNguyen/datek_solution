@@ -132,6 +132,20 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function destroyImage($image_id){
+        $productImage = ProductImages::find($image_id);
+        if (!$productImage) {
+            return response()->json([
+                'message' => 'Không tìm thấy ảnh.'
+            ], 404);
+        }
+        Cloudinary::destroy($productImage->image_public_id);
+        $productImage->delete();
+        return response()->json([
+            'message' => 'Xóa ảnh thành công.'
+        ], 200);
+    }
+
     protected function removeProductImagesInCloudinary($images)
     {
         if (!empty($images)) {
