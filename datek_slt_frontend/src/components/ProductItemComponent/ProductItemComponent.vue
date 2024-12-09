@@ -1,9 +1,20 @@
 <template>
   <div class="product-item" v-if="product && product.status == 1">
     <div class="product-item-image">
-      <a href="">
-        <img src="https://via.placeholder.com/150" alt="product-image" />
-      </a>
+      <router-link
+        :to="{
+          name: 'product-detail',
+          params: {
+            slug: product.name.toLowerCase().replace(/\s+/g, '-'),
+            id: product.id,
+          },
+        }"
+      >
+        <img
+          :src="product?.product_images?.[0]?.image_url || ''"
+          alt="product-image"
+        />
+      </router-link>
     </div>
     <div class="product-item-title">
       <router-link

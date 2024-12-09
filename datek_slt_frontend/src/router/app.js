@@ -17,6 +17,11 @@ const app = [
         name: "product-detail",
       },
       {
+        path: "/cart",
+        component: () => import("@/pages/CartPage/CartPage.vue"),
+        name: "cart-page",
+      },
+      {
         path: "/customer/account/login",
         component: () => import("@/pages/LoginPage/LoginPage.vue"),
         name: "login",

@@ -24,7 +24,6 @@ class ProductSeeder extends Seeder
                 'quantity' => $faker->numberBetween(0, 100),
                 'description' => $faker->sentence(),
                 'status' => $faker->numberBetween(0,1),
-                'product_type_id' => $faker->numberBetween(1, 3),
                 'brand_id' =>  Brand::all()->random()->id
             ]);
         }

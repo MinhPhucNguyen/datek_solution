@@ -48,7 +48,8 @@ const latestProducts = ref([]);
 const fetchProducts = async () => {
   try {
     const latestResponse = await axios.get("products/latest");
-    latestProducts.value = latestResponse.data;
+    console.log("latestResponse", latestResponse);
+    latestProducts.value = latestResponse.data.data.products;
   } catch (error) {
     console.error("Error fetching products:", error);
   }

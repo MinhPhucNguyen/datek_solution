@@ -12,7 +12,6 @@ class Product extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'product_type_id',
         'brand_id',
         'name',
         'sku',
@@ -27,6 +26,11 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function cart()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'product_categories');
@@ -35,11 +39,6 @@ class Product extends Model
     public function productImages()
     {
         return $this->hasMany(ProductImages::class);
-    }
-
-    public function productType()
-    {
-        return $this->belongsTo(ProductType::class, 'product_type_id');
     }
 
     public function saledetails()

@@ -17,9 +17,9 @@
                 </a>
               </div>
               <div class="header-content-item">
-                <a href="#">
+                <router-link :to="{name: 'cart-page'}">
                   <font-awesome-icon :icon="['fas', 'cart-shopping']" />
-                </a>
+                </router-link>
               </div>
               <div
                 class="header-content-item user-menu"

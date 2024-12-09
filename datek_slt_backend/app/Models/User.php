@@ -56,6 +56,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function cart()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     public function scopeSearch($query, $search)
     {
         $search = "%$search%";

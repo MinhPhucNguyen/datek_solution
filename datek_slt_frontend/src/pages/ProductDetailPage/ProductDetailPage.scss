@@ -213,3 +213,39 @@
   transform: translateX(0);
   opacity: 1;
 }
+
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  width: 500px;
+  background-color: white;
+  padding: 40px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+
+  button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+
+  .login-btn {
+    background-color: #4e43d8;
+    color: white;
+  }
+}

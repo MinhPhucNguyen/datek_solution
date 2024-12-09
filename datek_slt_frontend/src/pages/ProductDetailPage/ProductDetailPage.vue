@@ -25,10 +25,6 @@
           <h1>{{ productDetail.name }}</h1>
           <p class="sku">Mã sản phẩm: {{ productDetail.sku }}</p>
           <p class="price">{{ formatCurrency(productDetail.price) }}</p>
-          <div
-            class="product-description"
-            v-html="productDetail.description"
-          ></div>
 
           <div class="actions">
             <div class="quantity-control">
@@ -46,6 +42,7 @@
                 <font-awesome-icon :icon="['fas', 'plus']" />
               </button>
             </div>
+            <p>Còn {{ productDetail.quantity }} sản phẩm</p>
             <button class="add-to-cart-btn" @click="addToCart">
               Thêm vào giỏ hàng
             </button>
@@ -57,50 +54,10 @@
           <span> Mô tả sản phẩm </span>
         </div>
         <div class="section-content">
-          <ul>
-            <li>
-              <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Series: ThinkCentre</font
-                ></font
-              >
-            </li>
-            <li>
-              <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Model: ThinkCentre neo 50 SFF</font
-                ></font
-              >
-            </li>
-            <li>
-              <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Warranty Term (month) : 36 month(s)</font
-                ></font
-              >
-            </li>
-            <li>
-              <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Pack Weight Gross (kg): 1.11 kg</font
-                ></font
-              >
-            </li>
-            <li>
-              <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Pieces in pack: 1</font
-                ></font
-              >
-            </li>
-            <li>
-              <font style="vertical-align: inherit"
-                ><font style="vertical-align: inherit"
-                  >Box Weight Gross (kg): 1 kg</font
-                ></font
-              >
-            </li>
-          </ul>
+          <div
+            class="product-description"
+            v-html="productDetail.description"
+          ></div>
         </div>
       </div>
       <div class="product-info-section">
@@ -129,6 +86,16 @@
       :cartItems="cartItems"
       @closeCart="closeCart"
     />
+
+    <div v-if="isLoginModalVisible" class="login-modal" @click="closeLoginModal">
+      <div class="modal-content" @click.stop>
+        <p>Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.</p>
+        <div class="action-buttons">
+          <button class="login-btn" @click="redirectToLogin">Đăng nhập</button>
+          <button @click="closeLoginModal">Đóng</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -137,6 +104,8 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import CartSideBar from "@/components/SidebarCartComponent/SidebarCartComponent.vue";
 
 const route = useRoute();
@@ -144,6 +113,9 @@ const productDetail = ref({});
 const productImages = ref([]);
 const errorMessage = ref("");
 const productId = ref(null);
+const isLoginModalVisible = ref(false);
+const store = useStore();
+const router = useRouter();
 let autoChangeImageInterval = null;
 
 productId.value = route.params.id;
@@ -202,26 +174,56 @@ const resetAutoImageChange = () => {
   }
 };
 
-const infoRows = [
-  { label: "Code", value: "12LN003SZY" },
-  { label: "Color", value: "Indeterminate" },
-  { label: "Brand", value: "Lenovo" },
-  { label: "Guarantee", value: "36 months" },
-];
-
 const isCartVisible = ref(false);
 const cartItems = ref([]);
+const isAuthenticated = store.getters["auth/isAuthenticated"];
+const isLoggedIn = ref(false);
 
-const addToCart = () => {
-  const newItem = {
-    name: "Sản phẩm mẫu",
-    image: "path/to/image.jpg",
-    quantity: 1,
-    price: 100,
-  };
+const checkLoginStatus = () => {
+  isLoggedIn.value = isAuthenticated;
+};
 
-  cartItems.value.push(newItem);
+const addToCart = async () => {
+  try {
+    checkLoginStatus();
+
+    if (!isLoggedIn.value) {
+      isLoginModalVisible.value = true;
+    } else {
+      console.log({
+        product_id: productDetail.value.id,
+        quantity: quantity.value,
+      });
   isCartVisible.value = true;
+
+    }
+
+    // const response = await axios.post("cart/add-to-cart", {
+    //   product_id: productDetail.value.id,
+    //   quantity: quantity.value,
+    // });
+
+    // const cartItem = {
+    //   product_id: productDetail.value.id,
+    //   name: productDetail.value.name,
+    //   price: productDetail.value.price,
+    //   quantity: quantity.value,
+    //   image_url: productImages.value[0].image_url,
+    // };
+    // cartItems.value.push(cartItem);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const closeLoginModal = () => {
+  isLoginModalVisible.value = false;
+};
+
+const redirectToLogin = () => {
+  const currentPath = router.currentRoute.value.fullPath;
+  localStorage.setItem("redirectAfterLogin", currentPath);
+  router.push({ name: 'login' });
 };
 
 const closeCart = () => {

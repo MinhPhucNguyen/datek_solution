@@ -114,22 +114,6 @@
                     }}</small>
                   </div>
                   <div class="col-md-4 mb-3">
-                    <label for="product_type">Loại sản phẩm</label>
-                    <select class="form-control" name="product_type" v-model="model.product_type_id">
-                      <option value="">--Chọn loại sản phẩm--</option>
-                      <option
-                        v-for="productType in productTypes"
-                        :key="productType.id"
-                        :value="productType.id"
-                      >
-                        {{ productType.type_name }}
-                      </option>
-                    </select>
-                    <small class="text-danger" v-if="errors.product_type">{{
-                      errors.product_type[0]
-                    }}</small>
-                  </div>
-                  <div class="col-md-4 mb-3">
                     <label for="quantity">Số lượng</label>
                     <input
                       type="text"
@@ -295,7 +279,6 @@ import Editor from "@tinymce/tinymce-vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
-const productTypes = ref([]);
 const categories = ref([]);
 const brandsList = ref([]);
 const successMessage = ref(null);
@@ -315,7 +298,6 @@ const model = ref({
   status: 0,
   category_ids: [],
   product_images: [],
-  product_type_id: "",
 });
 
 const editorConfig = {
@@ -393,16 +375,9 @@ const getAllCategories = async () => {
   });
 };
 
-const getAllProductType = async () => {
-  await axios.get("/product-types").then((response) => {
-    productTypes.value = response.data.product_types;
-  });
-};
-
 onMounted(() => {
   getBrandsList();
   getAllCategories();
-  getAllProductType();
 });
 
 const updateSelectedCategories = (categoryId, isSubCategory) => {

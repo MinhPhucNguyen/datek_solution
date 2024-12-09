@@ -27,7 +27,7 @@ class ProductController extends Controller
     public function getLatestProducts()
     {
         $products = Product::orderBy('created_at', 'desc')->take(10)->get();
-        return response()->json($products);
+        return new ProductCollection($products);
     }
 
     public function getProductsByCategory(Request $request)
@@ -46,7 +46,6 @@ class ProductController extends Controller
             'sku' => $validatedData['sku'],
             'quantity' => $validatedData['quantity'],
             'price' => $validatedData['price'],
-            'product_type_id' => $validatedData['product_type_id'],
             'status' => $request->boolean('status', true) ? 1 : 0,
             'description' => $request->input('description')
         ]);
@@ -110,7 +109,6 @@ class ProductController extends Controller
         $product->sku = $validatedData['sku'];
         $product->quantity = $validatedData['quantity'];
         $product->price = $validatedData['price'];
-        $product->product_type_id = $validatedData['product_type_id'];
         $product->status = $request->boolean('status', true) ? 1 : 0;
         $product->description = $request->input('description');
         $product->save();
