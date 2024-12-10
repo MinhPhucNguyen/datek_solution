@@ -42,8 +42,23 @@
                 <font-awesome-icon :icon="['fas', 'plus']" />
               </button>
             </div>
-            <p>Còn {{ productDetail.quantity }} sản phẩm</p>
-            <button class="add-to-cart-btn" @click="addToCart">
+
+            <p
+              class="product-quantity-status"
+              :class="productDetail.quantity > 0 ? 'in-stock' : 'out-of-stock'"
+            >
+              {{
+                productDetail.quantity > 0
+                  ? `Còn ${productDetail.quantity} sản phẩm`
+                  : "Hết hàng"
+              }}
+            </p>
+
+            <button
+              class="add-to-cart-btn"
+              :disabled="productDetail.quantity <= 0"
+              @click="addToCart"
+            >
               Thêm vào giỏ hàng
             </button>
           </div>
@@ -87,7 +102,11 @@
       @closeCart="closeCart"
     />
 
-    <div v-if="isLoginModalVisible" class="login-modal" @click="closeLoginModal">
+    <div
+      v-if="isLoginModalVisible"
+      class="login-modal"
+      @click="closeLoginModal"
+    >
       <div class="modal-content" @click.stop>
         <p>Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.</p>
         <div class="action-buttons">
@@ -190,18 +209,22 @@ const addToCart = async () => {
     if (!isLoggedIn.value) {
       isLoginModalVisible.value = true;
     } else {
-      console.log({
+      if (quantity.value > productDetail.value.quantity) {
+        alert(
+          `Số lượng sản phẩm còn lại trong kho không đủ. Hiện chỉ còn ${productDetail.value.quantity} sản phẩm.`
+        );
+        return;
+      }
+
+      const response = await axios.post("cart/add-to-cart", {
+        user_id: store.getters["auth/getUser"].id,
         product_id: productDetail.value.id,
         quantity: quantity.value,
       });
-  isCartVisible.value = true;
+      console.log(response.data);
 
+      isCartVisible.value = true;
     }
-
-    // const response = await axios.post("cart/add-to-cart", {
-    //   product_id: productDetail.value.id,
-    //   quantity: quantity.value,
-    // });
 
     // const cartItem = {
     //   product_id: productDetail.value.id,
@@ -223,7 +246,7 @@ const closeLoginModal = () => {
 const redirectToLogin = () => {
   const currentPath = router.currentRoute.value.fullPath;
   localStorage.setItem("redirectAfterLogin", currentPath);
-  router.push({ name: 'login' });
+  router.push({ name: "login" });
 };
 
 const closeCart = () => {

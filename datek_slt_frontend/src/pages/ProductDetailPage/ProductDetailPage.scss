@@ -249,3 +249,24 @@
     color: white;
   }
 }
+
+.product-quantity-status {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.in-stock {
+  color: rgb(0, 194, 0);
+}
+
+.out-of-stock {
+  color: red;
+}
+
+.add-to-cart-btn:disabled {
+  background-color: #ccc;
+  color: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
