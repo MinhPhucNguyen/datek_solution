@@ -13,27 +13,6 @@
           />
         </div>
       </div>
-
-      <div class="product-list-by-type">
-        <h2>Laptop, Macbook, Surface</h2>
-        <div class="block">
-          <ProductItemComponent v-for="index in 5" :key="index" />
-        </div>
-      </div>
-
-      <div class="product-list-by-type">
-        <h2>PC</h2>
-        <div class="block">
-          <ProductItemComponent v-for="index in 5" :key="index" />
-        </div>
-      </div>
-
-      <div class="product-list-by-type">
-        <h2>Màn hình</h2>
-        <div class="block">
-          <ProductItemComponent v-for="index in 5" :key="index" />
-        </div>
-      </div>
     </div>
   </div>
 </template>

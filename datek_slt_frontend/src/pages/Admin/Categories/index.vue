@@ -381,7 +381,7 @@ const parentCategories = computed(() => {
   return categories.value.filter((category) => category.parent_id === null);
 });
 
-const addNewCategory = () => {
+const addNewCategory = async () => {
   const formData = new FormData();
   isLoading.value = true;
 
@@ -392,7 +392,7 @@ const addNewCategory = () => {
     }
   }
 
-  axios
+  await axios
     .post("/categories/create", formData)
     .then((response) => {
       successMessage.value = response.data.message;
@@ -467,16 +467,18 @@ const deleteCategory = (category) => {
   $("#deleteConfirmModal").modal("show");
 };
 
-const handleDeleteCategory = () => {
+const handleDeleteCategory = async () => {
   isLoading.value = true;
-  axios.delete(`/categories/${model.value.id}/delete`).then((response) => {
-    getCategories().then(() => {
-      isLoading.value = false;
-      successMessage.value = response.data.message;
-      $("#deleteConfirmModal").modal("hide");
-      $(".toast").toast("show");
+  await axios
+    .delete(`/categories/${model.value.id}/delete`)
+    .then((response) => {
+      getCategories().then(() => {
+        isLoading.value = false;
+        successMessage.value = response.data.message;
+        $("#deleteConfirmModal").modal("hide");
+        $(".toast").toast("show");
+      });
     });
-  });
 };
 
 onMounted(() => {

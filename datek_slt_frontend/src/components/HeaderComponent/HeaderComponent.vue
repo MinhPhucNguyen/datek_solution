@@ -17,9 +17,11 @@
                 </a>
               </div>
               <div class="header-content-item">
-                <router-link :to="{name: 'cart-page'}">
+                <router-link :to="{ name: 'cart-page' }">
                   <font-awesome-icon :icon="['fas', 'cart-shopping']" />
-                  <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
+                  <span v-if="itemQuantity" class="cart-badge">{{
+                    itemQuantity
+                  }}</span>
                 </router-link>
               </div>
               <div
@@ -89,10 +91,11 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import NavbarComponent from "../NavbarComponent/NavbarComponent.vue";
+import axios from "axios";
 
 const store = useStore();
 const router = useRouter();
@@ -100,7 +103,20 @@ const isLoggedIn = computed(() => store.getters["auth/isAuthenticated"]);
 
 const isUserMenuVisible = ref(false);
 
-const cartCount = computed(() => store.state.cart.cartItems.length);
+const itemQuantity = ref(0);
+const itemsInCart = async () => {
+  await axios
+    .get("/cart/count-items", {
+      params: { user_id: store.getters["auth/getUser"].id },
+    })
+    .then((response) => {
+      itemQuantity.value = response.data.count;
+    });
+};
+
+onBeforeMount(() => {
+  itemsInCart();
+});
 
 function toggleUserMenu() {
   isUserMenuVisible.value = !isUserMenuVisible.value;

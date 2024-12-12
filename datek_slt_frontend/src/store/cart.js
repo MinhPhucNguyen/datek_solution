@@ -3,11 +3,13 @@ import axios from 'axios';
 const state = {
   cartItems: [],
   totalPrice: 0,
+  totalQuantity: 0, 
 };
 
 const getters = {
   cartItems: (state) => state.cartItems,
   totalPrice: (state) => state.totalPrice,
+  totalQuantity: (state) => state.totalQuantity, 
 };
 
 const mutations = {
@@ -17,20 +19,27 @@ const mutations = {
       (total, item) => total + item.price * item.quantity,
       0
     );
+    state.totalQuantity = items.reduce((total, item) => total + item.quantity, 0); 
   },
   updateCartItemQuantity(state, { productId, quantity }) {
     const product = state.cartItems.find((item) => item.product_id === productId);
     if (product) {
       product.quantity = quantity;
     }
+    state.totalQuantity = state.cartItems.reduce((total, item) => total + item.quantity, 0);
   },
   removeCartItem(state, productId) {
-    state.cartItems = state.cartItems.filter((item) => item.product_id !== productId);
+    state.cartItems = state.cartItems.filter(item => item.product_id !== productId);
+    
+    state.totalQuantity = state.cartItems.reduce((total, item) => total + item.quantity, 0);
+    state.totalPrice = state.cartItems.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    );
   },
 };
 
 const actions = {
-  // Fetch the cart items from the backend
   async fetchCart({ commit, rootState }) {
     try {
       const userId = rootState.auth.user.id;
@@ -43,7 +52,6 @@ const actions = {
     }
   },
 
-  // Add or update a product in the cart
   async addToCart({ commit, state }, product) {
     const existingProduct = state.cartItems.find(
       (item) => item.product_id === product.product_id
@@ -55,18 +63,21 @@ const actions = {
       state.cartItems.push(product);
     }
 
-    // Update the total price after adding
     commit('setCartItems', state.cartItems);
   },
 
-  // Update quantity of an item in the cart
   async updateQuantity({ commit }, { productId, quantity }) {
     commit('updateCartItemQuantity', { productId, quantity });
   },
 
-  // Remove an item from the cart
   async removeItem({ commit }, productId) {
-    commit('removeCartItem', productId);
+    try {
+      await axios.delete(`/cart/remove-item/${productId}`);
+      
+      commit('removeCartItem', productId);
+    } catch (error) {
+      console.error('Error removing item:', error);
+    }
   },
 };
 

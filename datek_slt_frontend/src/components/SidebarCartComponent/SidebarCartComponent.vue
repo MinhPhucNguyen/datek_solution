@@ -32,7 +32,9 @@
             <div class="cart-details">
               <h3>{{ item.product.name }}</h3>
 
-              <div class="actions w-100 d-flex justify-content-between align-items-center">
+              <div
+                class="actions w-100 d-flex justify-content-between align-items-center"
+              >
                 <div class="quantity-control mt-2 bt-2">
                   <button
                     class="quantity-btn decrease-btn"
@@ -99,10 +101,10 @@ const calculateTotalPrice = () => {
 
 watch(() => props.cartItems, calculateTotalPrice, { deep: true });
 
-const removeItem = (index) => {
+const removeItem = async (index) => {
   const updatedCart = [...props.cartItems];
   updatedCart.splice(index, 1);
-  axios
+  await axios
     .delete(`/cart/remove-item/${props.cartItems[index].id}`)
     .then((res) => {
       console.log(res);

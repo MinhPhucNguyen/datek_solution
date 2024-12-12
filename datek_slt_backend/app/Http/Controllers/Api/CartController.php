@@ -83,4 +83,10 @@ class CartController extends Controller
 
         return response()->json(['success' => false], 400);
     }
+
+    public function countItems(Request $request)
+    {
+        $count = Cart::where('user_id', $request->user_id)->count();
+        return response()->json(['count' => $count]);
+    }
 }

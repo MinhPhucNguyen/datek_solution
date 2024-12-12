@@ -7,6 +7,7 @@ use App\Http\Resources\ProductCollection;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\ProductImages;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -30,11 +31,16 @@ class ProductController extends Controller
         return new ProductCollection($products);
     }
 
-    public function getProductsByCategory(Request $request)
+    public function getProductsByCategorySlug($slug)
     {
-        $subCategorySlug = $request->input('slug');
-        $products = Product::where('slug', $subCategorySlug)->get();
-        return response()->json($products);
+        $category = Category::where('slug', $slug)->first();
+        if (!$category) {
+            return response()->json([
+                'message' => 'Không tìm thấy danh mục.'
+            ], 404);
+        }
+        $products = $category->products()->with('productImages')->get();
+        return new ProductCollection($products);
     }
 
     public function createProduct(ProductRequest $request)

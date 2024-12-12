@@ -59,7 +59,7 @@ Route::get('brands', [BrandController::class, 'index']);
 //Product routes
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/latest', [ProductController::class, 'getLatestProducts']);
-Route::get('products/category', [ProductController::class, 'getProductsByCategory']);
+Route::get('products/category/{slug}', [ProductController::class, 'getProductsByCategorySlug']);
 Route::get('product/detail', [ProductController::class, 'show']);
 Route::post('products/create', [ProductController::class, 'createProduct']);
 Route::get('products/{id}/edit', [ProductController::class, 'edit']);
@@ -81,4 +81,5 @@ Route::post('cart/add-to-cart', [CartController::class, 'addToCart']);
 Route::post('cart/check-product', [CartController::class, 'checkProduct']);
 Route::post('cart/update-quantity', [CartController::class, 'updateQuantity']);
 Route::get('cart/get-cart', [CartController::class, 'getCart']);
+Route::get('cart/count-items', [CartController::class, 'countItems']);
 Route::delete('cart/remove-item/{cart_id}', [CartController::class, 'removeItem']);

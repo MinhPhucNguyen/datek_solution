@@ -1,22 +1,20 @@
 <template>
   <div class="navbar-block">
     <div class="container">
-      <!-- Shop by Department -->
-      <div
-        class="navbar-item shop-by-department"
-        @mouseover="hoverCategory('shop-by-department')"
-      >
-        <div class="d-flex align-items-center">
+      <div class="navbar-item shop-by-categories">
+        <div
+          class="d-inline-flex align-items-center"
+          @mouseover="hoverCategory('shop-by-categories')"
+        >
           <i class="fa-solid fa-bars fs-4"></i>
           <span class="ms-2 fs-6">Mua theo danh mục</span>
           <i class="fa-solid fa-chevron-down ms-3"></i>
         </div>
 
-        <!-- Dropdown menu -->
         <div
-          v-if="hoveredCategory === 'shop-by-department'"
+          v-if="hoveredCategory === 'shop-by-categories'"
           class="dropdown-menu-categories"
-          @mouseenter="hoverCategory('shop-by-department')"
+          @mouseenter="hoverCategory('shop-by-categories')"
           @mouseleave="hoverCategory(null)"
         >
           <ul>
@@ -36,7 +34,6 @@
                 ></i>
               </div>
 
-              <!-- Sub-menu -->
               <div
                 v-if="
                   hoveredSubCategory === category.id &&
@@ -62,9 +59,8 @@
 
 <script setup>
 import { ref } from "vue";
-import axios from 'axios';
+import axios from "axios";
 
-// Lưu trạng thái hover
 const hoveredCategory = ref(null);
 const hoveredSubCategory = ref(null);
 
@@ -78,14 +74,14 @@ const hoverSubCategory = (id) => {
   hoveredSubCategory.value = id;
 };
 
-axios.get('/categories')
+axios
+  .get("/categories")
   .then((response) => {
     categories.value = response.data.categories;
   })
   .catch((error) => {
     console.error(error);
   });
-
 </script>
 
 <style scoped>
