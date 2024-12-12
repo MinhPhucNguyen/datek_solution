@@ -163,6 +163,14 @@
                       :init="editorConfig"
                     />
                   </div>
+                  <div class="col-md-12 mb-3">
+                    <label for="detailed_specifications">Thông số chi tiết</label>
+                    <Editor
+                      api-key="6ctcvzv1prbljrvmhfwp3knb1k7b3ep2lsvx79de0vkacg24"
+                      v-model="model.detailed_specifications"
+                      :init="editorConfig"
+                    />
+                  </div>
                 </div>
               </div>
               <div
@@ -328,7 +336,7 @@ const imagesUrls = ref([]);
 const filesInput = ref(null);
 const router = useRouter();
 
-const id = router.currentRoute.value.params.id;
+const productId = router.currentRoute.value.params.id;
 
 const model = ref({
   brand_id: "",
@@ -337,6 +345,7 @@ const model = ref({
   quantity: 0,
   price: "",
   description: "",
+  detailed_specifications: "",
   status: 0,
   category_ids: [],
   product_images: [],
@@ -378,7 +387,7 @@ watch(model.value, () => {
 });
 
 const getProductDetailById = async () => {
-  await axios.get(`products/${id}/edit`).then((response) => {
+  await axios.get(`products/${productId}/edit`).then((response) => {
     for (const key in model.value) {
       if (Object.prototype.hasOwnProperty.call(model.value, key)) {
         if (Array.isArray(model.value[key])) {
@@ -428,6 +437,29 @@ const updateProduct = async () => {
       }
     }
   }
+
+  imagesUrls.value = [];
+  isLoading.value = true;
+  await axios
+    .post(`/products/${productId}/update`, formData)
+    .then((response) => {
+      console.log(response);
+      if (Array.isArray(response.data.productImages)) {
+        for (const item of response.data.productImages) {
+          imagesUrls.value.push(item);
+        }
+      }
+      successMessage.value = response.data.message;
+      $(".toast").toast("show");
+      isLoading.value = false;
+    })
+    .catch((e) => {
+      isLoading.value = false;
+      if (e.response) {
+        console.log(e.response.data);
+        errors.value = e.response.data.errors;
+      }
+    });
 };
 
 const getAllCategories = async () => {
@@ -483,11 +515,10 @@ const handleRemoveImage = (id) => {
   axios
     .delete(`products/remove-image/${id}`)
     .then((response) => {
+      console.log(response);
       imagesUrls.value.splice(id, 1);
       model.value.product_images.splice(id, 1);
       isRemoveImage.value = false;
-      console.log(response);
-
       $(`#deleteConfirmModal${id}`).modal("hide");
     })
     .catch((error) => {

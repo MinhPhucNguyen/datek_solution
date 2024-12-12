@@ -63,10 +63,11 @@ Route::get('products/category', [ProductController::class, 'getProductsByCategor
 Route::get('product/detail', [ProductController::class, 'show']);
 Route::post('products/create', [ProductController::class, 'createProduct']);
 Route::get('products/{id}/edit', [ProductController::class, 'edit']);
-Route::put('products/{id}/update', [ProductController::class, 'update']);
+Route::post('products/{id}/update', [ProductController::class, 'update']);
 Route::delete('products/{id}/delete', [ProductController::class, 'destroy']);
 Route::delete('products/delete-multi-product/{products}', [ProductController::class, 'deleteMultiProduct']);
 Route::delete('products/remove-image/{image_id}', action: [ProductController::class, 'destroyImage']);
+Route::get('products/get-by-brand', [ProductController::class, 'getAllProductsByBrand']);
 
 //Product Images routes
 Route::get('products/{productId}/images', [ProductImagesController::class, 'index']);
@@ -77,3 +78,7 @@ Route::delete('products/{productId}/images/{id}/delete', [ProductImagesControlle
 
 //Cart routes
 Route::post('cart/add-to-cart', [CartController::class, 'addToCart']);
+Route::post('cart/check-product', [CartController::class, 'checkProduct']);
+Route::post('cart/update-quantity', [CartController::class, 'updateQuantity']);
+Route::get('cart/get-cart', [CartController::class, 'getCart']);
+Route::delete('cart/remove-item/{cart_id}', [CartController::class, 'removeItem']);

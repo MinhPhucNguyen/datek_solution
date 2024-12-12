@@ -19,6 +19,7 @@
               <div class="header-content-item">
                 <router-link :to="{name: 'cart-page'}">
                   <font-awesome-icon :icon="['fas', 'cart-shopping']" />
+                  <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
                 </router-link>
               </div>
               <div
@@ -98,6 +99,8 @@ const router = useRouter();
 const isLoggedIn = computed(() => store.getters["auth/isAuthenticated"]);
 
 const isUserMenuVisible = ref(false);
+
+const cartCount = computed(() => store.state.cart.cartItems.length);
 
 function toggleUserMenu() {
   isUserMenuVisible.value = !isUserMenuVisible.value;

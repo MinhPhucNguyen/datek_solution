@@ -197,7 +197,6 @@
                       name="parent_id"
                       v-model="model.parent_id"
                     >
-                      <option value="NULL" selected>Gỡ danh mục cha</option>
                       <option
                         v-for="parent in parentCategories"
                         :key="parent.id"
@@ -288,7 +287,7 @@ const categories = ref([]);
 const model = ref({
   category_name: "",
   slug: "",
-  parent_id: null,
+  parent_id: 0,
   description: "",
   status: 1,
 });
@@ -315,7 +314,7 @@ const resetForm = () => {
     slug: "",
     description: "",
     status: 1,
-    parent_id: null,
+    parent_id: 0,
   };
 };
 
@@ -341,9 +340,19 @@ onBeforeMount(() => {
 /**
  * todo: GENERATE SLUG
  */
+
+const removeVietnameseTones = (str) => {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .trim();
+};
+
 const generateSlug = () => {
   if (model.value.category_name) {
-    model.value.slug = model.value.category_name
+    model.value.slug = removeVietnameseTones(model.value.category_name)
       .toLowerCase()
       .trim()
       .replace(/[\s\W-]+/g, "-");
@@ -356,7 +365,7 @@ const flatCategories = computed(() => {
   return categories.value.reduce((acc, category) => {
     acc.push(category);
     if (category.sub_categories && category.sub_categories.length) {
-      acc.push(...category.sub_categories);
+      acc = acc.concat(category.sub_categories);
     }
     return acc;
   }, []);
@@ -405,9 +414,8 @@ const addNewCategory = () => {
 
 const editCategory = (category) => {
   isEditing.value = true;
-  resetForm();
-  $("#categoryFormModal").modal("show");
   model.value = { ...category };
+  $("#categoryFormModal").modal("show");
 };
 
 const updateCategory = () => {

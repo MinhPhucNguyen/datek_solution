@@ -26,12 +26,10 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate(
             [
                 'slug' => 'required|string',
                 'category_name' => 'required|string|max:255',
-                'parent_id' => 'nullable|exists:categories,id',
             ],
             [
                 'slug.required' => 'Slug là bắt buộc.',
@@ -46,7 +44,11 @@ class CategoryController extends Controller
         $category->category_name = $request->category_name;
         $category->description = $request->description;
         $category->slug = $request->slug;
-        $category->parent_id = $request->parent_id;
+        if (!$request->parent_id || $request->parent_id == 0) {
+            $category->parent_id = null;
+        } else {
+            $category->parent_id = $request->parent_id;
+        }
         $category->save();
 
         return response()->json(
@@ -94,6 +96,7 @@ class CategoryController extends Controller
             [
                 'slug' => 'required|string',
                 'category_name' => 'required|string|max:255',
+                'parent_id' => 'nullable'
             ],
             [
                 'slug.required' => 'Slug là bắt buộc.',
@@ -109,8 +112,11 @@ class CategoryController extends Controller
             'slug' => $validatedData['slug'],
             'status' => $request->status,
             'description' => $request->description ?? "",
-            'parent_id' => $request->parent_id === 'NULL' ? NULL : $request->parent_id
         ]);
+
+        if ($request->has('parent_id')) {
+            $updateData['parent_id'] = ($request->parent_id && $request->parent_id != '0') ? intval($request->parent_id) : null;
+        }
 
         return response()->json(
             [

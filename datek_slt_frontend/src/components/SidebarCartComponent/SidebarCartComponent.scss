@@ -1,8 +1,8 @@
 .sidebar-cart {
   position: fixed;
   top: 0;
-  right: -400px;
-  width: 400px;
+  right: -450px;
+  width: 450px;
   height: 100%;
   max-height: 100vh;
   background-color: #fff;
@@ -76,7 +76,9 @@
 
 .cart-item {
   display: flex;
+  align-items: center;
   margin-bottom: 20px;
+  gap: 20px;
 }
 
 .cart-item img {
@@ -122,4 +124,72 @@
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
+}
+
+.product-image {
+  width: 160px;
+  height: 100px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 16px;
+  width: 150px;
+  background-color: #fff;
+
+  .quantity-btn {
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+
+    &:hover {
+      color: #4e43d8;
+    }
+
+    &.decrease-btn,
+    &.increase-btn {
+      font-size: 12px;
+    }
+  }
+
+  .quantity-input {
+    width: 30px;
+    height: 20px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    background-color: transparent;
+  }
+
+  .quantity-input::-webkit-inner-spin-button,
+  .quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+.remove-btn{
+  border: none;
+  background: none;
+  color: red;
 }

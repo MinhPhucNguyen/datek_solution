@@ -19,6 +19,7 @@ class Product extends Model
         'quantity',
         'description',
         'status',
+        'detailed_specifications'
     ];
 
     public function brand()

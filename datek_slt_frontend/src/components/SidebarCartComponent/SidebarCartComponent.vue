@@ -23,11 +23,42 @@
             v-for="(item, index) in props.cartItems"
             :key="index"
           >
-            <img :src="item.image" alt="Product Image" />
+            <div class="product-image">
+              <img
+                :src="item.product.product_images[0].image_url"
+                alt="Product Image"
+              />
+            </div>
             <div class="cart-details">
-              <h3>{{ item.name }}</h3>
-              <p>Số lượng: {{ item.quantity }}</p>
-              <p>Giá: {{ item.price | currency }}</p>
+              <h3>{{ item.product.name }}</h3>
+
+              <div class="actions w-100 d-flex justify-content-between align-items-center">
+                <div class="quantity-control mt-2 bt-2">
+                  <button
+                    class="quantity-btn decrease-btn"
+                    @click="updateQuantity(index, item.quantity - 1)"
+                  >
+                    <font-awesome-icon :icon="['fas', 'minus']" />
+                  </button>
+                  <input
+                    type="number"
+                    v-model="item.quantity"
+                    class="quantity-input"
+                  />
+                  <button
+                    class="quantity-btn increase-btn"
+                    @click="updateQuantity(index, item.quantity + 1)"
+                  >
+                    <font-awesome-icon :icon="['fas', 'plus']" />
+                  </button>
+                </div>
+                <button class="remove-btn" @click="removeItem(index)">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </div>
+              <p>
+                Giá: {{ formatCurrency(item.product.price * item.quantity) }}
+              </p>
             </div>
           </div>
         </div>
@@ -36,7 +67,7 @@
         </div>
 
         <div class="subtotal">
-          <p>Tổng: {{ totalPrice | currency }}</p>
+          <p>Tổng: {{ formatCurrency(totalPrice) }}</p>
           <button class="checkout-btn">Thanh toán</button>
         </div>
       </div>
@@ -45,24 +76,55 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { defineProps } from "vue";
-
-const totalPrice = ref(0);
+import { ref, watch } from "vue";
+import { defineProps, defineEmits } from "vue";
+import { formatCurrency } from "@/utils/formatCurrency";
+import axios from "axios";
 
 const props = defineProps({
   isCartVisible: Boolean,
   cartItems: Array,
 });
 
-// const updateTotalPrice = () => {
-//   totalPrice.value = cartItems.value.reduce(
-//     (total, item) => total + item.price * item.quantity,
-//     0
-//   );
-// };
+const emits = defineEmits(["updateCart"]);
 
+const totalPrice = ref(0);
 
+const calculateTotalPrice = () => {
+  totalPrice.value = props.cartItems.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0
+  );
+};
+
+watch(() => props.cartItems, calculateTotalPrice, { deep: true });
+
+const removeItem = (index) => {
+  const updatedCart = [...props.cartItems];
+  updatedCart.splice(index, 1);
+  axios
+    .delete(`/cart/remove-item/${props.cartItems[index].id}`)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  emits("updateCart", updatedCart);
+};
+
+const updateQuantity = (index, newQuantity) => {
+  if (newQuantity <= 0) {
+    removeItem(index);
+    return;
+  }
+
+  const updatedCart = [...props.cartItems];
+  updatedCart[index].quantity = newQuantity;
+  emits("updateCart", updatedCart);
+};
+
+calculateTotalPrice();
 </script>
 
 <style scoped>

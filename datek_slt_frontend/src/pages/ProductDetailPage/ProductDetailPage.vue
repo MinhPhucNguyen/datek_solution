@@ -80,18 +80,10 @@
           <span> Thông số chi tiết </span>
         </div>
         <div class="section-content">
-          <table class="info-table">
-            <tbody>
-              <tr
-                v-for="(row, index) in infoRows"
-                :key="index"
-                :class="{ 'odd-row': index % 2 !== 0 }"
-              >
-                <td class="label">{{ row.label }}</td>
-                <td class="value">{{ row.value }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div
+            class="product-description"
+            v-html="productDetail.detailed_specifications"
+          ></div>
         </div>
       </div>
     </div>
@@ -99,6 +91,7 @@
     <CartSideBar
       :isCartVisible="isCartVisible"
       :cartItems="cartItems"
+      @updateCart="cartItems = $event"
       @closeCart="closeCart"
     />
 
@@ -216,24 +209,38 @@ const addToCart = async () => {
         return;
       }
 
-      const response = await axios.post("cart/add-to-cart", {
+      const response = await axios.post("cart/check-product", {
         user_id: store.getters["auth/getUser"].id,
         product_id: productDetail.value.id,
-        quantity: quantity.value,
       });
-      console.log(response.data);
+
+      if (response.data.exists) {
+        await axios.post("cart/update-quantity", {
+          user_id: store.getters["auth/getUser"].id,
+          cart_id: response.data.cart_id,
+          product_id: productDetail.value.id,
+          quantity: quantity.value,
+        });
+      } else {
+        await axios.post("cart/add-to-cart", {
+          user_id: store.getters["auth/getUser"].id,
+          product_id: productDetail.value.id,
+          quantity: quantity.value,
+        });
+      }
+
+      const updatedCart = await axios.get("cart/get-cart", {
+        params: { user_id: store.getters["auth/getUser"].id },
+      });
+
+      store.commit("cart/setCartItems", updatedCart.data.items);
+
+      cartItems.value = updatedCart.data.items;
 
       isCartVisible.value = true;
     }
 
-    // const cartItem = {
-    //   product_id: productDetail.value.id,
-    //   name: productDetail.value.name,
-    //   price: productDetail.value.price,
-    //   quantity: quantity.value,
-    //   image_url: productImages.value[0].image_url,
-    // };
-    // cartItems.value.push(cartItem);
+    isCartVisible.value = true;
   } catch (error) {
     console.error(error);
   }

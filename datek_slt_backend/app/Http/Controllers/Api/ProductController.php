@@ -47,7 +47,8 @@ class ProductController extends Controller
             'quantity' => $validatedData['quantity'],
             'price' => $validatedData['price'],
             'status' => $request->boolean('status', true) ? 1 : 0,
-            'description' => $request->input('description')
+            'description' => $request->input('description'),
+            'detailed_specifications' => $request->input('detailed_specifications')
         ]);
 
         $product->categories()->sync($validatedData['category_ids']);
@@ -71,6 +72,7 @@ class ProductController extends Controller
             'product' => $product
         ], 200);
     }
+
     public function show(Request $request)
     {
         $productId = $request->input('product_id');
@@ -111,6 +113,7 @@ class ProductController extends Controller
         $product->price = $validatedData['price'];
         $product->status = $request->boolean('status', true) ? 1 : 0;
         $product->description = $request->input('description');
+        $product->detailed_specifications = $request->input('detailed_specifications');
         $product->save();
 
         if (isset($validatedData['category_ids'])) {
@@ -118,13 +121,19 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('product_images')) {
+            foreach ($product->productImages as $image) {
+                if ($image->image_public_id) {
+                    Cloudinary::destroy($image->image_public_id);
+                }
+                $image->delete();
+            }
+
             foreach ($request->file('product_images') as $image) {
-                Cloudinary::destroy($product->image_public_id);
                 $cloudinaryImage = $image->storeOnCloudinary('products');
                 $uploadedFileUrl = $cloudinaryImage->getSecurePath();
                 $publicId = $cloudinaryImage->getPublicId();
 
-                ProductImages::updateOrCreate([
+                ProductImages::create([
                     'product_id' => $product->id,
                     'image_url' => $uploadedFileUrl,
                     'image_public_id' => $publicId
@@ -134,7 +143,7 @@ class ProductController extends Controller
 
         return response()->json([
             'message' => 'Cập nhật sản phẩm thành công',
-            'product' => $product
+            'productImages' => $product->productImages
         ], 200);
     }
 
@@ -192,5 +201,12 @@ class ProductController extends Controller
                 }
             }
         }
+    }
+
+    public function getAllProductsByBrand(Request $request)
+    {
+        $brandId = $request->input('brand_id');
+        $products = Product::where('brand_id', $brandId)->get();
+        return new ProductCollection($products);
     }
 }

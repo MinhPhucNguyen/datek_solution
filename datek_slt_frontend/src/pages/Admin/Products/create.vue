@@ -157,6 +157,14 @@
                       :init="editorConfig"
                     />
                   </div>
+                  <div class="col-md-12 mb-3">
+                    <label for="detailed_specifications">Thông số chi tiết</label>
+                    <Editor
+                      api-key="6ctcvzv1prbljrvmhfwp3knb1k7b3ep2lsvx79de0vkacg24"
+                      v-model="model.detailed_specifications"
+                      :init="editorConfig"
+                    />
+                  </div>
                 </div>
               </div>
               <div
@@ -295,6 +303,7 @@ const model = ref({
   quantity: 0,
   price: "",
   description: "",
+  detailed_specifications: "",
   status: 0,
   category_ids: [],
   product_images: [],
