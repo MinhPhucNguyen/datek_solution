@@ -50,7 +50,7 @@ const monitorProducts = ref([]);
 const fetchProductsListByCategorySlug = async (slug, categoryType) => {
   try {
     const response = await axios.get(`/products/category/${slug}`);
-    if (categoryType === "computer") {
+    if (categoryType === "laptop") {
       computerProducts.value = response.data.data.products;
     } else if (categoryType === "pc") {
       console.log("response.data.data.products", response.data.data.products);
@@ -64,9 +64,9 @@ const fetchProductsListByCategorySlug = async (slug, categoryType) => {
 };
 
 onMounted(() => {
-  fetchProductsListByCategorySlug('may-tinh', 'computer');
+  fetchProductsListByCategorySlug('laptop', 'laptop');
   fetchProductsListByCategorySlug('pc', 'pc');
-  fetchProductsListByCategorySlug('monitor', 'monitor');
+  fetchProductsListByCategorySlug('man-hinh', 'monitor');
 });
 </script>
 

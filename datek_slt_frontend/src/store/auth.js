@@ -73,14 +73,6 @@ const auth = {
             });
         },
 
-        async sendForgotPasswordEmail(ctx, payload) {
-            try {
-                return await axios.post("/forgot-password", payload);
-            } catch (error) {
-                alert(error);
-            }
-        },
-
         async resetPassword(ctx, payload) {
             try {
                 return await axios.post("/reset-password", payload);

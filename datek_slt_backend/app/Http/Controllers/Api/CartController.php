@@ -10,16 +10,13 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-
     public function getCart(Request $request)
     {
         $cartItems = Cart::where('user_id', $request->user_id)
-        ->with(['product', 'product.productImages']) 
+        ->with(['product', 'product.productImages'])
             ->get();
         return response()->json(['items' => $cartItems]);
     }
-
-
     public function checkProduct(Request $request)
     {
         $cart = Cart::where('user_id', $request->user_id)
@@ -35,6 +32,10 @@ class CartController extends Controller
 
     public function updateQuantity(Request $request)
     {
+        if (!is_numeric($request->quantity)) {
+            return response()->json(['success' => false, 'message' => 'Số lượng không hợp lệ.'], 400);
+        }
+
         $cart = Cart::find($request->cart_id);
 
         if ($cart) {

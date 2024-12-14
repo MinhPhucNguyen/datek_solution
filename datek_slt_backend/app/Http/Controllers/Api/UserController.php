@@ -58,6 +58,13 @@ class UserController extends Controller
     public function getUserById($id)
     {
         $user = User::findOrFail($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Không tìm thấy người dùng.'
+            ], 404);
+        }
+
         return response()->json(
             [
                 'user' => $user

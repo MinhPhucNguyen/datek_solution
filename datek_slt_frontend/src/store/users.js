@@ -99,55 +99,8 @@ const users = {
     },
 
     async deleteUser({ dispatch }, id) {
-      console.log(id);
       const response = await axios.delete(`/users/${id}/delete`);
       dispatch("resetUser");
-      dispatch("fetchUsers");
-      return response;
-    },
-
-    async updateInfor({ commit }, payload) {
-      const response = await axios.patch(
-        `v2/users/${payload.id}/update-infor`,
-        payload.model
-      );
-      commit("SET_USER", response.data.user);
-      return response;
-    },
-
-    async updateAvatar({ commit }, { id, formData }) {
-      const response = await axios.post(
-        `v2/users/${id}/update-avatar`,
-        formData
-      );
-      commit("SET_AVATAR", response.data.avatarUrl);
-      commit("auth/SET_AVATAR", response.data.avatarUrl, { root: true });
-      return response;
-    },
-
-    async removeAvatar({ commit }, id) {
-      const response = await axios.delete(`v2/admin/users/${id}/remove-avatar`);
-      commit("SET_AVATAR", response.data.avatarUrl);
-      commit("auth/SET_AVATAR", response.data.avatarUrl, { root: true });
-      return response;
-    },
-
-    async verifyEmail({ dispatch, commit }, payload) {
-      await axios
-        .get("email-verification", {
-          params: payload,
-        })
-        .then((response) => {
-          commit("SET_VERIFIED_MESSAGE", response.data.message);
-          dispatch("fetchUserById", payload.id);
-        })
-        .catch((error) => {
-          alert(error);
-        });
-    },
-
-    async deleteAccount({ dispatch }, id) {
-      const response = await axios.delete("v2/users/" + id + "/delete-account");
       dispatch("fetchUsers");
       return response;
     },

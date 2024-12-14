@@ -25,7 +25,7 @@
               @mouseleave="hoverSubCategory(null)"
             >
               <div class="d-flex justify-content-between align-items-center">
-                <router-link :to="'/' + category.slug">
+                <router-link :to="{ name: 'category-products', params: { slug: category.slug } }">
                   {{ category.category_name }}
                 </router-link>
                 <i
@@ -43,7 +43,7 @@
               >
                 <ul>
                   <li v-for="sub in category.sub_categories" :key="sub.id">
-                    <router-link :to="'/' + sub.slug">
+                    <router-link :to="{ name: 'category-products', params: { slug: sub.slug } }">
                       {{ sub.category_name }}
                     </router-link>
                   </li>

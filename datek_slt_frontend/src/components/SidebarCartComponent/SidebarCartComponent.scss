@@ -101,6 +101,7 @@
   font-weight: bold;
 }
 
+.view-cart a,
 .checkout-btn {
   background-color: #4e43d8;
   color: white;
@@ -108,8 +109,16 @@
   padding: 10px;
   cursor: pointer;
   border-radius: 5px;
-  width: 100%;
   margin-top: 20px;
+  display: inline-block;
+  width: 100%;
+}
+
+.view-cart a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  text-align: center;
 }
 
 .close-btn {
@@ -188,7 +197,7 @@
   }
 }
 
-.remove-btn{
+.remove-button {
   border: none;
   background: none;
   color: red;
