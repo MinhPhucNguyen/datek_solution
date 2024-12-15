@@ -27,7 +27,6 @@ const latestProducts = ref([]);
 const fetchProducts = async () => {
   try {
     const latestResponse = await axios.get("products/latest");
-    console.log("latestResponse", latestResponse);
     latestProducts.value = latestResponse.data.data.products;
   } catch (error) {
     console.error("Error fetching products:", error);

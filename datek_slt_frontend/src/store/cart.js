@@ -1,37 +1,50 @@
-import axios from 'axios';
+import axios from "axios";
 
 const state = {
   cartItems: [],
   totalPrice: 0,
-  totalQuantity: 0, 
+  totalQuantity: 0,
 };
 
 const getters = {
-  cartItems: (state) => state.cartItems,
+  getCartItems: (state) => state.cartItems,
   totalPrice: (state) => state.totalPrice,
-  totalQuantity: (state) => state.totalQuantity, 
+  totalQuantity: (state) => state.cartItems.length,
 };
 
 const mutations = {
-  setCartItems(state, items) {
+  SET_CART_ITEMS(state, items) {
     state.cartItems = items;
     state.totalPrice = items.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
-    state.totalQuantity = items.reduce((total, item) => total + item.quantity, 0); 
+    state.totalQuantity = items.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
   },
-  updateCartItemQuantity(state, { productId, quantity }) {
-    const product = state.cartItems.find((item) => item.product_id === productId);
+  UPDATE_CART_ITEM_QUANTITY(state, { productId, quantity }) {
+    const product = state.cartItems.find(
+      (item) => item.product_id === productId
+    );
     if (product) {
       product.quantity = quantity;
     }
-    state.totalQuantity = state.cartItems.reduce((total, item) => total + item.quantity, 0);
+    state.totalQuantity = state.cartItems.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
   },
-  removeCartItem(state, productId) {
-    state.cartItems = state.cartItems.filter(item => item.product_id !== productId);
-    
-    state.totalQuantity = state.cartItems.reduce((total, item) => total + item.quantity, 0);
+  REMOVE_CART_ITEM(state, productId) {
+    state.cartItems = state.cartItems.filter(
+      (item) => item.product_id !== productId
+    );
+
+    state.totalQuantity = state.cartItems.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
     state.totalPrice = state.cartItems.reduce(
       (total, item) => total + item.product.price * item.quantity,
       0
@@ -43,40 +56,73 @@ const actions = {
   async fetchCart({ commit, rootState }) {
     try {
       const userId = rootState.auth.user.id;
-      const response = await axios.get('/cart/get-cart', {
-        params: { user_id: userId },
-      });
-      commit('setCartItems', response.data.items);
+      await axios
+        .get("/cart/get-cart", {
+          params: { user_id: userId },
+        })
+        .then((response) => {
+          commit("SET_CART_ITEMS", response.data.items);
+        });
     } catch (error) {
-      console.error('Error fetching cart data:', error);
+      console.error("Error fetching cart data:", error);
     }
   },
 
-  async addToCart({ commit, state }, product) {
-    const existingProduct = state.cartItems.find(
-      (item) => item.product_id === product.product_id
-    );
+  async updateOrAddToCart({ rootState }, payload) {
+    try {
+      const userId = rootState.auth.user?.id;
 
-    if (existingProduct) {
-      existingProduct.quantity += product.quantity;
-    } else {
-      state.cartItems.push(product);
+      const { productId, quantity } = payload;
+
+      const response = await axios.post("cart/check-product", {
+        user_id: userId,
+        product_id: productId,
+      });
+
+      if (response.data.exists) {
+        await axios.post("cart/update-quantity", {
+          user_id: userId,
+          cart_id: response.data.cart_id,
+          product_id: productId,
+          quantity,
+        });
+      } else {
+        await axios.post("cart/add-to-cart", {
+          user_id: userId,
+          product_id: productId,
+          quantity,
+        });
+      }
+    } catch (error) {
+      console.error("Error in updateOrAddToCart:", error);
+      throw error;
     }
-
-    commit('setCartItems', state.cartItems);
   },
 
   async updateQuantity({ commit }, { productId, quantity }) {
-    commit('updateCartItemQuantity', { productId, quantity });
+    try {
+      const response = await axios.post("/cart/update-quantity", {
+        product_id: productId,
+        quantity,
+      });
+
+      if (response.data.success) {
+        commit("UPDATE_CART_ITEM_QUANTITY", { productId, quantity });
+      } else {
+        console.error("Cập nhật thất bại.");
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   },
 
   async removeItem({ commit }, productId) {
     try {
-      await axios.delete(`/cart/remove-item/${productId}`);
-      
-      commit('removeCartItem', productId);
+      await axios.delete(`/cart/remove-item/${productId}`).then(() => {
+        commit("REMOVE_CART_ITEM", productId);
+      });
     } catch (error) {
-      console.error('Error removing item:', error);
+      console.error("Error removing item:", error);
     }
   },
 };

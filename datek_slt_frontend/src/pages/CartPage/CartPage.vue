@@ -82,22 +82,9 @@ import axios from "axios";
 const store = useStore();
 const cartItems = ref([]);
 
-const userId = store.getters["auth/getUser"].id;
-const fetchCart = async () => {
-  await axios
-      .get("/cart/get-cart", {
-        params: {user_id: userId},
-      })
-      .then((response) => {
-        cartItems.value = response.data.items;
-      })
-      .catch((error) => {
-        console.error("Error fetching cart:", error);
-      });
-};
-
-onBeforeMount(() => {
-  fetchCart();
+onBeforeMount(async () => {
+  await store.dispatch("cart/fetchCart");
+  cartItems.value = store.getters["cart/getCartItems"];
 });
 
 const totalPrice = computed(() => {

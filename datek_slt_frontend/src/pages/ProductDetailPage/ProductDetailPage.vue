@@ -209,33 +209,13 @@ const addToCart = async () => {
         return;
       }
 
-      const response = await axios.post("cart/check-product", {
-        user_id: store.getters["auth/getUser"].id,
-        product_id: productDetail.value.id,
+      await store.dispatch("cart/updateOrAddToCart", {
+        productId: productId.value,
+        quantity: quantity.value,
       });
 
-      if (response.data.exists) {
-        await axios.post("cart/update-quantity", {
-          user_id: store.getters["auth/getUser"].id,
-          cart_id: response.data.cart_id,
-          product_id: productDetail.value.id,
-          quantity: quantity.value,
-        });
-      } else {
-        await axios.post("cart/add-to-cart", {
-          user_id: store.getters["auth/getUser"].id,
-          product_id: productDetail.value.id,
-          quantity: quantity.value,
-        });
-      }
-
-      const updatedCart = await axios.get("cart/get-cart", {
-        params: { user_id: store.getters["auth/getUser"].id },
-      });
-
-      store.commit("cart/setCartItems", updatedCart.data.items);
-
-      cartItems.value = updatedCart.data.items;
+      await store.dispatch("cart/fetchCart");
+      cartItems.value = store.getters["cart/getCartItems"];
 
       isCartVisible.value = true;
     }
@@ -245,6 +225,11 @@ const addToCart = async () => {
     console.error(error);
   }
 };
+
+onMounted(async () => {
+  await store.dispatch("cart/fetchCart");
+  cartItems.value = store.getters["cart/getCartItems"];
+});
 
 const closeLoginModal = () => {
   isLoginModalVisible.value = false;

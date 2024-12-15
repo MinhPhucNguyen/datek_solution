@@ -53,7 +53,6 @@ const fetchProductsListByCategorySlug = async (slug, categoryType) => {
     if (categoryType === "laptop") {
       computerProducts.value = response.data.data.products;
     } else if (categoryType === "pc") {
-      console.log("response.data.data.products", response.data.data.products);
       pcProducts.value = response.data.data.products;
     } else if (categoryType === "monitor") {
       monitorProducts.value = response.data.data.products;

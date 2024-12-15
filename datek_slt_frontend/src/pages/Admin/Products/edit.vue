@@ -443,7 +443,6 @@ const updateProduct = async () => {
   await axios
     .post(`/products/${productId}/update`, formData)
     .then((response) => {
-      console.log(response);
       if (Array.isArray(response.data.productImages)) {
         for (const item of response.data.productImages) {
           imagesUrls.value.push(item);
@@ -456,7 +455,6 @@ const updateProduct = async () => {
     .catch((e) => {
       isLoading.value = false;
       if (e.response) {
-        console.log(e.response.data);
         errors.value = e.response.data.errors;
       }
     });
@@ -514,8 +512,7 @@ const removeImage = (id) => {
 const handleRemoveImage = (id) => {
   axios
     .delete(`products/remove-image/${id}`)
-    .then((response) => {
-      console.log(response);
+    .then(() => {
       imagesUrls.value.splice(id, 1);
       model.value.product_images.splice(id, 1);
       isRemoveImage.value = false;

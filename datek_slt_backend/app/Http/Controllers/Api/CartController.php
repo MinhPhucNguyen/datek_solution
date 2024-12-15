@@ -13,7 +13,7 @@ class CartController extends Controller
     public function getCart(Request $request)
     {
         $cartItems = Cart::where('user_id', $request->user_id)
-        ->with(['product', 'product.productImages'])
+            ->with(['product', 'product.productImages'])
             ->get();
         return response()->json(['items' => $cartItems]);
     }
@@ -36,11 +36,11 @@ class CartController extends Controller
             return response()->json(['success' => false, 'message' => 'Số lượng không hợp lệ.'], 400);
         }
 
-        $cart = Cart::find($request->cart_id);
+        $cartItem = Cart::where('product_id', $request->product_id)->first();
 
-        if ($cart) {
-            $cart->quantity += $request->quantity;
-            $cart->save();
+        if ($cartItem) {
+            $cartItem->quantity += $request->quantity;
+            $cartItem->save();
 
             return response()->json(['success' => true]);
         }
