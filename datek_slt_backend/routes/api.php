@@ -52,6 +52,7 @@ Route::post('categories/create', [CategoryController::class, 'store']);
 Route::get('categories/{id}/edit', [CategoryController::class, 'edit']);
 Route::put('categories/{id}/update', [CategoryController::class, 'updateCategory']);
 Route::delete('categories/{id}/delete', [CategoryController::class, 'destroy']);
+Route::get('category-products/{slug}', [CategoryController::class, 'getCategoryProducts']);
 
 //Brand routes
 Route::get('brands', [BrandController::class, 'index']);

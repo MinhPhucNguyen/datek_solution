@@ -16,7 +16,7 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in cartItems" :key="item.product_id">
-              <td><input type="checkbox" /></td>
+              <td></td>
               <td>
                 <div class="cart-item-details">
                   <img
@@ -24,7 +24,15 @@
                     alt="Product Image"
                   />
                   <div class="product-name">
-                    <p>{{ item.product.name }}</p>
+                    <router-link
+                      :to="{
+                        name: 'product-detail',
+                        params: { 
+                          slug: item.product.name.toLowerCase().replace(/\s+/g, '-'),
+                          id: item.product.id },
+                      }"
+                      >{{ item.product.name }}</router-link
+                    >
                   </div>
                 </div>
               </td>
@@ -54,7 +62,7 @@
               <td>{{ formatCurrency(item.product.price * item.quantity) }}</td>
               <td>
                 <button class="remove-btn" @click="removeItem(index)">
-                  Xóa
+                  <i class="fa-solid fa-trash-can"></i>
                 </button>
               </td>
             </tr>
@@ -63,12 +71,19 @@
 
         <div class="cart-summary">
           <p>Tổng cộng: {{ formatCurrency(totalPrice) }}</p>
-          <button class="checkout-button" @click="checkout">Thanh Toán</button>
+          <button class="btn checkout-button" @click="navigateToCheckoutPage">
+            Đặt hàng
+          </button>
         </div>
       </div>
 
       <div v-else>
         <p>Không có sản phẩm nào trong giỏ hàng của bạn.</p>
+        <p>
+          <router-link to="/" style="color: #4e43d8"
+            >Quay lại mua hàng</router-link
+          >
+        </p>
       </div>
     </div>
   </div>
@@ -78,7 +93,9 @@
 import { computed, onBeforeMount, ref } from "vue";
 import { useStore } from "vuex";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const store = useStore();
 const cartItems = ref([]);
 
@@ -123,8 +140,8 @@ const refreshCart = async () => {
   cartItems.value = store.getters["cart/getCartItems"];
 };
 
-const checkout = () => {
-  console.log("Proceeding to checkout...");
+const navigateToCheckoutPage = () => {
+  router.push("/checkout");
 };
 </script>
 

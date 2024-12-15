@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Product;
+use App\Http\Resources\ProductCollection;
 use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
@@ -22,7 +24,6 @@ class CategoryController extends Controller
         $category = Category::with('children', 'products')->findOrFail($id);
         return response()->json($category);
     }
-
 
     public function store(Request $request)
     {
@@ -132,5 +133,33 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->delete();
         return response()->json(['message' => 'Xóa danh mục thành công']);
+    }
+
+    public function getCategoryProducts($slug)
+    {
+        $category = Category::where('slug', $slug)->first();
+
+        if (!$category) {
+            return response()->json(['message' => 'Không tìm thấy danh mục'], 404);
+        }
+
+        if ($category->parent_id == null) {
+
+            $subCategoryIds = Category::where('parent_id', $category->id)->pluck('id');
+
+            $products = Product::whereHas('categories', function ($query) use ($category, $subCategoryIds) {
+                $query->whereIn('categories.id', $subCategoryIds) 
+                    ->orWhere('categories.id', $category->id); 
+            })->get();
+        } else {
+            $products = Product::whereHas('categories', function ($query) use ($category) {
+                $query->where('categories.id', $category->id); 
+            })->get();
+        }
+
+        return response()->json([
+            'category' => $category,
+            'products' => new ProductCollection($products),
+        ]);
     }
 }

@@ -1,7 +1,6 @@
 <template>
   <div class="product-list-block">
     <div class="container">
-      <!-- Laptop, Macbook, Surface -->
       <div class="product-list-by-type">
         <h2>Laptop, Macbook, Surface</h2>
         <div class="block">
@@ -47,15 +46,28 @@ const computerProducts = ref([]);
 const pcProducts = ref([]);
 const monitorProducts = ref([]);
 
-const fetchProductsListByCategorySlug = async (slug, categoryType) => {
+const fetchProductsListByCategorySlug = async (slugs, categoryType) => {
   try {
-    const response = await axios.get(`/products/category/${slug}`);
+    let responses = [];
+
+    if (Array.isArray(slugs)) {
+      responses = await Promise.all(
+        slugs.map(slug => axios.get(`/products/category/${slug}`))
+      );
+    } else {
+      responses = [await axios.get(`/products/category/${slugs}`)];
+    }
+
     if (categoryType === "laptop") {
-      computerProducts.value = response.data.data.products;
+      const combinedProducts = responses
+        .map(response => response.data.data.products)
+        .flat();  
+
+      computerProducts.value = combinedProducts;
     } else if (categoryType === "pc") {
-      pcProducts.value = response.data.data.products;
+      pcProducts.value = responses[0].data.data.products;
     } else if (categoryType === "monitor") {
-      monitorProducts.value = response.data.data.products;
+      monitorProducts.value = responses[0].data.data.products;
     }
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -63,7 +75,7 @@ const fetchProductsListByCategorySlug = async (slug, categoryType) => {
 };
 
 onMounted(() => {
-  fetchProductsListByCategorySlug('laptop', 'laptop');
+  fetchProductsListByCategorySlug(['laptop', 'macbook'], 'laptop');
   fetchProductsListByCategorySlug('pc', 'pc');
   fetchProductsListByCategorySlug('man-hinh', 'monitor');
 });

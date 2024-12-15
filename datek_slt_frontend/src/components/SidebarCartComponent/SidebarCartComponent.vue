@@ -71,7 +71,7 @@
 
         <div class="subtotal">
           <p>Tổng: {{ formatCurrency(totalPrice) }}</p>
-          <button class="checkout-btn">Thanh toán</button>
+          <button class="btn checkout-btn">Đặt mua</button>
         </div>
         <div class="view-cart">
           <router-link :to="{ name: 'cart-page' }"> Xem giỏ hàng </router-link>

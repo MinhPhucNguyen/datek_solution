@@ -61,6 +61,16 @@ class User extends Authenticatable
         return $this->hasMany(Cart::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function shippingAddress()
+    {
+        return $this->hasMany(ShippingAddress::class);
+    }
+
     public function scopeSearch($query, $search)
     {
         $search = "%$search%";

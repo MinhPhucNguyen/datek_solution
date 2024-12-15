@@ -185,4 +185,17 @@ class UserController extends Controller
             'message' => 'Xóa ' . count($usersIdArray) . ' người dùng thành công.'
         ], 200);
     }
+
+    public function getUserAddresses($id)
+    {
+        $user = User::findOrFail($id);
+        if (!$user) {
+            return response()->json([
+                'message' => 'Không tìm thấy người dùng.'
+            ], 404);
+        }
+        return response()->json([
+            'addresses' => $user->shippingAddresses
+        ], 200);
+    }
 }

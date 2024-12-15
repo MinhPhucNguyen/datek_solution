@@ -1,7 +1,12 @@
 <template>
   <div class="product-detail-page">
-    <div class="container">
-      <div class="product-detail-container">
+    <div v-if="isLoading" class="loading">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    <div class="container" v-else>
+      <div class="product-detail-container" >
         <div class="product-images">
           <div class="main-image">
             <transition name="slide" mode="out-in">
@@ -20,7 +25,6 @@
           </div>
         </div>
 
-        <!-- Product Information Section -->
         <div class="product-info">
           <h1>{{ productDetail.name }}</h1>
           <p class="sku">Mã sản phẩm: {{ productDetail.sku }}</p>
@@ -128,6 +132,7 @@ const productId = ref(null);
 const isLoginModalVisible = ref(false);
 const store = useStore();
 const router = useRouter();
+const isLoading = ref(true);
 let autoChangeImageInterval = null;
 
 productId.value = route.params.id;
@@ -147,6 +152,9 @@ const getProductDetail = async () => {
     }
   } catch (error) {
     errorMessage.value = error;
+  }
+  finally {
+    isLoading.value = false;
   }
 };
 getProductDetail();
