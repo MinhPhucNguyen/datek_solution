@@ -41,7 +41,7 @@
                     type="number"
                     v-model="item.quantity"
                     class="quantity-input"
-                    @input="onQuantityChange(index, $event)"
+                    readonly
                 />
                 <button
                     class="quantity-btn increase-btn"
@@ -77,7 +77,6 @@
 import {computed, onBeforeMount, ref} from "vue";
 import {useStore} from "vuex";
 import {formatCurrency} from "@/utils/formatCurrency";
-import axios from "axios";
 
 const store = useStore();
 const cartItems = ref([]);
@@ -94,33 +93,35 @@ const totalPrice = computed(() => {
   );
 });
 
-const onQuantityChange = (index, event) => {
-  const newQuantity = parseInt(event.target.value, 10);
-  if (newQuantity <= 0) {
-    removeItem(index);
-  } else {
-    updateQuantity(index, newQuantity);
-  }
-};
 
 const updateQuantity = async (index, newQuantity) => {
-  if (newQuantity <= 0) {
-    removeItem(index);
-  } else {
-    cartItems.value[index].quantity = newQuantity;
+  newQuantity = Math.max(newQuantity, 1);
+
+  try {
+    const productId = cartItems.value[index].product.id;
+    await store.dispatch("cart/updateQuantity", {
+      productId,
+      quantity: newQuantity - cartItems.value[index].quantity,
+    });
+
+    const updatedCart = store.getters["cart/getCartItems"];
+    updatedCart[index].quantity = newQuantity;
+    cartItems.value = updatedCart;
+    
+  } catch (error) {
+    console.error(error);
   }
 };
 
 const removeItem = async (index) => {
   const cartId = cartItems.value[index].id;
-  axios
-      .delete(`/cart/remove-item/${cartId}`)
-      .then(() => {
-        cartItems.value.splice(index, 1);
-      })
-      .catch((error) => {
-        console.error("Error removing item from cart:", error);
-      });
+  await store.dispatch("cart/removeItem", cartId);
+  refreshCart();
+};
+
+const refreshCart = async () => {
+  await store.dispatch("cart/fetchCart");
+  cartItems.value = store.getters["cart/getCartItems"];
 };
 
 const checkout = () => {
