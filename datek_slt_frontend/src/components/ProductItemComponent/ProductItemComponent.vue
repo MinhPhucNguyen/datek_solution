@@ -28,15 +28,18 @@
         class="car-item"
         :class="{ placeholder: !product.name }"
       >
-        <p>{{ product.name || "Loading..." }}</p>
+        <p class="product-name">{{ product.name || "Loading..." }}</p>
       </router-link>
     </div>
-    <div class="product-item-price" :class="{ placeholder: !product.name }">
+    <div v-if="product.quantity > 0" class="product-item-price" :class="{ placeholder: !product.name }">
       <p :class="{ placeholder: !product.price }">
         {{ product.price ? formatCurrency(product.price) : "0" }}
       </p>
     </div>
-    <div class="action">
+    <div v-if="product.quantity <= 0" class="out-of-stock-message">
+      <p class="text-danger">Hết hàng</p>
+    </div>
+    <div class="action" v-if="product.quantity > 0">
       <div class="quantity-control">
         <button class="quantity-btn decrease-btn" @click="decrementQuantity">
           <font-awesome-icon :icon="['fas', 'minus']" />

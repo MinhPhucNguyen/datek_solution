@@ -72,7 +72,7 @@
 
         <div class="subtotal">
           <p>Tổng: {{ formatCurrency(totalPrice) }}</p>
-          <button class="btn checkout-btn">Đặt mua</button>
+          <button class="btn checkout-btn">Đặt hàng</button>
         </div>
         <div class="view-cart">
           <router-link :to="{ name: 'cart-page' }"> Xem giỏ hàng </router-link>

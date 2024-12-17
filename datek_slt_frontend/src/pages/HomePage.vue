@@ -21,12 +21,16 @@ import LatestProductListComponent from "@/components/LatestProductListComponent/
 import ProductListSections from "@/components/ProductListSections/ProductListSections.vue";
 import CartSideBar from "@/components/SidebarCartComponent/SidebarCartComponent.vue";
 
-import { onMounted, computed } from "vue";
+import { onMounted, computed, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
 const isCartVisible = computed(() => store.getters["cart/isCartVisible"]);
 const cartItems = computed(() => store.getters["cart/getCartItems"]);
+
+onBeforeMount(() => {
+  store.dispatch("cart/toggleCartVisibility", false);
+});
 
 onMounted(() => {
   store.dispatch("cart/fetchCart");
