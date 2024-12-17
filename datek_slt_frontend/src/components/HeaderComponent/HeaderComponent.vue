@@ -17,12 +17,12 @@
                 </a>
               </div>
               <div class="header-content-item">
-                <router-link :to="{ name: 'cart-page' }">
+                <a class="cart-icon" @click="toggleCart">
                   <font-awesome-icon :icon="['fas', 'cart-shopping']" />
                   <span v-if="itemQuantity != '0'" class="cart-badge">{{
                     itemQuantity
                   }}</span>
-                </router-link>
+                </a>
               </div>
               <div
                 class="header-content-item user-menu"
@@ -86,6 +86,14 @@
         </div>
       </div>
     </header>
+
+    <CartSidebar
+      :isCartVisible="isCartVisible"
+      :cartItems="cartItems"
+      @updateCart="cartItems = $event"
+      @closeCart="closeCart"
+    />
+
     <NavbarComponent />
   </div>
 </template>
@@ -94,23 +102,36 @@
 import { computed, ref, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import NavbarComponent from "../NavbarComponent/NavbarComponent.vue";
+import NavbarComponent from "@/components/NavbarComponent/NavbarComponent.vue";
+import CartSidebar from "@/components/SidebarCartComponent/SidebarCartComponent.vue";
 
 const store = useStore();
 const router = useRouter();
 const isLoggedIn = computed(() => store.getters["auth/isAuthenticated"]);
-
+const isCartVisible = ref(false);
+const cartItems = ref([]);
 const isUserMenuVisible = ref(false);
 
 const itemQuantity = ref(0);
-itemQuantity.value = computed(() => store.getters["cart/totalQuantity"]);
 
-onBeforeMount(() => {
-  store.dispatch("cart/fetchCart");
+onBeforeMount(async () => {
+  await store.dispatch("cart/fetchCart");
+
+  itemQuantity.value = computed(() => store.getters["cart/totalQuantity"]);
 });
 
 function toggleUserMenu() {
   isUserMenuVisible.value = !isUserMenuVisible.value;
+}
+
+function toggleCart() {
+  isCartVisible.value = true;
+  cartItems.value = store.getters["cart/getCartItems"];
+}
+
+function closeCart() {
+  isCartVisible.value = false;
+  store.dispatch("cart/toggleCartVisibility", false);
 }
 
 const logout = () => {

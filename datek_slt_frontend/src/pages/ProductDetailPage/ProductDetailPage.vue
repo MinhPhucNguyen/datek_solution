@@ -1,12 +1,16 @@
 <template>
   <div class="product-detail-page">
     <div v-if="isLoading" class="loading">
-        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
+      <div
+        class="spinner-border"
+        style="width: 3rem; height: 3rem"
+        role="status"
+      >
+        <span class="visually-hidden">Loading...</span>
       </div>
+    </div>
     <div class="container" v-else>
-      <div class="product-detail-container" >
+      <div class="product-detail-container">
         <div class="product-images">
           <div class="main-image">
             <transition name="slide" mode="out-in">
@@ -152,8 +156,7 @@ const getProductDetail = async () => {
     }
   } catch (error) {
     errorMessage.value = error;
-  }
-  finally {
+  } finally {
     isLoading.value = false;
   }
 };
@@ -251,6 +254,7 @@ const redirectToLogin = () => {
 
 const closeCart = () => {
   isCartVisible.value = false;
+  store.dispatch("cart/toggleCartVisibility", false);
 };
 
 onMounted(() => {

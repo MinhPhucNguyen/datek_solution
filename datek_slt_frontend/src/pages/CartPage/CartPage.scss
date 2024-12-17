@@ -2,6 +2,12 @@
   padding: 50px;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -33,7 +39,7 @@
   }
 }
 
-.product-name a:hover{
+.product-name a:hover {
   color: #4e43d8;
 }
 

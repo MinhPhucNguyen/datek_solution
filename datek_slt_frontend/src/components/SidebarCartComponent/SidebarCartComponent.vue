@@ -65,6 +65,7 @@
             </div>
           </div>
         </div>
+
         <div v-else>
           <p>Giỏ hàng của bạn đang trống!</p>
         </div>
@@ -110,6 +111,7 @@ watch(
     calculateTotalPrice();
     if (props.cartItems.length === 0) {
       emits("closeCart");
+      store.dispatch("cart/toggleCartVisibility", false);
     }
   },
   { deep: true }
@@ -117,8 +119,10 @@ watch(
 
 const removeItem = async (index) => {
   await store.dispatch("cart/removeItem", props.cartItems[index].id);
-  emits("updateCart", store.getters["cart/getCartItems"]);
+
   await store.dispatch("cart/fetchCart");
+
+  emits("updateCart", store.getters["cart/getCartItems"]);
 
   if (store.getters["cart/getCartItems"].length === 0) {
     emits("closeCart");
@@ -134,6 +138,8 @@ const changeQuantity = async (index, newQuantity) => {
       productId,
       quantity: newQuantity - props.cartItems[index].quantity,
     });
+
+    await store.dispatch("cart/fetchCart");
 
     const updatedCart = [...props.cartItems];
     updatedCart[index].quantity = newQuantity;

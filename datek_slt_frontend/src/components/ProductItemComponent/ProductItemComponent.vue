@@ -16,7 +16,7 @@
         />
       </router-link>
     </div>
-    <div class="product-item-title">
+    <div class="product-item-title" :class="{ placeholder: !product.name }">
       <router-link
         :to="{
           name: 'product-detail',
@@ -26,12 +26,15 @@
           },
         }"
         class="car-item"
+        :class="{ placeholder: !product.name }"
       >
-        <p>{{ product.name }}</p>
+        <p>{{ product.name || "Loading..." }}</p>
       </router-link>
     </div>
-    <div class="product-item-price">
-      <p>{{ formatCurrency(product.price) }}</p>
+    <div class="product-item-price" :class="{ placeholder: !product.name }">
+      <p :class="{ placeholder: !product.price }">
+        {{ product.price ? formatCurrency(product.price) : "0" }}
+      </p>
     </div>
     <div class="action">
       <div class="quantity-control">
@@ -43,7 +46,7 @@
           <font-awesome-icon :icon="['fas', 'plus']" />
         </button>
       </div>
-      <button class="add-to-cart-btn">
+      <button class="add-to-cart-btn" @click="addToCart">
         <font-awesome-icon :icon="['fas', 'cart-shopping']" />
       </button>
     </div>
@@ -53,8 +56,9 @@
 <script setup>
 import { ref, defineProps } from "vue";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { useStore } from "vuex";
 
-defineProps({
+const prop = defineProps({
   product: {
     type: Object,
     required: true,
@@ -62,6 +66,16 @@ defineProps({
 });
 
 const quantity = ref(1);
+const store = useStore();
+const cartItems = ref([]);
+const isLoginModalVisible = ref(false);
+const isLoggedIn = ref(false);
+
+const isAuthenticated = store.getters["auth/isAuthenticated"];
+
+const checkLoginStatus = () => {
+  isLoggedIn.value = isAuthenticated;
+};
 
 const incrementQuantity = () => {
   quantity.value++;
@@ -70,6 +84,33 @@ const incrementQuantity = () => {
 const decrementQuantity = () => {
   if (quantity.value > 1) {
     quantity.value--;
+  }
+};
+
+const addToCart = async () => {
+  try {
+    checkLoginStatus();
+
+    if (!isLoggedIn.value) {
+      isLoginModalVisible.value = true;
+    } else {
+      if (quantity.value > prop.product.quantity) {
+        alert(
+          `Số lượng sản phẩm còn lại trong kho không đủ. Hiện chỉ còn ${prop.product.value.quantity} sản phẩm.`
+        );
+        return;
+      }
+
+      await store.dispatch("cart/updateOrAddToCart", {
+        productId: prop.product.id,
+        quantity: quantity.value,
+      });
+      store.dispatch("cart/toggleCartVisibility", true);
+      store.dispatch("cart/fetchCart");
+      cartItems.value = store.getters["cart/getCartItems"];
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 </script>

@@ -18,20 +18,41 @@
         />
       </div>
     </div>
+
+    <CartSideBar
+      :isCartVisible="isCartVisible"
+      :cartItems="cartItems"
+      @updateCart="cartItems = $event"
+      @closeCart="closeCart"
+    />
   </div>
 </template>
 
 <script setup>
 import ProductItemComponent from "@/components/ProductItemComponent/ProductItemComponent.vue";
-import { ref, onBeforeMount, watch } from "vue";
+import CartSideBar from "@/components/SidebarCartComponent/SidebarCartComponent.vue";
+import { ref, onBeforeMount, watch, computed, onMounted} from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 const router = useRouter();
 const productsList = ref([]);
 const categoryName = ref("");
 const slug = ref(router.currentRoute.value.params.slug);
 const loading = ref(true);
+
+const store = useStore();
+const isCartVisible = computed(() => store.getters["cart/isCartVisible"]);
+const cartItems = computed(() => store.getters["cart/getCartItems"]);
+
+onMounted(() => {
+  store.dispatch("cart/fetchCart");
+});
+
+const closeCart = () => {
+  store.dispatch("cart/toggleCartVisibility", false);
+};
 
 const fetchProducts = async (slug) => {
   try {

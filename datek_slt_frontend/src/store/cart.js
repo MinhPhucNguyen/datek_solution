@@ -1,18 +1,24 @@
 import axios from "axios";
 
 const state = {
+  isCartVisible: false,
   cartItems: [],
   totalPrice: 0,
   totalQuantity: 0,
 };
 
 const getters = {
+  isCartVisible: (state) => state.isCartVisible,
   getCartItems: (state) => state.cartItems,
   totalPrice: (state) => state.totalPrice,
-  totalQuantity: (state) => state.cartItems.length,
+  totalQuantity: (state) =>
+    state.cartItems.reduce((total, item) => total + item.quantity, 0),
 };
 
 const mutations = {
+  SET_CART_VISIBLE(state, isVisible) {
+    state.isCartVisible = isVisible;
+  },
   SET_CART_ITEMS(state, items) {
     state.cartItems = items;
     state.totalPrice = items.reduce(
@@ -35,6 +41,10 @@ const mutations = {
       (total, item) => total + item.quantity,
       0
     );
+    state.totalPrice = state.cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   },
   REMOVE_CART_ITEM(state, productId) {
     state.cartItems = state.cartItems.filter(
@@ -46,13 +56,17 @@ const mutations = {
       0
     );
     state.totalPrice = state.cartItems.reduce(
-      (total, item) => total + item.product.price * item.quantity,
+      (total, item) => total + item.price * item.quantity,
       0
     );
   },
 };
 
 const actions = {
+  toggleCartVisibility({ commit }, isVisible) {
+    commit("SET_CART_VISIBLE", isVisible);
+  },
+
   async fetchCart({ commit, rootState }) {
     try {
       const userId = rootState.auth.user.id;
@@ -68,7 +82,7 @@ const actions = {
     }
   },
 
-  async updateOrAddToCart({ rootState }, payload) {
+  async updateOrAddToCart({ dispatch, rootState }, payload) {
     try {
       const userId = rootState.auth.user?.id;
 
@@ -86,12 +100,14 @@ const actions = {
           product_id: productId,
           quantity,
         });
+        dispatch("toggleCartVisibility", true);
       } else {
         await axios.post("cart/add-to-cart", {
           user_id: userId,
           product_id: productId,
           quantity,
         });
+        dispatch("toggleCartVisibility", true);
       }
     } catch (error) {
       console.error("Error in updateOrAddToCart:", error);
@@ -108,8 +124,6 @@ const actions = {
 
       if (response.data.success) {
         commit("UPDATE_CART_ITEM_QUANTITY", { productId, quantity });
-      } else {
-        console.error("Cập nhật thất bại.");
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
