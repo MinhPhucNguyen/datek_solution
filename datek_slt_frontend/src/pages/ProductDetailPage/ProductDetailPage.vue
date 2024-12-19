@@ -30,8 +30,18 @@
         </div>
 
         <div class="product-info">
-          <h1>{{ productDetail.name }}</h1>
           <p class="sku">Mã sản phẩm: {{ productDetail.sku }}</p>
+          <h1>{{ productDetail.name }}</h1>
+          <div>
+            <div class="product-categories">
+              <p
+                v-for="category in productDetail.categories"
+                :key="category.id"
+              >
+                {{ category.category_name }}
+              </p>
+            </div>
+          </div>
           <p class="price">{{ formatCurrency(productDetail.price) }}</p>
 
           <div class="actions">
@@ -94,6 +104,42 @@
           ></div>
         </div>
       </div>
+      <div class="product-info-section" v-if="relatedProducts.length > 0">
+        <div class="section-title border-0 mt-5 fs-3">
+          <span> Các sản phẩm liên quan </span>
+        </div>
+        <div class="section-content related-products">
+          <div class="product-slider">
+            <button
+              class="slider-btn left"
+              @click="prevSlide"
+              :disabled="isPrevDisabled"
+              v-if="relatedProducts.length > 5"
+            >
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <div class="product-list-wrapper">
+              <div class="product-list-related" :style="sliderStyle">
+                <ProductItemComponent
+                  v-for="product in relatedProducts"
+                  :key="product.id"
+                  :product="product"
+                />
+              </div>
+            </div>
+
+            <button
+              class="slider-btn right"
+              @click="nextSlide"
+              :disabled="isNextDisabled"
+              v-if="relatedProducts.length > 5"
+            >
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <CartSideBar
@@ -121,16 +167,20 @@
 
 <script setup>
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import CartSideBar from "@/components/SidebarCartComponent/SidebarCartComponent.vue";
+import ProductItemComponent from "@/components/ProductItemComponent/ProductItemComponent.vue";
 
 const route = useRoute();
 const productDetail = ref({});
 const productImages = ref([]);
+const relatedProducts = ref([]);
+const currentIndex = ref(0);
+const productsPerPage = 5;
 const errorMessage = ref("");
 const productId = ref(null);
 const isLoginModalVisible = ref(false);
@@ -160,7 +210,40 @@ const getProductDetail = async () => {
     isLoading.value = false;
   }
 };
-getProductDetail();
+
+onMounted(() => {
+  getProductDetail();
+  getRelatedProducts();
+});
+
+const getRelatedProducts = async () => {
+  try {
+    await axios.get(`products/${productId.value}/related`).then((response) => {
+      relatedProducts.value = response.data.data.products;
+    });
+  } catch (error) {
+    errorMessage.value = error;
+  }
+};
+
+const nextSlide = () => {
+  if (currentIndex.value < relatedProducts.value.length - productsPerPage) {
+    currentIndex.value += productsPerPage;
+  }
+};
+
+const prevSlide = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value -= productsPerPage;
+  }
+};
+
+const sliderStyle = computed(() => ({
+  transform: `translateX(-${(currentIndex.value / productsPerPage) * 100}%)`,
+}));
+
+const isPrevDisabled = computed(() => currentIndex.value === 0);
+const isNextDisabled = computed(() => currentIndex.value >= relatedProducts.value.length - productsPerPage);
 
 const currentImage = ref("");
 

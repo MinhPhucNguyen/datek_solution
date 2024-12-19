@@ -31,6 +31,30 @@ class ProductController extends Controller
         return new ProductCollection($products);
     }
 
+    public function getRelatedProducts($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $categoryIds = $product->categories->pluck('id')->toArray();
+
+        $priceRange = 0.1 * $product->price;
+        $minPrice = $product->price - $priceRange;
+        $maxPrice = $product->price + $priceRange;
+
+        $relatedProducts = Product::where('id', '!=', $product->id)
+            ->where(function ($query) use ($categoryIds, $product, $minPrice, $maxPrice) {
+                $query->whereHas('categories', function ($categoryQuery) use ($categoryIds) {
+                    $categoryQuery->whereIn('category_id', $categoryIds);
+                })
+                    ->orWhere('name', 'LIKE', '%' . $product->name . '%')
+                    ->orWhereBetween('price', [$minPrice, $maxPrice]);
+            })
+            ->take(10)
+            ->get();
+
+        return new ProductCollection($relatedProducts);
+    }
+
     public function getProductsByCategorySlug($slug)
     {
         $category = Category::where('slug', $slug)->first();

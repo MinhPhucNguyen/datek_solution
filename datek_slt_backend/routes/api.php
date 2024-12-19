@@ -60,6 +60,7 @@ Route::get('brands', [BrandController::class, 'index']);
 //Product routes
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/latest', [ProductController::class, 'getLatestProducts']);
+Route::get('products/{id}/related', [ProductController::class, 'getRelatedProducts']);
 Route::get('products/category/{slug}', [ProductController::class, 'getProductsByCategorySlug']);
 Route::get('product/detail', [ProductController::class, 'show']);
 Route::post('products/create', [ProductController::class, 'createProduct']);
