@@ -6,7 +6,12 @@
       </div>
       <div class="latest-product-list-content" v-if="latestProducts.length > 0">
         <div class="product-slider">
-          <button class="slider-btn left" @click="prevSlide" :disabled="isPrevDisabled">
+          <button
+            v-if="latestProducts.length > 5"
+            class="slider-btn left"
+            @click="prevSlide"
+            :disabled="isPrevDisabled"
+          >
             <i class="fa-solid fa-chevron-left"></i>
           </button>
 
@@ -20,7 +25,12 @@
             </div>
           </div>
 
-          <button class="slider-btn right" @click="nextSlide"  :disabled="isNextDisabled">
+          <button
+            v-if="latestProducts.length > 5"
+            class="slider-btn right"
+            @click="nextSlide"
+            :disabled="isNextDisabled"
+          >
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>
@@ -68,7 +78,9 @@ const sliderStyle = computed(() => ({
 }));
 
 const isPrevDisabled = computed(() => currentIndex.value === 0);
-const isNextDisabled = computed(() => currentIndex.value >= latestProducts.value.length - productsPerPage);
+const isNextDisabled = computed(
+  () => currentIndex.value >= latestProducts.value.length - productsPerPage
+);
 </script>
 
 <style scoped>

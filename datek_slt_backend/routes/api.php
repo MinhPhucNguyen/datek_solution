@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\CartController;
 //     return $request->user();
 // });
 
+
 //Auth routes
 Route::controller(AuthController::class)->group(function () {
     Route::post('/auth/login', 'login')->name('login.api');
@@ -47,18 +48,20 @@ Route::controller(UserController::class)->group(function () {
 });
 
 // Category routes
-Route::get('categories', [CategoryController::class, 'index']);
-Route::post('categories/create', [CategoryController::class, 'store']);
-Route::get('categories/{id}/edit', [CategoryController::class, 'edit']);
-Route::put('categories/{id}/update', [CategoryController::class, 'updateCategory']);
-Route::delete('categories/{id}/delete', [CategoryController::class, 'destroy']);
-Route::get('category-products/{slug}', [CategoryController::class, 'getCategoryProducts']);
+Route::prefix('categories')->controller(CategoryController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::post('create', 'store');
+    Route::get('{id}/edit', 'edit');
+    Route::put('{id}/update', 'updateCategory');
+    Route::delete('{id}/delete', 'destroy');
+});
 
 //Brand routes
 Route::get('brands', [BrandController::class, 'index']);
 
 //Product routes
 Route::get('products', [ProductController::class, 'index']);
+Route::get('search', [ProductController::class, 'search']);
 Route::get('products/latest', [ProductController::class, 'getLatestProducts']);
 Route::get('products/{id}/related', [ProductController::class, 'getRelatedProducts']);
 Route::get('products/category/{slug}', [ProductController::class, 'getProductsByCategorySlug']);
@@ -72,16 +75,20 @@ Route::delete('products/remove-image/{image_id}', action: [ProductController::cl
 Route::get('products/get-by-brand', [ProductController::class, 'getAllProductsByBrand']);
 
 //Product Images routes
-Route::get('products/{productId}/images', [ProductImagesController::class, 'index']);
-Route::post('products/{productId}/images/create', [ProductImagesController::class, 'store']);
-Route::get('products/{productId}/images/{id}', [ProductImagesController::class, 'show']);
-Route::put('products/{productId}/images/{id}/update', [ProductImagesController::class, 'update']);
-Route::delete('products/{productId}/images/{id}/delete', [ProductImagesController::class, 'destroy']);
+Route::prefix('products/{productId}/images')->controller(ProductImagesController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::post('create', 'store');
+    Route::get('{id}', 'show');
+    Route::put('{id}/update', 'update');
+    Route::delete('{id}/delete', 'destroy');
+});
 
 //Cart routes
-Route::post('cart/add-to-cart', [CartController::class, 'addToCart']);
-Route::post('cart/check-product', [CartController::class, 'checkProduct']);
-Route::post('cart/update-quantity', [CartController::class, 'updateQuantity']);
-Route::get('cart/get-cart', [CartController::class, 'getCart']);
-Route::get('cart/count-items', [CartController::class, 'countItems']);
-Route::delete('cart/remove-item/{cart_id}', [CartController::class, 'removeItem']);
+Route::prefix('cart')->controller(CartController::class)->group(function () {
+    Route::post('add-to-cart', 'addToCart');
+    Route::post('check-product', 'checkProduct');
+    Route::post('update-quantity', 'updateQuantity');
+    Route::get('get-cart', 'getCart');
+    Route::get('count-items', 'countItems');
+    Route::delete('remove-item/{cart_id}', 'removeItem');
+});

@@ -25,9 +25,29 @@ class ProductController extends Controller
         return new ProductCollection($products);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        if (!$query) {
+            return response()->json([]);
+        }
+
+        $allProducts = Product::all();
+
+        $filteredProducts = $allProducts->filter(function ($product) use ($query) {
+            return str_contains(strtolower($product->name), strtolower($query)) ||
+                str_contains(strtolower($product->sku), strtolower($query));
+        })->values();
+
+        return new ProductCollection($filteredProducts);
+    }
+
     public function getLatestProducts()
     {
-        $products = Product::orderBy('created_at', 'desc')->take(10)->get();
+        $tenDaysAgo = now()->subDays(10);
+        $products = Product::where('created_at', '>=', $tenDaysAgo)
+            ->orderBy('created_at', 'desc')->take(10)->get();
         return new ProductCollection($products);
     }
 

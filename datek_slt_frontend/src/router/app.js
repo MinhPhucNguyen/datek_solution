@@ -11,6 +11,12 @@ const app = [
         name: "home",
       },
       {
+        path: "/search",
+        component: () =>
+          import("@/pages/SearchResultsPage/SearchResultsPage.vue"),
+        name: "search-results",
+      },
+      {
         path: "/:slug/:id",
         component: () =>
           import("@/pages/ProductDetailPage/ProductDetailPage.vue"),
@@ -39,7 +45,7 @@ const app = [
         name: "register",
       },
       {
-        path: "/checkout", 
+        path: "/checkout",
         name: "checkout",
         component: () => import("@/pages/CheckoutPage/CheckoutPage.vue"),
         meta: {

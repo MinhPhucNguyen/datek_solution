@@ -51,7 +51,7 @@
                 </div>
               </div>
               <div class="header-content-item top-search">
-                <form action="">
+                <form @submit.prevent="search">
                   <div class="actions">
                     <button type="submit" title="Search" class="action search">
                       <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
@@ -61,9 +61,9 @@
                     <div class="control">
                       <input
                         id="search"
+                        v-model="searchQuery"
                         type="text"
                         name="q"
-                        value=""
                         class="input-text"
                         maxlength="128"
                         role="combobox"
@@ -72,6 +72,7 @@
                         aria-expanded="false"
                         autocomplete="off"
                         data-block="autocomplete-form"
+                        @keydown.enter="search"
                       />
                       <div
                         id="search_autocomplete"
@@ -111,6 +112,7 @@ const isLoggedIn = computed(() => store.getters["auth/isAuthenticated"]);
 const isCartVisible = ref(false);
 const cartItems = ref([]);
 const isUserMenuVisible = ref(false);
+const searchQuery = ref("");
 
 const itemQuantity = ref(0);
 
@@ -132,6 +134,13 @@ function toggleCart() {
 function closeCart() {
   isCartVisible.value = false;
   store.dispatch("cart/toggleCartVisibility", false);
+}
+
+function search() {
+  const searchQueryFormat = searchQuery.value.trim();
+  if (searchQuery.value && searchQueryFormat) {
+    router.push({ name: "search-results", query: { q: searchQueryFormat } });
+  }
 }
 
 const logout = () => {
