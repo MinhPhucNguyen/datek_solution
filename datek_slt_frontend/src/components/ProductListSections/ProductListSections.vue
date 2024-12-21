@@ -1,38 +1,9 @@
 <template>
   <div class="product-list-block">
     <div class="container">
-      <div class="product-list-by-type">
-        <h2>Laptop, Macbook, Surface</h2>
-        <div class="block">
-          <ProductItemComponent
-            v-for="(product, index) in computerProducts"
-            :key="index"
-            :product="product"
-          />
-        </div>
-      </div>
-
-      <div class="product-list-by-type">
-        <h2>PC</h2>
-        <div class="block">
-          <ProductItemComponent
-            v-for="(product, index) in pcProducts"
-            :key="index"
-            :product="product"
-          />
-        </div>
-      </div>
-
-      <div class="product-list-by-type">
-        <h2>Màn hình</h2>
-        <div class="block">
-          <ProductItemComponent
-            v-for="(product, index) in monitorProducts"
-            :key="index"
-            :product="product"
-          />
-        </div>
-      </div>
+      <ProductListSection title="Laptop, Macbook, Surface" :slugs="['laptop', 'macbook']" />
+      <ProductListSection title="PC" slugs="pc" />
+      <ProductListSection title="Màn hình" slugs="man-hinh" />
     </div>
   </div>
 </template>
@@ -40,7 +11,7 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import ProductItemComponent from "../ProductItemComponent/ProductItemComponent.vue";
+import ProductListSection from "./ProductListSectionComponent.vue";
 
 const computerProducts = ref([]);
 const pcProducts = ref([]);

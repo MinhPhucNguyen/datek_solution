@@ -15,11 +15,14 @@
         <div class="block-search">
           <div class="block-search-inner">
             <p>Tìm kiếm sản phẩm để bắt đầu!</p>
-            <form action="">
+            <form @submit.prevent="search">
               <input
                 type="text"
                 class="search-input"
+                name="q"
+                v-model="searchQuery"
                 placeholder="Nhập tên sản phẩm hoặc SKU"
+                @keydown.enter="search"
               />
               <button type="submit" class="search-btn">Tìm kiếm</button>
             </form>
@@ -31,7 +34,20 @@
 </template>
 
 <script setup>
-import bannerImage from '@/assets/images/banner-images/laptop.png';
+import bannerImage from "@/assets/images/banner-images/laptop.png";
+
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const searchQuery = ref("");
+const router = useRouter();
+
+function search() {
+  const searchQueryFormat = searchQuery.value.trim();
+  if (searchQuery.value && searchQueryFormat) {
+    router.push({ name: "search-results", query: { q: searchQueryFormat } });
+  }
+}
 </script>
 
 <style scoped lang="scss">

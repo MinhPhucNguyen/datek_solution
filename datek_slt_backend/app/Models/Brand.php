@@ -14,7 +14,7 @@ class Brand extends Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = ['brand_name', 'brand_logo', 'brand_description', 'status'];
+    protected $fillable = ['brand_name', 'brand_logo', 'brand_logo_public_id', 'brand_description', 'status'];
 
     public function products()
     {

@@ -38,7 +38,7 @@
                <tbody>
                   <tr v-for="brand in brands" :key="brand.id">
                      <td class="text-center">{{ brand.id }}</td>
-                     <td class="text-center"><img :src="brand.logo" :alt="brand.brand_name" class="brand-logo">
+                     <td class="text-center"><img :src="brand.brand_logo" :alt="brand.brand_name" class="brand-logo">
                      </td>
                      <td class="text-center">{{ brand.brand_name.toUpperCase() }}</td>
                      <td class="text-center" :class="brand.status === 1 ? 'text-danger' : 'text-success'">
@@ -252,8 +252,9 @@ const updateBrand = () => {
       }
    }
 
-   axios
-      .post(`/brands/${model.value.brand_id}/update`, formData)
+   if(model.value.id){
+      axios
+      .post(`/brands/${model.value.id}/update`, formData)
       .then((response) => {
          successMessage.value = response.data.message;
          getBrands().then(() => {
@@ -270,6 +271,7 @@ const updateBrand = () => {
             errors.value = e.response.data.errors;
          }
       });
+   }
 };
 
 const brandSubmit = () => {
@@ -291,7 +293,7 @@ const deleteBrand = (brand) => {
 
 const handleDeleteBrand = () => {
    isLoading.value = true;
-   axios.delete(`v2/admin/brands/${model.value.brand_id}/delete`).then((response) => {
+   axios.delete(`/brands/${model.value.id}/delete`).then((response) => {
       getBrands().then(() => {
          isLoading.value = false;
          successMessage.value = response.data.message;
@@ -314,7 +316,6 @@ onMounted(() => {
 
 <style scoped>
 .brand-logo {
-   width: 45px;
    height: 45px;
    object-fit: cover;
 }

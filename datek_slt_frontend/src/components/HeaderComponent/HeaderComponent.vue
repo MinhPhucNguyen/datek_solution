@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onBeforeMount } from "vue";
+import { computed, ref, onBeforeMount, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import NavbarComponent from "@/components/NavbarComponent/NavbarComponent.vue";
@@ -148,6 +148,13 @@ const logout = () => {
     router.push({ name: "login" });
   });
 };
+
+watch(
+  () => router.currentRoute.value.fullPath,
+  () => {
+    searchQuery.value = "";
+  }
+);
 </script>
 
 <style scoped lang="scss">

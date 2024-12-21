@@ -31,10 +31,20 @@ class BrandController extends Controller
         }
 
         $brand = Brand::create([
-            'logo' => $filename,
             'brand_name' => Str::upper($validatedData['brand_name']),
             'status' => $request->status
         ]);
+
+        if ($request->hasFile('logo')) {
+            $cloudinaryImage = $request->file('logo')->storeOnCloudinary('brandimages');
+            $uploadedFileUrl = $cloudinaryImage->getSecurePath();
+            $publicId = $cloudinaryImage->getPublicId();
+
+            $brand->update([
+                'brand_logo' => $uploadedFileUrl,
+                'brand_logo_public_id' => $publicId,
+            ]);
+        }
 
         return response()->json(
             [
@@ -48,7 +58,7 @@ class BrandController extends Controller
     public function update(int $brand_id, Request $request)
     {
         $validatedData = $request->validate([
-            'brand_name' => 'required|string|unique:brands,brand_name,' . $brand_id . ',brand_id'
+            'brand_name' => 'required|string|unique:brands,brand_name,' . $brand_id . ',id'
         ]);
 
         $brand = Brand::findOrFail($brand_id);
@@ -62,17 +72,24 @@ class BrandController extends Controller
             );
         }
 
-    
         $brand->update([
             'brand_name' => $validatedData['brand_name'],
             'status' => $request->status
         ]);
 
         if ($request->hasFile('logo')) {
+            if ($brand->brand_logo_public_id) {
+                \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($brand->brand_logo_public_id);
+            }
+
             $cloudinaryImage = $request->file('logo')->storeOnCloudinary('brandimages');
             $uploadedFileUrl = $cloudinaryImage->getSecurePath();
             $publicId = $cloudinaryImage->getPublicId();
-            $brand->logo = $uploadedFileUrl;
+
+            $brand->update([
+                'brand_logo' => $uploadedFileUrl,
+                'brand_logo_public_id' => $publicId,
+            ]);
         }
 
         return response()->json(
@@ -89,18 +106,20 @@ class BrandController extends Controller
         if (!$brand) {
             return response()->json(
                 [
-                    'message' => 'Brand not found!',
+                    'message' => 'Không có sản phẩm nào tồn tại!',
                 ],
                 404
             );
         }
-        if ($brand->logo) {
-            
+     
+        if ($brand->brand_logo_public_id) {
+            \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($brand->brand_logo_public_id);
         }
+
         $brand->delete();
         return response()->json(
             [
-                'message' => 'Delete successfully!',
+                'message' => 'Xóa hãng thành công!',
             ],
             200
         );
