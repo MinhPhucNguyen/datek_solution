@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderCollection;
+use App\Http\Resources\OrderResource;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use App\Models\Order;
@@ -11,6 +12,7 @@ use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\ShippingAddress;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -33,6 +35,8 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => $validated['user_id'],
                 'order_total_price' => $validated['total_price'],
+                'order_date' => now(),
+                'payment_method' => $validated['payment_method'],
                 'order_status' => 'Chờ xác nhận',
             ]);
 
@@ -71,16 +75,42 @@ class OrderController extends Controller
         return response()->json(['message' => 'Đặt hàng thành công', 'order_id' => $order->order_id], 201);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $paginate = 10;
+
+
         $orders = Order::orderBy('order_date', 'desc')->paginate($paginate);
         return new OrderCollection($orders);
     }
 
-    public function getOrderHistory($user_id)
+    public function getOrderHistory(Request $request)
     {
-        $orders = Order::where('user_id', $user_id)->get();
+        $paginate = 10;
+
+        $userId = $request->input('user_id');
+
+        $orders = Order::where('user_id', $userId)
+            ->orderBy('order_date', 'desc')
+            ->paginate($paginate);
         return new OrderCollection($orders);
+    }
+
+    public function getOrderDetails($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+        return new OrderResource($order);
+    }
+
+    public function confirmOrder($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+        $order->order_status = 'Chờ giao hàng';
+        $order->save();
+
+        return response()->json([
+            'message' => 'Xác nhận đơn hàng thành công',
+            'order_status' => $order->order_status,
+        ], 200);
     }
 }

@@ -47,6 +47,11 @@ class Product extends Model
         return $this->hasMany(SaleDetails::class);
     }
 
+    public function orderdetails()
+    {
+        return $this->hasMany(OrderDetails::class);
+    }
+
     public function relatedProducts()
     {
         $priceRange = 0.1 * $this->price;

@@ -49,7 +49,12 @@
                   {{ order.order_status }}
                 </td>
                 <td class="text-center">
-                  <button class="btn btn-success">Xác nhận đơn hàng</button>
+                  <button
+                    class="btn btn-success"
+                    @click.prevent="confirmOrder(order.order_id)"
+                  >
+                    Xác nhận đơn hàng
+                  </button>
                 </td>
               </tr>
               <tr v-if="isLoading && !orders.length">
@@ -93,10 +98,12 @@ const isNotFound = computed(() => {
   return orders.value.length === 0 ? true : false;
 });
 
-const getOrdersList = async () => {
+const getOrdersList = async (page = 1) => {
   isLoading.value = true;
   await store
-    .dispatch("orders/getOrders")
+    .dispatch("orders/getOrders", {
+      page,
+    })
     .then((response) => {
       isLoading.value = false;
       orders.value = store.getters["orders/getAllOrders"];
@@ -111,6 +118,16 @@ const getOrdersList = async () => {
 onMounted(() => {
   getOrdersList();
 });
+
+const orderStatus = ref("");
+const confirmOrder = async (orderId) => {
+  await store.dispatch("orders/confirmOrder", orderId).then(() => {
+    successMessage.value = "Xác nhận đơn hàng thành công";
+    window.location.reload();
+    orderStatus.value = store.getters["orders/getOrderStatus"];
+    getOrdersList();
+  });
+};
 </script>
 
 <style lang="scss" scoped></style>

@@ -87,7 +87,7 @@
             </div>
             <div class="order-summary-item">
               <p class="fw-bold">Thành tiền</p>
-              <span>{{ formatCurrency(totalPrice) }}</span>
+              <span>{{ formatCurrency(totalPrice + shippingFee) }}</span>
             </div>
           </div>
 
@@ -139,10 +139,10 @@ const calculateTotalPrice = () => {
     cartItems.value.reduce(
       (total, item) => total + item.product.price * item.quantity,
       0
-    ) + shippingFee;
+    );
 };
 
-const placeOrder = () => {
+const placeOrder = async () => {
   payload.value.total_price = totalPrice.value;
   payload.value.cart_items = cartItems.value.map((item) => ({
     product_id: item.product_id,
@@ -150,9 +150,9 @@ const placeOrder = () => {
     price: item.product.price,
   }));
 
-  store.dispatch("order/placeOrder", payload.value).then(() => {
+  await store.dispatch("orders/placeOrder", payload.value).then(() => {
     store.dispatch("cart/clearCart");
-    router.push({ name: "success" });
+    router.push({ name: "success-page" });
   });
 };
 </script>

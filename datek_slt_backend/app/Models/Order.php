@@ -19,6 +19,7 @@ class Order extends Model
         'order_total_price',
         'order_status',
         'order_date',
+        'payment_method',
     ];
 
     public function orderDetails()
@@ -34,5 +35,15 @@ class Order extends Model
     public function shippingAddress()
     {
         return $this->hasOne(ShippingAddress::class, 'order_id');
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->where('order_id', 'like', '%' . $search . '%')
+            ->orWhere('order_status', 'like', '%' . $search . '%')
+            ->orWhere('order_date', 'like', '%' . $search . '%')
+            ->orWhereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
     }
 }

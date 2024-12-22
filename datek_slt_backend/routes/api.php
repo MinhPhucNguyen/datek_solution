@@ -96,3 +96,6 @@ Route::delete('cart/remove-item/{cart_id}', [CartController::class, 'removeItem'
 //Place order routes
 Route::post('place-order', [OrderController::class, 'placeOrder']);
 Route::get('orders', [OrderController::class, 'index']);
+Route::get('orders/history', [OrderController::class, 'getOrderHistory']);
+Route::get('orders/history/{id}', [OrderController::class, 'getOrderDetails']);
+Route::patch('orders/{id}/confirm', [OrderController::class, 'confirmOrder']);
