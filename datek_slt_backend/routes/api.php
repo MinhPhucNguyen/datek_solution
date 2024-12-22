@@ -95,3 +95,4 @@ Route::delete('cart/remove-item/{cart_id}', [CartController::class, 'removeItem'
 
 //Place order routes
 Route::post('place-order', [OrderController::class, 'placeOrder']);
+Route::get('orders', [OrderController::class, 'index']);

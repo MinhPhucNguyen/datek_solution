@@ -46,6 +46,11 @@ const admin = [
         name: "admin.brands",
       },
       {
+        path: "orders",
+        component: () => import("@/pages/Admin/Orders/index.vue"),
+        name: "admin.orders",
+      },
+      {
         path: "products",
         component: () => import("@/pages/Admin/Products/index.vue"),
         name: "admin.products",

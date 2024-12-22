@@ -2,14 +2,14 @@ import { createStore } from "vuex";
 import auth from "./auth";
 import users from "./users";
 import cart from "./cart";
-import order from "./order";
+import orders from "./orders";
 
 const store = createStore({
   modules: {
     auth,
     users,
     cart,
-    order,
+    orders,
   },
 });
 

@@ -101,8 +101,10 @@
 <script setup>
 import { onBeforeMount, onMounted, ref } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
 
+const router = useRouter();
 const store = useStore();
 const currentUser = ref(null);
 const cartItems = ref([]);
@@ -116,9 +118,11 @@ const payload = ref({
 const shippingFee = 20000;
 
 onBeforeMount(() => {
-  store.dispatch("cart/fetchCart");
+  store.dispatch("cart/fetchCart").then(() => {
+    cartItems.value = store.getters["cart/getCartItems"];
+    calculateTotalPrice();
+  });
   currentUser.value = store.getters["auth/getUser"];
-  cartItems.value = store.getters["cart/getCartItems"];
 });
 
 onMounted(() => {
@@ -146,7 +150,10 @@ const placeOrder = () => {
     price: item.product.price,
   }));
 
-  store.dispatch("order/placeOrder", payload.value);
+  store.dispatch("order/placeOrder", payload.value).then(() => {
+    store.dispatch("cart/clearCart");
+    router.push({ name: "success" });
+  });
 };
 </script>
 

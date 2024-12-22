@@ -60,6 +60,11 @@ const mutations = {
       0
     );
   },
+  CLEAR_CART(state) {
+    state.cartItems = [];
+    state.totalPrice = 0;
+    state.totalQuantity = 0;
+  },
 };
 
 const actions = {
@@ -138,6 +143,10 @@ const actions = {
     } catch (error) {
       console.error("Error removing item:", error);
     }
+  },
+
+  clearCart({ commit }) {
+    commit("CLEAR_CART");
   },
 };
 

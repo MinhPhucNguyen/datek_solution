@@ -221,3 +221,8 @@
   color: red;
   padding: 8px
 }
+
+.checkout-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

@@ -28,6 +28,11 @@ const app = [
         name: "cart-page",
       },
       {
+        path: "/success",
+        component: () => import("@/pages/SuccessPage/SuccessPage.vue"),
+        name: "success-page",
+      },
+      {
         path: "/:slug",
         name: "category-products",
         component: () =>

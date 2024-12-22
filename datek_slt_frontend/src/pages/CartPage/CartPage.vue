@@ -88,7 +88,12 @@
             </tr>
           </tbody>
         </table>
-
+        <div class="shipping-continue mt-5">
+          <router-link to="/" style="color: #4e43d8" class="fw-bold"
+            ><i class="fa-solid fa-arrow-left me-2"></i>Tiếp tục mua
+            hàng</router-link
+          >
+        </div>
         <div class="cart-summary">
           <p>Tổng cộng: {{ formatCurrency(totalPrice) }}</p>
           <button class="btn checkout-button" @click="navigateToCheckoutPage">

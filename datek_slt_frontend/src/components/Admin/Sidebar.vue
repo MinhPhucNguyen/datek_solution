@@ -35,6 +35,13 @@
     </li>
 
     <li class="nav-item border-bottom">
+      <router-link :to="{name: 'admin.orders' }" class="nav-link collapsed fw-bold text-dark" href="#">
+        <i class="fa-solid fa-list mr-2"></i>
+        <span>Quản lý đơn hàng</span>
+      </router-link>
+    </li>
+
+    <li class="nav-item border-bottom">
       <router-link :to="{name: 'admin.products'}" class="nav-link collapsed fw-bold text-dark" href="#">
         <i class="fa-solid fa-box mr-2"></i>
         <span>Quản lý sản phẩm</span>

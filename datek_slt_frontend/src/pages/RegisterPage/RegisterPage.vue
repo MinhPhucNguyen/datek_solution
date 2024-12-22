@@ -11,14 +11,14 @@
                   <div class="control required">
                     <label>Tên</label>
                     <input
-                        name="firstname"
-                        v-model="formRegister.firstname"
-                        autocomplete="off"
-                        id="firstname"
-                        type="text"
-                        class="input-text"
-                        title="Tên"
-                        @input="clearError('firstname')"
+                      name="firstname"
+                      v-model="formRegister.firstname"
+                      autocomplete="off"
+                      id="firstname"
+                      type="text"
+                      class="input-text"
+                      title="Tên"
+                      @input="clearError('firstname')"
                     />
                     <small v-if="errors.firstname" class="text-danger">
                       {{ errors.firstname[0] }}
@@ -27,14 +27,14 @@
                   <div class="control required">
                     <label>Họ</label>
                     <input
-                        name="lastname"
-                        v-model="formRegister.lastname"
-                        autocomplete="off"
-                        id="lastname"
-                        type="text"
-                        class="input-text"
-                        title="Họ"
-                        @input="clearError('lastname')"
+                      name="lastname"
+                      v-model="formRegister.lastname"
+                      autocomplete="off"
+                      id="lastname"
+                      type="text"
+                      class="input-text"
+                      title="Họ"
+                      @input="clearError('lastname')"
                     />
                     <small v-if="errors.lastname" class="text-danger">
                       {{ errors.lastname[0] }}
@@ -45,14 +45,14 @@
                   <div class="control">
                     <label>Email</label>
                     <input
-                        name="email"
-                        v-model="formRegister.email"
-                        autocomplete="off"
-                        id="email"
-                        type="email"
-                        class="input-text"
-                        title="Email"
-                        @input="clearError('email')"
+                      name="email"
+                      v-model="formRegister.email"
+                      autocomplete="off"
+                      id="email"
+                      type="email"
+                      class="input-text"
+                      title="Email"
+                      @input="clearError('email')"
                     />
                     <small v-if="errors.email" class="text-danger">
                       {{ errors.email[0] }}
@@ -63,14 +63,14 @@
                   <div class="control">
                     <label>Mật khẩu</label>
                     <input
-                        v-model="formRegister.password"
-                        name="password"
-                        type="password"
-                        autocomplete="off"
-                        class="input-text"
-                        id="password"
-                        title="Mật khẩu"
-                        @input="clearError('password')"
+                      v-model="formRegister.password"
+                      name="password"
+                      type="password"
+                      autocomplete="off"
+                      class="input-text"
+                      id="password"
+                      title="Mật khẩu"
+                      @input="clearError('password')"
                     />
                     <small v-if="errors.password" class="text-danger">
                       {{ errors.password[0] }}
@@ -81,14 +81,14 @@
                   <div class="control">
                     <label>Xác nhận mật khẩu</label>
                     <input
-                        v-model="formRegister.confirm_password"
-                        name="confirm-password"
-                        type="password"
-                        autocomplete="off"
-                        class="input-text"
-                        id="confirm_password"
-                        title="Xác nhận mật khẩu"
-                        @input="clearError('confirm_password')"
+                      v-model="formRegister.confirm_password"
+                      name="confirm-password"
+                      type="password"
+                      autocomplete="off"
+                      class="input-text"
+                      id="confirm_password"
+                      title="Xác nhận mật khẩu"
+                      @input="clearError('confirm_password')"
                     />
                     <small v-if="errors.confirm_password" class="text-danger">
                       {{ errors.confirm_password[0] }}
@@ -97,28 +97,37 @@
                 </div>
                 <div class="field choice">
                   <input
-                      type="checkbox"
-                      name="show-password"
-                      id="show-password"
-                      class="checkbox"
-                      title="Hiển thị mật khẩu"
-                      @change="showPassword"
+                    type="checkbox"
+                    name="show-password"
+                    id="show-password"
+                    class="checkbox"
+                    title="Hiển thị mật khẩu"
+                    @change="showPassword"
                   />
                   <label for="show-password" class="label"
-                  ><span>Hiển thị mật khẩu</span></label
+                    ><span>Hiển thị mật khẩu</span></label
                   >
                 </div>
                 <div class="actions-toolbar">
                   <div class="primary">
                     <button
-                        type="submit"
-                        class="action register primary"
-                        name="send"
-                        id="send2"
+                      type="submit"
+                      class="action register primary"
+                      name="send"
+                      id="send2"
                     >
                       <span>Đăng ký</span>
                     </button>
                   </div>
+                </div>
+
+                <div class="secondary">
+                  <span
+                    >Đã có tài khoản?
+                    <router-link :to="{ name: 'login' }">
+                      <span>Đăng nhập</span>
+                    </router-link>
+                  </span>
                 </div>
               </fieldset>
             </form>
@@ -130,9 +139,9 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {useStore} from "vuex";
-import {useRouter} from "vue-router";
+import { ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 const store = useStore();
 const router = useRouter();
@@ -147,14 +156,14 @@ const formRegister = ref({
 
 const registerSubmit = () => {
   store
-      .dispatch("auth/register", formRegister.value)
-      .then(() => {
-        router.push({name: "home"});
-      })
-      .catch((e) => {
-        errors.value = e.response.data.errors;
-        console.error(e);
-      });
+    .dispatch("auth/register", formRegister.value)
+    .then(() => {
+      router.push({ name: "home" });
+    })
+    .catch((e) => {
+      errors.value = e.response.data.errors;
+      console.error(e);
+    });
 };
 
 const clearError = (field) => {
@@ -172,7 +181,6 @@ const showPassword = (e) => {
     confirm_password.type = "password";
   }
 };
-
 </script>
 
 <style scoped>

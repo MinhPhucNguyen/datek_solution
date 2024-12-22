@@ -12,16 +12,9 @@
           <div class="header-content">
             <div class="header-content-inner">
               <div class="header-content-item">
-                <a href="#">
-                  <font-awesome-icon :icon="['fas', 'list']" />
-                </a>
-              </div>
-              <div class="header-content-item">
                 <a class="cart-icon" @click="toggleCart">
                   <font-awesome-icon :icon="['fas', 'cart-shopping']" />
-                  <span v-if="itemQuantity != '0'" class="cart-badge">{{
-                    itemQuantity
-                  }}</span>
+                  <span class="cart-badge">{{ itemQuantity }}</span>
                 </a>
               </div>
               <div

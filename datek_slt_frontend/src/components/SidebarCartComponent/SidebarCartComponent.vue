@@ -72,7 +72,11 @@
 
         <div class="subtotal">
           <p>Tổng: {{ formatCurrency(totalPrice) }}</p>
-          <button class="btn checkout-btn" @click="navigateToCheckoutPage">
+          <button
+            class="btn checkout-btn"
+            @click="navigateToCheckoutPage"
+            :disabled="props.cartItems.length === 0"
+          >
             Đặt hàng
           </button>
         </div>

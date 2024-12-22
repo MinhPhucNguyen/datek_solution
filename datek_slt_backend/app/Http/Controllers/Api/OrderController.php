@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderCollection;
+use App\Models\Cart;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
+use App\Models\ShippingAddress;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -33,6 +36,12 @@ class OrderController extends Controller
                 'order_status' => 'Chờ xác nhận',
             ]);
 
+            ShippingAddress::create([
+                'user_id' => $validated['user_id'],
+                'order_id' => $order->order_id,
+                'address' => $validated['address'],
+            ]);
+
             foreach ($validated['cart_items'] as $cartItem) {
                 $product = Product::findOrFail($cartItem['product_id']);
 
@@ -51,6 +60,8 @@ class OrderController extends Controller
                     'order_detail_price' => $cartItem['price'],
                 ]);
             }
+
+            Cart::where('user_id', $validated['user_id'])->delete();
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 500);
@@ -58,5 +69,18 @@ class OrderController extends Controller
 
         DB::commit();
         return response()->json(['message' => 'Đặt hàng thành công', 'order_id' => $order->order_id], 201);
+    }
+
+    public function index()
+    {
+        $paginate = 10;
+        $orders = Order::orderBy('order_date', 'desc')->paginate($paginate);
+        return new OrderCollection($orders);
+    }
+
+    public function getOrderHistory($user_id)
+    {
+        $orders = Order::where('user_id', $user_id)->get();
+        return new OrderCollection($orders);
     }
 }
