@@ -5,11 +5,10 @@
 }
 
 .checkout-page-inner {
-    display: flex;
-    gap: 20px;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
 
 .checkout-page-inner .block-left {
   flex-grow: 1;
@@ -115,8 +114,8 @@
   float: right;
 }
 
-.product-item{
-    border-bottom: 1px solid #ddd;
+.product-item {
+  border-bottom: 1px solid #ddd;
 }
 
 .address-item {
@@ -124,13 +123,23 @@
 }
 
 .address-box {
+  width: 100%;
   border: 1px solid #ddd;
   padding: 15px;
   margin: 10px 0;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  font-size: 18px;
+
+  .input-address {
+    width: 90%;
+    border: none;
+    font-size: 18px;
+    padding: 5px 10px;
+    border-bottom: 1px solid #ddd;
+    outline: none;
+  }
 }
 
 .add-new-shipping-address {
@@ -142,7 +151,8 @@
   border-radius: 5px;
 }
 
-.select-address, .delete-address {
+.select-address,
+.delete-address {
   padding: 5px 10px;
   margin-left: 10px;
   background-color: #4caf50;
@@ -153,14 +163,15 @@
 }
 
 .select-address {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 .delete-address {
   background-color: #f44336;
 }
 
-.select-address:hover, .delete-address:hover {
+.select-address:hover,
+.delete-address:hover {
   opacity: 0.8;
 }
 

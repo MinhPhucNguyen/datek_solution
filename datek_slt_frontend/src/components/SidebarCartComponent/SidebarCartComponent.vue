@@ -72,7 +72,9 @@
 
         <div class="subtotal">
           <p>Tổng: {{ formatCurrency(totalPrice) }}</p>
-          <button class="btn checkout-btn">Đặt hàng</button>
+          <button class="btn checkout-btn" @click="navigateToCheckoutPage">
+            Đặt hàng
+          </button>
         </div>
         <div class="view-cart">
           <router-link :to="{ name: 'cart-page' }"> Xem giỏ hàng </router-link>
@@ -86,8 +88,10 @@
 import { ref, watch } from "vue";
 import { defineProps, defineEmits } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
 
+const router = useRouter();
 const store = useStore();
 const props = defineProps({
   isCartVisible: Boolean,
@@ -115,6 +119,15 @@ watch(
     }
   },
   { deep: true }
+);
+
+watch(
+  () => router.currentRoute.value.fullPath,
+  () => {
+    if (props.isCartVisible) {
+      emits("closeCart");
+    }
+  }
 );
 
 const removeItem = async (index) => {
@@ -151,6 +164,10 @@ const changeQuantity = async (index, newQuantity) => {
 };
 
 calculateTotalPrice();
+
+const navigateToCheckoutPage = () => {
+  router.push("/checkout");
+};
 </script>
 
 <style scoped>

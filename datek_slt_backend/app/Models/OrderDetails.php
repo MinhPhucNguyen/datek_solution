@@ -17,4 +17,9 @@ class OrderDetails extends Model
         'order_detail_quantity',
         'order_detail_price',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
 }
