@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,3 +92,6 @@ Route::post('cart/update-quantity', [CartController::class, 'updateQuantity']);
 Route::get('cart/get-cart', [CartController::class, 'getCart']);
 Route::get('cart/count-items', [CartController::class, 'countItems']);
 Route::delete('cart/remove-item/{cart_id}', [CartController::class, 'removeItem']);
+
+//Place order routes
+Route::post('place-order', [OrderController::class, 'placeOrder']);

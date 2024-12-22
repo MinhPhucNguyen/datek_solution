@@ -21,6 +21,7 @@ class OrderController extends Controller
             'cart_items' => 'required|array',
             'cart_items.*.product_id' => 'required|exists:products,id',
             'cart_items.*.quantity' => 'required|integer|min:1',
+            'cart_items.*.price' => 'required|numeric|min:0',
         ]);
 
         DB::beginTransaction();
@@ -52,7 +53,7 @@ class OrderController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Đặt hàng thất bại'], 500);
+            return response()->json($e->getMessage(), 500);
         }
 
         DB::commit();

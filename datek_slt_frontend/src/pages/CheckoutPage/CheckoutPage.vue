@@ -107,6 +107,7 @@ const store = useStore();
 const currentUser = ref(null);
 const cartItems = ref([]);
 const payload = ref({
+  user_id: null,
   address: "",
   payment_method: "cash",
   total_price: 0,
@@ -122,6 +123,7 @@ onBeforeMount(() => {
 
 onMounted(() => {
   calculateTotalPrice();
+  payload.value.user_id = currentUser.value?.id;
   payload.value.address = currentUser.value?.address || "";
 });
 
@@ -141,6 +143,7 @@ const placeOrder = () => {
   payload.value.cart_items = cartItems.value.map((item) => ({
     product_id: item.product_id,
     quantity: item.quantity,
+    price: item.product.price,
   }));
 
   store.dispatch("order/placeOrder", payload.value);

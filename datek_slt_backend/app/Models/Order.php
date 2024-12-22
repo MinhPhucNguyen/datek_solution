@@ -10,6 +10,9 @@ class Order extends Model
     use HasFactory;
 
     protected $primaryKey = 'order_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
         'order_id',
         'user_id',
