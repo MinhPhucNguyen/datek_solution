@@ -99,7 +99,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, ref } from "vue";
+import { onBeforeMount, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -134,12 +134,15 @@ onMounted(() => {
 const totalPrice = ref(0);
 const selectedPaymentMethod = ref("cash");
 
+watch(selectedPaymentMethod, (newMethod) => {
+  payload.value.payment_method = newMethod;
+});
+
 const calculateTotalPrice = () => {
-  totalPrice.value =
-    cartItems.value.reduce(
-      (total, item) => total + item.product.price * item.quantity,
-      0
-    );
+  totalPrice.value = cartItems.value.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0
+  );
 };
 
 const placeOrder = async () => {
