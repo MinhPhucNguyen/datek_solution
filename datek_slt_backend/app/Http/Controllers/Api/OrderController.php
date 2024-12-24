@@ -105,12 +105,49 @@ class OrderController extends Controller
     public function confirmOrder($orderId)
     {
         $order = Order::findOrFail($orderId);
-        $order->order_status = 'Chờ giao hàng';
+
+        if (!$order) {
+            return response()->json(['message' => 'Đơn hàng không tồn tại'], 404);
+        }
+
+        switch ($order->order_status) {
+            case 'Chờ xác nhận':
+                $order->order_status = 'Chờ giao hàng';
+                $order->save();
+                return response()->json(['message' => 'Xác nhận đơn hàng thành công'], 200);
+
+            case 'Chờ giao hàng':
+                $order->order_status = 'Đã giao';
+                $order->save();
+                return response()->json(['message' => 'Xác nhận giao hàng thành công'], 200);
+            default:
+                return response()->json(['message' => 'Không thể xử  lý đơn hàng'], 400);
+        }
+    }
+
+    public function cancelOrder($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+
+        if (!$order) {
+            return response()->json(['message' => 'Đơn hàng không tồn tại'], 404);
+        }
+
+        if ($order->order_status === 'Đã giao') {
+            return response()->json(['message' => 'Không thể hủy đơn hàng đã được xác nhận hoặc đang giao hàng'], 400);
+        }
+
+        foreach ($order->orderDetails as $item) {
+            $product = $item->product; 
+            if ($product) {
+                $product->quantity += $item->quantity; 
+                $product->save();
+            }
+        }
+
+        $order->order_status = 'Đã hủy';
         $order->save();
 
-        return response()->json([
-            'message' => 'Xác nhận đơn hàng thành công',
-            'order_status' => $order->order_status,
-        ], 200);
+        return response()->json(['message' => 'Đơn hàng đã được hủy thành công và số lượng sản phẩm đã được hoàn lại'], 200);
     }
 }

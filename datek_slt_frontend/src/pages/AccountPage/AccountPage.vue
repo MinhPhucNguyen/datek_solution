@@ -162,7 +162,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="order in ordersHistory" :key="order.id">
+                    <tr v-for="order in ordersHistory" :key="order.order_id">
                       <td class="text-center">#{{ order.order_id }}</td>
                       <td class="text-center">{{ order.order_date }}</td>
                       <td class="text-center">
@@ -175,14 +175,21 @@
                         >
                         <span
                           class="text-danger"
-                          @click="cancelOrderConfirmation()"
+                          @click="cancelOrderConfirmation(order.order_id)"
+                          v-if="
+                            order.order_status !== 'Đã giao' &&
+                            order.order_status !== 'Đã hủy'
+                          "
                           >Hủy</span
+                        >
+                        <span v-else-if="order.order_status === 'Đã hủy'"
+                          >Đã hủy</span
                         >
                       </td>
 
                       <my-modal
-                        @clickTo="cancelOrder"
-                        :idModal="'cancelConfirmModal'"
+                        @clickTo="cancelOrder(order.order_id)"
+                        :idModal="`cancelConfirmModal${order.order_id}`"
                         bgColor="danger"
                       >
                         <template v-slot:title>Hủy đơn hàng</template>
@@ -269,6 +276,13 @@
                         </tr>
                       </tbody>
                     </table>
+                    <button
+                      class="btn-received"
+                      v-if="orderDetails.order_status === 'Chờ giao hàng'"
+                      @click.prevent="confirmOrder(orderDetails.order_id)"
+                    >
+                      Đã nhận được hàng
+                    </button>
                   </div>
                 </div>
                 <div v-if="isLoading" class="loading">
@@ -380,8 +394,17 @@ onBeforeMount(() => {
   getOrdersHistory();
 });
 
-const cancelOrderConfirmation = () => {
-  $("#cancelConfirmModal").modal("show");
+const cancelOrderConfirmation = (orderId) => {
+  $(`#cancelConfirmModal${orderId}`).modal("show");
+};
+
+const cancelOrder = async (orderId) => {
+  console.log(orderId);
+
+  await store.dispatch("orders/cancelOrder", orderId).then(() => {
+    getOrdersHistory();
+    $(`#cancelConfirmModal${orderId}`).modal("hide");
+  });
 };
 
 const toggleOrderDetails = async (orderId) => {
@@ -401,6 +424,12 @@ const toggleOrderDetails = async (orderId) => {
 
 const backOrderHistoryList = () => {
   isOrdersDetail.value = false;
+};
+
+const confirmOrder = async (orderId) => {
+  await store.dispatch("orders/confirmOrder", orderId).then(() => {
+    window.location.reload();
+  });
 };
 
 const logout = () => {

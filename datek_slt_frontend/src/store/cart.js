@@ -121,14 +121,16 @@ const actions = {
   },
 
   async updateQuantity({ commit }, { productId, quantity }) {
+    commit("UPDATE_CART_ITEM_QUANTITY", { productId, quantity });
+
     try {
       const response = await axios.post("/cart/update-quantity", {
         product_id: productId,
         quantity,
       });
 
-      if (response.data.success) {
-        commit("UPDATE_CART_ITEM_QUANTITY", { productId, quantity });
+      if (!response.data.success) {
+        commit("UPDATE_CART_ITEM_QUANTITY", { productId, quantity: -quantity });
       }
     } catch (error) {
       console.error("Error updating quantity:", error);

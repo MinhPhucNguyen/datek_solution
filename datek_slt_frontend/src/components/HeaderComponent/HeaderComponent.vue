@@ -107,13 +107,11 @@ const cartItems = ref([]);
 const isUserMenuVisible = ref(false);
 const searchQuery = ref("");
 
-const itemQuantity = ref(0);
 
 onBeforeMount(async () => {
   await store.dispatch("cart/fetchCart");
-
-  itemQuantity.value = computed(() => store.getters["cart/totalQuantity"]);
 });
+const itemQuantity = computed(() => store.getters["cart/totalQuantity"]);
 
 function toggleUserMenu() {
   isUserMenuVisible.value = !isUserMenuVisible.value;

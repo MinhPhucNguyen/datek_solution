@@ -51,6 +51,7 @@
                 <td class="text-center">
                   <button
                     class="btn btn-success"
+                     v-if="order.order_status === 'Chờ xác nhận'"
                     @click.prevent="confirmOrder(order.order_id)"
                   >
                     Xác nhận đơn hàng

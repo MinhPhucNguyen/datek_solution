@@ -104,6 +104,15 @@ const orders = {
         );
       }
     },
+
+    async cancelOrder({ commit }, id) {
+      try {
+        const response = await axios.patch(`/orders/${id}/cancel`);
+        commit("SET_ORDER_STATUS", response.data.order_status);
+      } catch (error) {
+        throw new Error(error.response?.data?.message || "Lỗi hủy đơn hàng");
+      }
+    },
   },
 };
 

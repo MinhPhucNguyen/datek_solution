@@ -47,6 +47,7 @@
                     v-model="item.quantity"
                     class="quantity-input"
                     readonly
+                    :min="1"
                   />
                   <button
                     class="quantity-btn increase-btn"
