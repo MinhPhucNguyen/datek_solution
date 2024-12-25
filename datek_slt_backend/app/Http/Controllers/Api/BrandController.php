@@ -16,6 +16,26 @@ class BrandController extends Controller
             'brands' => $brands
         ], 200);
     }
+
+    public function getBrandById($brandId)
+    {
+        $brand = Brand::findOrFail($brandId);
+        if (!$brand) {
+            return response()->json(
+                [
+                    'message' => 'Không tìm thấy!',
+                ],
+                404
+            );
+        }
+        return response()->json(
+            [
+                'brand' => $brand
+            ],
+            200
+        );
+    }
+
     public function create(Request $request)
     {
         $validatedData = $request->validate([
@@ -111,7 +131,7 @@ class BrandController extends Controller
                 404
             );
         }
-     
+
         if ($brand->brand_logo_public_id) {
             \CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::destroy($brand->brand_logo_public_id);
         }

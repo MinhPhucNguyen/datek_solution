@@ -40,6 +40,11 @@ const app = [
         props: true,
       },
       {
+        path: "/brand/:brandName/:brandId",
+        name: "products-by-brand",
+        component: () => import("@/pages/ProductsByBrand/ProductsByBrand.vue"),
+      },
+      {
         path: "/customer/account/login",
         component: () => import("@/pages/LoginPage/LoginPage.vue"),
         name: "login",

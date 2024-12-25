@@ -61,6 +61,7 @@ Route::get('brands', [BrandController::class, 'index']);
 Route::post('brands/create', [BrandController::class, 'create']);
 Route::post('brands/{id}/update', [BrandController::class, 'update']);
 Route::delete('brands/{id}/delete', [BrandController::class, 'delete']);
+Route::get('brands/{id}', [BrandController::class, 'getBrandById']);
 
 //Product routes
 Route::get('products', [ProductController::class, 'index']);
@@ -75,7 +76,7 @@ Route::post('products/{id}/update', [ProductController::class, 'update']);
 Route::delete('products/{id}/delete', [ProductController::class, 'destroy']);
 Route::delete('products/delete-multi-product/{products}', [ProductController::class, 'deleteMultiProduct']);
 Route::delete('products/remove-image/{image_id}', action: [ProductController::class, 'destroyImage']);
-Route::get('products/get-by-brand', [ProductController::class, 'getAllProductsByBrand']);
+Route::get('products/get-by-brand/{brand_id}', [ProductController::class, 'getAllProductsByBrand']);
 
 //Product Images routes
 Route::get('products/{productId}/images', [ProductImagesController::class, 'index']);

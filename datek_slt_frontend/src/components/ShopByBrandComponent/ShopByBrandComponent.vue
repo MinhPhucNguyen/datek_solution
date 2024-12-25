@@ -3,51 +3,22 @@
     <div class="container">
       <div class="shop-by-brand-content">
         <div class="brand-logos">
-          <div class="brand-logo">
-            <img
-              src="../../assets/images/brand-logos/lenovo.png"
-              alt="brand-logo"
-            />
-          </div>
-          <div class="brand-logo">
-            <a href="#">
+          <div class="brand-logo" v-for="brand in brands" :key="brand.id">
+            <router-link
+              :to="{
+                name: 'products-by-brand',
+                params: {
+                  brandName: brand.brand_name.toLowerCase().replace(/ /g, '-'),
+                  brandId: brand.id,
+                },
+              }"
+            >
               <img
-                src="../../assets/images/brand-logos/dell.png"
+                v-if="brand.brand_logo"
+                :src="brand.brand_logo"
                 alt="brand-logo"
               />
-            </a>
-          </div>
-          <div class="brand-logo">
-            <a href="#">
-              <img
-                src="../../assets/images/brand-logos/getac.svg"
-                alt="brand-logo"
-              />
-            </a>
-          </div>
-          <div class="brand-logo">
-            <a href="#">
-              <img
-                src="../../assets/images/brand-logos/microsoft.svg"
-                alt="brand-logo"
-              />
-            </a>
-          </div>
-          <div class="brand-logo">
-            <a href="#">
-              <img
-                src="../../assets/images/brand-logos/apple.png"
-                alt="brand-logo"
-              />
-            </a>
-          </div>
-          <div class="brand-logo">
-            <a href="#">
-              <img
-                src="../../assets/images/brand-logos//dell.png"
-                alt="brand-logo"
-              />
-            </a>
+            </router-link>
           </div>
         </div>
       </div>
@@ -55,7 +26,25 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import axios from "axios";
+import { onBeforeMount, ref } from "vue";
+
+const brands = ref([]);
+
+const fetchBrandLogos = async () => {
+  try {
+    const response = await axios.get("/brands");
+    brands.value = response.data.brands;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onBeforeMount(() => {
+  fetchBrandLogos();
+});
+</script>
 
 <style scoped>
 @import url(ShopByBrandComponent.scss);

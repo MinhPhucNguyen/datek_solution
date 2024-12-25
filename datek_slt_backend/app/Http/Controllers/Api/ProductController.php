@@ -253,9 +253,8 @@ class ProductController extends Controller
         }
     }
 
-    public function getAllProductsByBrand(Request $request)
+    public function getAllProductsByBrand($brandId)
     {
-        $brandId = $request->input('brand_id');
         $products = Product::where('brand_id', $brandId)->get();
         return new ProductCollection($products);
     }

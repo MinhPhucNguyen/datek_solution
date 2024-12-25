@@ -98,7 +98,7 @@
                            errors.brand_name[0]
                         }}</small> -->
                         <div class="mt-3">
-                           <img :src="logoUrl" alt="logo" v-if="logoUrl" />
+                           <img :src="logoUrl" alt="logo" v-if="logoUrl" style="width: 100%; height: 100%; background: #ccc;" />
                         </div>
                      </div>
                      <div class="form-group">
@@ -310,6 +310,7 @@ onBeforeMount(() => {
 onMounted(() => {
    $("#brandFormModal").on("hide.bs.modal", () => {
       errors.value = null;
+      resetForm();
    });
 });
 </script>
