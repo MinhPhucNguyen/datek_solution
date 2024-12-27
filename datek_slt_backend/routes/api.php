@@ -4,13 +4,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\ProductTypeController;
 use App\Http\Controllers\Api\ProductImagesController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\IncomeTrackerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,3 +101,9 @@ Route::get('orders/history', [OrderController::class, 'getOrderHistory']);
 Route::get('orders/history/{id}', [OrderController::class, 'getOrderDetails']);
 Route::patch('orders/{id}/confirm', [OrderController::class, 'confirmOrder']);
 Route::patch('orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
+
+
+//Income Tracker routes
+Route::get('income', [IncomeTrackerController::class, 'getIncome']);
+Route::get('order-stats', [IncomeTrackerController::class, 'getOrderStats']);
+Route::get('export-orders', [IncomeTrackerController::class, 'exportOrders']);

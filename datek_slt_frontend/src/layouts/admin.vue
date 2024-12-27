@@ -1,7 +1,7 @@
 <template>
   <div>
     <my-modal @clickTo="logout()" idModal="logoutModal" bgColor="danger">
-      <template v-slot:title>Logout</template>
+      <template v-slot:title>Đăng xuất</template>
       <h6 class="text-dark text-center fs-5 mt-4">
         Bạn có chắc chắn muốn đăng xuất?
       </h6>

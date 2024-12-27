@@ -20,7 +20,7 @@
         :to="{ name: 'admin.dashboard' }"
       >
         <i class="fas fa-fw fa-tachometer-alt"></i>
-        <span>Dashboard</span>
+        <span>Tổng quan</span>
       </router-link>
     </li>
 
@@ -30,13 +30,13 @@
         class="nav-link collapsed fw-bold text-dark"
       >
         <i class="fas fa-fw fa-user"></i>
-        <span>Quản lý người dùng</span>
+        <span>Quản lý khách hàng</span>
       </router-link>
     </li>
 
     <li class="nav-item border-bottom">
       <router-link :to="{name: 'admin.orders' }" class="nav-link collapsed fw-bold text-dark" href="#">
-        <i class="fa-solid fa-list mr-2"></i>
+        <i class="fa-solid fa-file-invoice"></i>
         <span>Quản lý đơn hàng</span>
       </router-link>
     </li>
