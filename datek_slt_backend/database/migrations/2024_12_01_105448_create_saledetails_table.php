@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('saledetails', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sale_id')->constrained('sales');
-            $table->foreignId('product_id')->constrained('products');
+            $table->foreignId('sale_id')->constrained('sales')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->float('sale_percentage');
             $table->timestamps();
         });

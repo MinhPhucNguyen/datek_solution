@@ -65,7 +65,7 @@
                   </div>
                   <div class="col-md-6 mb-3">
                      <label for="email">Email</label>
-                     <input type="email" name="email" class="form-control" v-model="user.email" />
+                     <input type="text" name="email" class="form-control" v-model="user.email" />
                      <small class="text-danger" v-if="errors.email">{{ errors.email[0] }}</small>
                   </div>
                   <div class="col-md-6 mb-3">

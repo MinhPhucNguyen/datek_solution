@@ -273,18 +273,6 @@
                       <li>
                         <router-link
                           :to="{
-                            name: 'admin.users.profile',
-                            params: { id: user.id },
-                          }"
-                          class="dropdown-item mb-3 fs-6 text-warning bg-white"
-                        >
-                          <i class="fa-solid fa-eye"></i>
-                          <span class="ml-2">Xem thông tin</span>
-                        </router-link>
-                      </li>
-                      <li>
-                        <router-link
-                          :to="{
                             name: 'admin.users.edit',
                             params: { id: user.id },
                           }"

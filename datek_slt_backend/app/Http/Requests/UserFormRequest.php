@@ -29,19 +29,18 @@ class UserFormRequest extends FormRequest
             'firstname' => [
                 $isUpdate ? 'sometimes' : 'required',
                 'string',
-                'regex:/^([a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+)$/i'
+                'regex:/^[\p{L} ]+$/u', 
             ],
             'lastname' => [
                 $isUpdate ? 'sometimes' : 'required',
                 'string',
-                'regex:/^([a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+)$/i'
+                'regex:/^[\p{L} ]+$/u', 
             ],
             'address' => [
                 $isUpdate ? 'sometimes' : 'required',
                 'string',
+                'regex:/^[\d\p{L}\s.,\-\/()]+$/u',
                 'max:150',
-                // 'regex:/^(\\d{1,}) [a-zA-Z0-9\\s]+(\\,)? [a-zA-Z]|[a-zA-Z]+$/',
-                // 'regex:/^([a-zA-Z0-9ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+)$/i'
             ],
             'role_as' => [
                 $isUpdate ? 'sometimes' : 'required',
@@ -56,7 +55,6 @@ class UserFormRequest extends FormRequest
             ];
             $rules['phone'] = [
                 $isUpdate ? 'sometimes' : 'required',
-                // 'nullable',
                 'min:10',
                 'max:10',
                 Rule::unique('users', 'phone')->ignore($id)
@@ -77,7 +75,7 @@ class UserFormRequest extends FormRequest
                 'unique:users,phone'
             ];
             $rules['password'] = 'required|string|min:8|regex:/^(?=.{10,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/|unique:users';
-            $rules['confirm_password'] = 'required|string|same:password';
+            $rules['confirm_password'] = 'required|same:password';
         }
 
         return $rules;
@@ -87,12 +85,12 @@ class UserFormRequest extends FormRequest
     {
         return [
             'firstname.required' => '*Vui lòng nhập tên',
-            'firstname.string' => '*Tên phải là chuỗi',
-            'firstname.regex' => '*Tên không được chứa ký tự đặc biệt',
+            'firstname.string' => '*Tên phải là ký tự',
+            'firstname.regex' => '*Tên không được chứa số hoặc ký tự đặc biệt',
 
             'lastname.required' => '*Vui lòng nhập họ',
-            'lastname.string' => '*Họ phải là chuỗi',
-            'lastname.regex' => '*Họ không được chứa ký tự đặc biệt',
+            'lastname.string' => '*Họ phải là ký tự',
+            'lastname.regex' => '*Họ không được chứa số hoặc ký tự đặc biệt',
 
             'email.required' => '*Vui lòng nhập email',
             'email.email' => '*Email không hợp lệ',
@@ -101,13 +99,12 @@ class UserFormRequest extends FormRequest
             'phone.required' => '*Vui lòng nhập số điện thoại',
             'phone.min' => '*Số điện thoại phải có 10 số',
             'phone.max' => '*Số điện thoại phải có 10 số',
-            'phone.unique' => '*Số điện thoại đã tồn tại',
 
             'address.required' => '*Vui lòng nhập địa chỉ',
             'address.regex' => '*Địa chỉ không hợp lệ',
             'address.max' => '*Địa chỉ không được quá 150 ký tự',
 
-            'role_as.required' => "*Vui lòng chọn quyền",
+            'role_as.required' => "*Vui lòng chọn vai trò",
 
             'password.required' => '*Vui lòng nhập mật khẩu',
             'password.min' => '*Mật khẩu phải có ít nhất 8 ký tự',
@@ -115,7 +112,7 @@ class UserFormRequest extends FormRequest
             'password.regex' => '*Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt',
 
             'confirm_password.required' => '*Vui lòng nhập lại mật khẩu',
-            'confirm_password.same:password' => '*Mật khẩu không khớp',
+            'confirm_password.same' => '*Mật khẩu không khớp',
         ];
     }
 }
