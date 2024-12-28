@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
+            $table->string('sale_name');
             $table->dateTime('sale_begin_at');
             $table->dateTime('sale_end_at');
             $table->timestamps();

@@ -35,35 +35,55 @@
     </li>
 
     <li class="nav-item border-bottom">
-      <router-link :to="{name: 'admin.orders' }" class="nav-link collapsed fw-bold text-dark" href="#">
+      <router-link
+        :to="{ name: 'admin.orders' }"
+        class="nav-link collapsed fw-bold text-dark"
+        href="#"
+      >
         <i class="fa-solid fa-file-invoice"></i>
         <span>Quản lý đơn hàng</span>
       </router-link>
     </li>
 
     <li class="nav-item border-bottom">
-      <router-link :to="{name: 'admin.products'}" class="nav-link collapsed fw-bold text-dark" href="#">
+      <router-link
+        :to="{ name: 'admin.products' }"
+        class="nav-link collapsed fw-bold text-dark"
+        href="#"
+      >
         <i class="fa-solid fa-box mr-2"></i>
         <span>Quản lý sản phẩm</span>
       </router-link>
     </li>
 
     <li class="nav-item border-bottom">
-      <router-link :to="{name: 'admin.categories' }" class="nav-link collapsed fw-bold text-dark" href="#">
+      <router-link
+        :to="{ name: 'admin.categories' }"
+        class="nav-link collapsed fw-bold text-dark"
+        href="#"
+      >
         <i class="fa-solid fa-list mr-2"></i>
         <span>Quản lý danh mục sản phẩm</span>
       </router-link>
     </li>
 
-    <li class="nav-item border-bottom">
-      <a class="nav-link collapsed fw-bold text-dark" href="#">
+    <!-- <li class="nav-item border-bottom">
+      <router-link
+        :to="{ name: 'admin.sales' }"
+        class="nav-link collapsed fw-bold text-dark"
+        href="#"
+      >
         <i class="fa-solid fa-box mr-2"></i>
         <span>Quản lý giảm giá</span>
-      </a>
-    </li>
+      </router-link>
+    </li> -->
 
     <li class="nav-item border-bottom">
-      <router-link :to="{name: 'admin.brands'}" class="nav-link collapsed fw-bold text-dark" href="#">
+      <router-link
+        :to="{ name: 'admin.brands' }"
+        class="nav-link collapsed fw-bold text-dark"
+        href="#"
+      >
         <i class="fa-solid fa-box mr-2"></i>
         <span>Quản lý hãng</span>
       </router-link>

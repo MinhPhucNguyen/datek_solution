@@ -85,7 +85,6 @@ Route::get('products/{productId}/images/{id}', [ProductImagesController::class, 
 Route::put('products/{productId}/images/{id}/update', [ProductImagesController::class, 'update']);
 Route::delete('products/{productId}/images/{id}/delete', [ProductImagesController::class, 'destroy']);
 
-
 //Cart routes
 Route::post('cart/add-to-cart', [CartController::class, 'addToCart']);
 Route::post('cart/check-product', [CartController::class, 'checkProduct']);

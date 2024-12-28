@@ -1,5 +1,5 @@
 <template>
-  <div class="latest-produtct-list-block">
+  <div class="latest-produtct-list-block" v-if="latestProducts.length > 0">
     <div class="container">
       <div class="latest-produtct-list-title">
         <p>Sản phẩm mới nhất</p>
