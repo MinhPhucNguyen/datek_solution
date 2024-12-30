@@ -91,8 +91,8 @@
                         {{ brand.brand_name }}
                       </option>
                     </select>
-                    <small class="text-danger" v-if="errors.brand">{{
-                      errors.brand[0]
+                    <small class="text-danger" v-if="errors.brand_id">{{
+                      errors.brand_id[0]
                     }}</small>
                   </div>
                   <div class="col-md-4 mb-3">

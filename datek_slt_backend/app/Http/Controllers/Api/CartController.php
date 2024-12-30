@@ -39,7 +39,7 @@ class CartController extends Controller
         $cartItem = Cart::where('product_id', $request->product_id)->first();
 
         if ($cartItem) {
-            $cartItem->quantity += $request->quantity;
+            $cartItem->quantity = $request->quantity;
             $cartItem->save();
 
             return response()->json(['success' => true]);

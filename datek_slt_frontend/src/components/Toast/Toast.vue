@@ -4,10 +4,10 @@
       role="toast"
       aria-live="assertive"
       aria-atomic="true"
-      :style="{ borderLeftColor: bgColor }"
+      :style="{ 'border-left-color': bgColor }"
   >
     <div class="toast-content d-flex p-0">
-      <div class="d-flex align-items-center mr-3 fs-5">
+      <div class="d-flex align-items-center me-3 fs-5">
         <i class="fa-solid fa-circle-check"></i>
       </div>
       <div class="toast-body p-0 fw-bold mw-50">

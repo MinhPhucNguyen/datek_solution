@@ -1,7 +1,7 @@
 <template>
   <div class="cart-page">
     <div class="container">
-      <h2>Giỏ Hàng Của Bạn</h2>
+      <h2>Giỏ hàng của bạn</h2>
 
       <div v-if="isLoading" class="loading">
         <div
@@ -145,21 +145,22 @@ const totalPrice = computed(() => {
 
 const updateQuantity = async (index, newQuantity) => {
   newQuantity = Math.max(newQuantity, 1);
-
-  try {
-    loadingItemId.value = cartItems.value[index].product.id;
-    const productId = cartItems.value[index].product.id;
-    await store.dispatch("cart/updateQuantity", {
-      productId,
-      quantity: newQuantity - cartItems.value[index].quantity,
-    });
-    const updatedCart = store.getters["cart/getCartItems"];
-    updatedCart[index].quantity = newQuantity;
-    cartItems.value = updatedCart;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loadingItemId.value = null;
+  if (newQuantity >= 1) {
+    try {
+      loadingItemId.value = cartItems.value[index].product.id;
+      const productId = cartItems.value[index].product.id;
+      await store.dispatch("cart/updateQuantity", {
+        productId,
+        quantity: newQuantity,
+      });
+      const updatedCart = store.getters["cart/getCartItems"];
+      updatedCart[index].quantity = newQuantity;
+      cartItems.value = updatedCart;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      loadingItemId.value = null;
+    }
   }
 };
 

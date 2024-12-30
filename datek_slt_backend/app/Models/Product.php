@@ -78,6 +78,8 @@ class Product extends Model
                 ->orWhere('products.sku', 'like', $search);
         })->orWhereHas('brand', function ($query) use ($search) {
             $query->where('brand_name', 'like', $search);
+        })->orWhereHas('categories', function ($query) use ($search) {
+            $query->where('category_name', 'like', $search);
         });
     }
 }

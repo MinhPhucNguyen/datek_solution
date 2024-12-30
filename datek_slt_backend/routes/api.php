@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\IncomeTrackerController;
+use App\Http\Controllers\Auth\ChangePasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,7 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('users/{id}/delete', 'deleteUser');
     Route::delete('users/delete-multi-user/{users}', 'deleteMultiUser');
 });
+Route::middleware('auth:api')->post('users/{id}/change-password', [ChangePasswordController::class, 'changePassword']);
 
 // Category routes
 Route::get('categories', [CategoryController::class, 'index']);

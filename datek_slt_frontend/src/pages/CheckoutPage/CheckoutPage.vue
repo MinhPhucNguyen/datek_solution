@@ -61,7 +61,7 @@
                 />
                 Thanh toán khi nhận hàng
               </label>
-              <label>
+              <!-- <label>
                 <input
                   type="radio"
                   name="payment-method"
@@ -69,7 +69,7 @@
                   v-model="selectedPaymentMethod"
                 />
                 Thanh toán qua VnPay
-              </label>
+              </label> -->
             </div>
           </div>
         </div>
@@ -77,17 +77,21 @@
         <div class="block-right">
           <div class="order-summary">
             <h3>Đơn hàng</h3>
-            <div class="order-summary-item">
+            <div class="order-summary-item d-flex align-items-center">
               <p class="fw-bold">Tạm tính:</p>
               <span>{{ formatCurrency(totalPrice) }}</span>
             </div>
-            <div class="order-summary-item">
+            <div class="order-summary-item d-flex align-items-center">
               <p class="fw-bold">Phí vận chuyển:</p>
-              <span>{{ formatCurrency(20000) }}</span>
+              <span>{{ formatCurrency(shippingFee) }}</span>
             </div>
-            <div class="order-summary-item">
-              <p class="fw-bold">Thành tiền</p>
-              <span>{{ formatCurrency(totalPrice + shippingFee) }}</span>
+            <div class="order-summary-item d-flex align-items-center">
+              <p class="fw-bold">VAT:</p>
+              <span>{{ taxRatePercentage }}</span>
+            </div>
+            <div class="order-summary-item d-flex align-items-center">
+              <p class="fw-bold">Thành tiền:</p>
+              <span>{{ formatCurrency(totalPrice) }}</span>
             </div>
           </div>
 
@@ -99,7 +103,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, ref, watch } from "vue";
+import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -115,7 +119,7 @@ const payload = ref({
   total_price: 0,
   cart_items: [],
 });
-const shippingFee = 20000;
+const shippingFee = 30000;
 
 onBeforeMount(() => {
   store.dispatch("cart/fetchCart").then(() => {
@@ -131,6 +135,8 @@ onMounted(() => {
   payload.value.address = currentUser.value?.address || "";
 });
 
+const taxRate = 0.1;
+const taxRatePercentage = computed(() => Math.round(taxRate * 100) + "%");
 const totalPrice = ref(0);
 const selectedPaymentMethod = ref("cash");
 
@@ -139,10 +145,12 @@ watch(selectedPaymentMethod, (newMethod) => {
 });
 
 const calculateTotalPrice = () => {
-  totalPrice.value = cartItems.value.reduce(
+  const subtotal = cartItems.value.reduce(
     (total, item) => total + item.product.price * item.quantity,
     0
   );
+  const tax = subtotal * taxRate;
+  totalPrice.value = subtotal + tax + shippingFee;
 };
 
 const placeOrder = async () => {

@@ -41,10 +41,6 @@
   padding: 0 40px;
 }
 
-.header h1 {
-  font-size: 24px;
-}
-
 .header p {
   font-size: 16px;
 }
@@ -147,7 +143,7 @@
     width: 50%;
   }
 }
-
+.reset-password-btn,
 .btn-received {
   background: #4e43d8;
   color: #ffffff;
@@ -157,4 +153,56 @@
   margin-top: 20px;
   cursor: pointer;
   float: right;
+}
+
+.user-profile {
+  min-height: 50vh;
+}
+
+.change-pw .title {
+  font-weight: 500;
+}
+
+.confirm-button {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.confirm-button button {
+  padding: 10px 20px;
+  color: white;
+  background: #4e43d8;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  font-size: 18px;
+}
+
+.confirm-button button:hover {
+  background-color: #4e43d8;
+  transition: all 0.2s ease-in-out;
+  color: white;
+}
+
+.custom-input .wrap-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  grid-gap: 8px;
+  padding: 5px;
+  border: 1px solid #d8dae5;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.custom-input .wrap-input input {
+  width: 100%;
+  font-size: 18px;
+  border: none;
+  outline: none;
+}
+
+.custom-input .wrap-input i {
+  cursor: pointer;
 }

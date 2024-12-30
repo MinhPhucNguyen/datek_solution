@@ -33,12 +33,7 @@ class ProductController extends Controller
             return response()->json([]);
         }
 
-        $allProducts = Product::all();
-
-        $filteredProducts = $allProducts->filter(function ($product) use ($query) {
-            return str_contains(strtolower($product->name), strtolower($query)) ||
-                str_contains(strtolower($product->sku), strtolower($query));
-        })->values();
+        $filteredProducts = Product::search(trim($query))->get();
 
         return new ProductCollection($filteredProducts);
     }

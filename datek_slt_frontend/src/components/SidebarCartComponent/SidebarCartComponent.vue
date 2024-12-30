@@ -154,7 +154,7 @@ const changeQuantity = async (index, newQuantity) => {
     const productId = props.cartItems[index].product.id;
     await store.dispatch("cart/updateQuantity", {
       productId,
-      quantity: newQuantity - props.cartItems[index].quantity,
+      quantity: newQuantity,
     });
 
     await store.dispatch("cart/fetchCart");

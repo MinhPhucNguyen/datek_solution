@@ -75,7 +75,11 @@
                 <div class="row">
                   <div class="col-md-4 mb-3">
                     <label for="brand">Hãng</label>
-                    <select class="form-control" name="brand" v-model="model.brand_id">
+                    <select
+                      class="form-control"
+                      name="brand"
+                      v-model="model.brand_id"
+                    >
                       <option value="">--Chọn hãng--</option>
                       <option
                         v-for="brand in brandsList"
@@ -85,8 +89,8 @@
                         {{ brand.brand_name }}
                       </option>
                     </select>
-                    <small class="text-danger" v-if="errors.brand">{{
-                      errors.brand[0]
+                    <small class="text-danger" v-if="errors.brand_id">{{
+                      errors.brand_id[0]
                     }}</small>
                   </div>
                   <div class="col-md-4 mb-3">
@@ -158,7 +162,9 @@
                     />
                   </div>
                   <div class="col-md-12 mb-3">
-                    <label for="detailed_specifications">Thông số chi tiết</label>
+                    <label for="detailed_specifications"
+                      >Thông số chi tiết</label
+                    >
                     <Editor
                       api-key="6ctcvzv1prbljrvmhfwp3knb1k7b3ep2lsvx79de0vkacg24"
                       v-model="model.detailed_specifications"
@@ -176,6 +182,9 @@
               >
                 <div class="row">
                   <div class="col-md-6 mb-3">
+                    <small class="text-danger" v-if="errors.category_ids">{{
+                      errors.category_ids[0]
+                    }}</small>
                     <ul>
                       <li
                         class="category-checkbox"
@@ -370,6 +379,7 @@ const createNewProduct = async () => {
       $(".toast").toast("show");
       isLoading.value = false;
       router.push({ name: "admin.products" });
+      console.log(response);
     })
     .catch((error) => {
       errors.value = error.response.data.errors;
@@ -416,7 +426,6 @@ const uploadProductImage = (event) => {
 };
 
 /**
- * TODO: Remove product image before create new car
  * @param {*} index
  */
 const removeImage = (index) => {
