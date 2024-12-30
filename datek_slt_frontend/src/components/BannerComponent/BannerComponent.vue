@@ -9,7 +9,7 @@
           <p class="block-banner-title">Lenovo ThinkPad</p>
           <p class="block-banner-subtitle">T14s Gen 3</p>
           <div class="shop-now-btn">
-            <a href="">Mua ngay</a>
+            <a href="thinkpad-t14s-gen-3-14inch---2022---used-core-i7-1270p-32gb-512gb-fhd+/53">Mua ngay</a>
           </div>
         </div>
         <div class="block-search">

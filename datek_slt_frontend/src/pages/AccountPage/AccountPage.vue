@@ -33,12 +33,22 @@
             <div v-if="activeContent === 'profile'">
               <div v-if="!isEditing">
                 <div class="header">
-                  <h1>Xin chào {{ userData?.name || "User" }},</h1>
+                  <h1>
+                    Xin chào
+                    {{
+                      userData?.lastname + " " + userData?.firstname || "User"
+                    }},
+                  </h1>
                 </div>
                 <div class="account-manager d-flex justify-content-between">
                   <div>
                     <h3>Quản lý thông tin cá nhân</h3>
-                    <p class="mt-3">Name: {{ userData?.name || "User" }}</p>
+                    <p class="mt-3">
+                      Name:
+                      {{
+                        userData?.lastname + " " + userData?.firstname || "User"
+                      }}
+                    </p>
                     <p>Email: {{ userData?.email }}</p>
                     <p>
                       Phone:

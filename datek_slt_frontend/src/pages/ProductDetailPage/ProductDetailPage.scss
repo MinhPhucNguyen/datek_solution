@@ -291,6 +291,7 @@
 
 // Related Products
 .product-list-wrapper {
+  width: 100%;
   overflow: hidden;
 }
 
@@ -305,21 +306,27 @@
   .product-slider {
     .product-list-wrapper {
       width: 100%;
+      overflow: hidden;
 
       .product-list-related {
+        display: flex;
+        gap: 10px;
+        transition: transform 0.3s ease;
+        width: 100%;
+
         .product-item {
-          width: calc(100% / 5);
+          flex: 1 0 calc(20% - 8px);
+          max-width: calc(100% / 5 - 8px);
+          max-height: 100%;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          min-width: 0;
         }
       }
     }
   }
-}
-
-.product-list-related {
-  display: flex;
-  gap: 10px;
-  transition: transform 0.3s ease;
-  width: 100%;
 }
 
 .slider-btn {

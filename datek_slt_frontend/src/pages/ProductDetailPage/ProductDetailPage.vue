@@ -88,9 +88,13 @@
         </div>
         <div class="section-content">
           <div
+            v-if="productDetail.description !== 'null'"
             class="product-description"
             v-html="productDetail.description"
           ></div>
+          <div v-else class="product-description">
+            <span>Không có mô tả sản phẩm.</span>
+          </div>
         </div>
       </div>
       <div class="product-info-section">
@@ -99,9 +103,13 @@
         </div>
         <div class="section-content">
           <div
+            v-if="productDetail.detailed_specifications !== 'null'"
             class="product-description"
             v-html="productDetail.detailed_specifications"
           ></div>
+          <div v-else class="product-description">
+            <span>Không có thông số kỹ thuật chi tiết.</span>
+          </div>
         </div>
       </div>
       <div class="product-info-section" v-if="relatedProducts.length > 0">
@@ -243,7 +251,9 @@ const sliderStyle = computed(() => ({
 }));
 
 const isPrevDisabled = computed(() => currentIndex.value === 0);
-const isNextDisabled = computed(() => currentIndex.value >= relatedProducts.value.length - productsPerPage);
+const isNextDisabled = computed(
+  () => currentIndex.value >= relatedProducts.value.length - productsPerPage
+);
 
 const currentImage = ref("");
 
