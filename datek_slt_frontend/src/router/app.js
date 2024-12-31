@@ -50,6 +50,11 @@ const app = [
         name: "login",
       },
       {
+        path: "forgot-password",
+        component: () => import("@/pages/ForgotPassword/ForgotPassword.vue"),
+        name: "forgotPassword",
+      },
+      {
         path: "/customer/account/create",
         component: () => import("@/pages/RegisterPage/RegisterPage.vue"),
         name: "register",

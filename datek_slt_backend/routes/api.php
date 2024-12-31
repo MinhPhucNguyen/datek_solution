@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\IncomeTrackerController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,7 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('users/{id}/delete', 'deleteUser');
     Route::delete('users/delete-multi-user/{users}', 'deleteMultiUser');
 });
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 Route::middleware('auth:api')->post('users/{id}/change-password', [ChangePasswordController::class, 'changePassword']);
 
 // Category routes

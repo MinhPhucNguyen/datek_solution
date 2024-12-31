@@ -68,8 +68,11 @@
                     >
                       <span>Đăng nhập</span>
                     </button>
-                    <a class="action remind" href="#"
-                      ><span>Quên mật khẩu</span></a
+                    <router-link
+                      :to="{ name: 'forgotPassword' }"
+                      class="action remind"
+                      href="#"
+                      ><span>Quên mật khẩu</span></router-link
                     >
                   </div>
                 </div>
