@@ -14,7 +14,7 @@
 
 <body>
     <div style="width: 100%; background: white; padding: 50px 0; text-align: center; color: black">
-        <h1 style="text-align: center; font-size: 30px">CARENTAL</h1>
+        <h1 style="text-align: center; font-size: 30px">Datek</h1>
 
         <div
             style="width: 50%; margin: 0 auto; background: white; border: 1px solid #ccc; border-radius: 10px; border-top: 3px solid #1cc88a; padding: 20px">
@@ -33,9 +33,6 @@
             </div>
             <div style="margin-top: 30px">
                 <p style="margin-bottom: 10px; font-weight: bold">Cảm ơn!</p>
-                <p style="font-weight: bold">
-                    CA<span style="color: #1cc88a; margin-top: 20px">R</span>ENTAL
-                </p>
             </div>
         </div>
     </div>

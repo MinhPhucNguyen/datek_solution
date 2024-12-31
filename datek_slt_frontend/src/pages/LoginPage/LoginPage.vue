@@ -72,7 +72,7 @@
                       :to="{ name: 'forgotPassword' }"
                       class="action remind"
                       href="#"
-                      ><span>Quên mật khẩu</span></router-link
+                      ><span>Quên mật khẩu?</span></router-link
                     >
                   </div>
                 </div>

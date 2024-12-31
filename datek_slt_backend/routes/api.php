@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\IncomeTrackerController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +51,7 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('users/delete-multi-user/{users}', 'deleteMultiUser');
 });
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.reset');
 Route::middleware('auth:api')->post('users/{id}/change-password', [ChangePasswordController::class, 'changePassword']);
 
 // Category routes

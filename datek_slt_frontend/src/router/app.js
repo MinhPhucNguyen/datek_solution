@@ -58,6 +58,14 @@ const app = [
         },
       },
       {
+        path: "reset-password",
+        component: () => import("../pages/ResetPassword.vue"),
+        name: "resetPassword",
+        meta: {
+          hideFooter: true,
+        },
+      },
+      {
         path: "/customer/account/create",
         component: () => import("@/pages/RegisterPage/RegisterPage.vue"),
         name: "register",

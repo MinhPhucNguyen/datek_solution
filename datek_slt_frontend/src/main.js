@@ -13,7 +13,7 @@ window.$ = window.jQuery = jquery;
 library.add(fas);
 
 require("@/store/subscriber");
-axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+axios.defaults.baseURL = "https://datek_slt.localhost.com/api";
 
 store.dispatch("auth/attempt", localStorage.getItem("token")).then(() => {
     createApp(App)

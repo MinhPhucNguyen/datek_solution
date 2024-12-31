@@ -13,7 +13,7 @@
                   class="fa-regular fa-circle-check mb-4"
                   style="font-size: 60px"
                 ></i>
-                <p class="fw-bold fs-4">{{ successMessage }}</p>
+                <p class="fw-bold">{{ successMessage }}</p>
               </div>
               <div v-else>
                 <div class="mt-1 text-danger text-center" v-if="errorMessage">
@@ -44,7 +44,7 @@
                       :disabled="!isFilledForm"
                     >
                       <div
-                        class="spinner-grow text-light"
+                        class="spinner-border text-light"
                         v-if="isLoading"
                         style="width: 2rem; height: 2rem"
                         role="status"

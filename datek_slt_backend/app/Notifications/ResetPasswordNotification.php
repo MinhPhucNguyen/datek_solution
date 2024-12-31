@@ -38,7 +38,7 @@ class ResetPasswordNotification extends Notification
         $resetPasswordUrl = env('FRONT_APP') . env('FRONT_FORGOT_PASSWORD') . '?token=' . $this->token;
         return (new MailMessage)
             ->subject('DATEK - Đặt lại mật khẩu!')
-            ->view('emails.email_reset_password', [
+            ->view('emails/email_reset_password', [
                 'resetPasswordUrl' => $resetPasswordUrl,
                 'email' => $notifiable->email,
             ]);

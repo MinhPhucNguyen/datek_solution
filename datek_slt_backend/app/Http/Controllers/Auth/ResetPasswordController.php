@@ -18,7 +18,7 @@ class ResetPasswordController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password) {
                 $user->password = Hash::make($password);
-                $user->setRememberToken(Str::random(60)); //tạo token mới với độ dài ngẫu nhiên 60 ký tự, token tạo ra sẽ được lưu trong cột remember_token của bảng users
+                $user->setRememberToken(Str::random(60));
 
                 $user->save();
             }

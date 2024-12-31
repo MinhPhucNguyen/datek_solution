@@ -44,6 +44,7 @@ const router = useRouter();
 const logout = () => {
    store.dispatch("auth/logout").then(() => {
       router.push({ name: "login" });
+      store.dispatch("cart/clearCart");
       $("#logoutModal").modal("hide");
    });
 };

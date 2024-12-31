@@ -647,6 +647,7 @@ const showPw = (icon) => {
 const logout = () => {
   store.dispatch("auth/logout").then(() => {
     router.push({ name: "login" });
+    store.dispatch("cart/clearCart");
   });
 };
 </script>
