@@ -33,7 +33,7 @@ class ChangePasswordController extends Controller
         $user->update();
 
         return response()->json([
-            'message' => 'Đổi mật khẩu thành công.'
+            'message' => 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại.'
         ], 200);
     }
 }

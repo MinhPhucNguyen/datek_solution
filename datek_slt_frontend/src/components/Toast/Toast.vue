@@ -1,24 +1,44 @@
 <template>
   <div
-      class="toast align-items-center shadow"
-      role="toast"
-      aria-live="assertive"
-      aria-atomic="true"
-      :style="{ 'border-left-color': bgColor }"
+    class="toast align-items-center shadow"
+    role="toast"
+    aria-live="assertive"
+    aria-atomic="true"
+    :style="{ 'border-left-color': bgColor }"
   >
     <div class="toast-content d-flex p-0">
       <div class="d-flex align-items-center me-3 fs-5">
-        <i class="fa-solid fa-circle-check"></i>
+        <i
+          class="fa-solid fa-circle-check"
+          :style="{
+            color: props.type === 'success' ? '#1cc889e0' : '#e74a3be0',
+          }"
+          v-if="props.type === 'success'"
+        ></i>
+        <i
+          class="fa-solid fa-circle-xmark"
+          :style="{
+            color: props.type === 'danger' ? '#e74a3be0' : '#1cc889e0',
+          }"
+          v-if="props.type === 'danger'"
+        ></i>
       </div>
-      <div class="toast-body p-0 fw-bold mw-50">
-        <p class="m-0">{{ message }}</p>
+      <div class="toast-body p-0 mw-50">
+        <p
+          class="m-0"
+          :style="{
+            color: props.type === 'danger' ? '#e74a3be0' : '#1cc889e0',
+          }"
+        >
+          {{ message }}
+        </p>
       </div>
       <div class="close-btn">
         <button
-            type="button"
-            class="btn-close btn-close-white me-2 m-auto"
-            data-bs-dismiss="toast"
-            aria-label="Close"
+          type="button"
+          class="btn-close btn-close-white me-2 m-auto"
+          data-bs-dismiss="toast"
+          aria-label="Close"
         ></button>
       </div>
     </div>

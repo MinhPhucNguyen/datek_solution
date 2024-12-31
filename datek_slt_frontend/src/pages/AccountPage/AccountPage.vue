@@ -40,34 +40,50 @@
           <div class="main-content">
             <div v-if="activeContent === 'profile'">
               <div v-if="!isEditing">
-                <div class="header">
-                  <h1>
-                    Xin chào
-                    {{
-                      userData?.lastname + " " + userData?.firstname || "User"
-                    }},
-                  </h1>
-                </div>
-                <div class="account-manager d-flex justify-content-between">
-                  <div>
-                    <h3>Quản lý thông tin cá nhân</h3>
-                    <p class="mt-3">
-                      Name:
-                      {{
-                        userData?.lastname + " " + userData?.firstname || "User"
-                      }}
-                    </p>
-                    <p>Email: {{ userData?.email }}</p>
-                    <p>
-                      Phone:
-                      {{ userData?.phone || "Chưa có số điện thoại nào" }}
-                    </p>
+                <div v-if="isLoading" class="loading">
+                  <div
+                    class="spinner-border"
+                    style="width: 2rem; height: 2rem"
+                    role="status"
+                  >
+                    <span class="visually-hidden">Loading...</span>
                   </div>
-                  <div>
-                    <button class="btn edit-profile-btn" @click="startEditing">
-                      <i class="fa-solid fa-pen-to-square"></i>
-                      Chỉnh sửa thông tin
-                    </button>
+                </div>
+                <div v-else>
+                  <div class="header">
+                    <h1>
+                      Xin chào
+                      {{
+                        userData?.lastname + " " + userData?.firstname ||
+                        "User"
+                      }},
+                    </h1>
+                  </div>
+                  <div class="account-manager d-flex justify-content-between">
+                    <div>
+                      <h3>Quản lý thông tin cá nhân</h3>
+                      <p class="mt-3">
+                        Name:
+                        {{
+                          userData?.lastname + " " + userData?.firstname ||
+                          "User"
+                        }}
+                      </p>
+                      <p>Email: {{ userData?.email }}</p>
+                      <p>
+                        Phone:
+                        {{ userData?.phone || "Chưa có số điện thoại nào" }}
+                      </p>
+                    </div>
+                    <div>
+                      <button
+                        class="btn edit-profile-btn"
+                        @click="startEditing"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Chỉnh sửa thông tin
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -169,7 +185,7 @@
             <div v-if="activeContent === 'reset-password'">
               <ToastMessage
                 :message="successMessage ? successMessage : errorMessage"
-                :toastType="errorMessage ? 'danger' : 'success'"
+                :type="errorMessage ? 'danger' : 'success'"
               />
               <div class="content-title">
                 <h2>Đổi mật khẩu</h2>
@@ -433,6 +449,7 @@ const store = useStore();
 const router = useRouter();
 const activeContent = ref("profile");
 const isEditing = ref(false);
+const isLoading = ref(false);
 const isOrdersDetail = ref(false);
 const orderDetails = ref({});
 const isFilledForm = ref(false);
@@ -464,7 +481,6 @@ watch(model.value, (value) => {
   }
 });
 
-const isLoading = ref(false);
 const formData = ref({
   firstname: "",
   lastname: "",
@@ -588,6 +604,11 @@ const changePassword = async () => {
       isLoading.value = false;
       successMessage.value = response.data.message;
       $(".toast").toast("show");
+      setTimeout(() => {
+        store.dispatch("auth/logout").then(() => {
+          router.push({ name: "login" });
+        });
+      }, 2000);
       resetForm();
     })
     .catch((error) => {
