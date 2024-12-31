@@ -38,15 +38,9 @@ const orders = {
   },
   actions: {
     async placeOrder({ commit, dispatch }, payload) {
-      try {
-        const response = await axios.post("/place-order", payload);
-        commit("SET_ORDERS", response.data.order);
-        dispatch("cart/clearCart", null, { root: true });
-      } catch (error) {
-        throw new Error(
-          error.response?.data?.message || "Lỗi đặt hàng hoặc số lượng không đủ"
-        );
-      }
+      const response = await axios.post("/place-order", payload);
+      commit("SET_ORDERS", response.data.order);
+      dispatch("cart/clearCart", null, { root: true });
     },
 
     async getOrders({ commit }, payload) {

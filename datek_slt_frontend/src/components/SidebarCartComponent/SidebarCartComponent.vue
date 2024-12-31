@@ -56,10 +56,14 @@
                     <font-awesome-icon :icon="['fas', 'plus']" />
                   </button>
                 </div>
+
                 <button class="remove-button" @click="removeItem(index)">
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
               </div>
+              <small v-if="quantityError" class="text-danger">{{
+                quantityError
+              }}</small>
               <p>
                 Giá: {{ formatCurrency(item.product.price * item.quantity) }}
               </p>
@@ -147,7 +151,15 @@ const removeItem = async (index) => {
   }
 };
 
+const quantityError = ref(null);
 const changeQuantity = async (index, newQuantity) => {
+  const product = props.cartItems[index].product;
+
+  if (newQuantity > product.quantity) {
+    quantityError.value = `Không đủ số lượng yêu cầu. Chỉ còn ${product.quantity} sản phẩm.`;
+    return;
+  }
+
   newQuantity = Math.max(newQuantity, 1);
 
   try {
