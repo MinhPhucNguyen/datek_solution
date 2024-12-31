@@ -53,6 +53,9 @@ const app = [
         path: "forgot-password",
         component: () => import("@/pages/ForgotPassword/ForgotPassword.vue"),
         name: "forgotPassword",
+        meta: {
+          hideFooter: true,
+        },
       },
       {
         path: "/customer/account/create",
