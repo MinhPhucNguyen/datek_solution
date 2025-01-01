@@ -1,5 +1,10 @@
 <template>
   <div class="product-detail-page">
+    <ToastMessage
+      :message="successMessage ? successMessage : errorMessage"
+      :type="errorMessage ? 'danger' : 'success'"
+    />
+
     <div v-if="isLoading" class="loading">
       <div
         class="spinner-border"
@@ -112,22 +117,14 @@
           </div>
         </div>
       </div>
-      <div class="product-info-section" v-if="relatedProducts.length > 0">
+      <div class="product-info-section">
         <div class="section-title border-0 mt-5 fs-3">
           <span> Đánh giá sản phẩm </span>
         </div>
         <div class="section-content reviews">
-          <ul>
-            <li v-for="review in reviews" :key="review.id">
-              <strong>{{ review.rating }}⭐</strong> - {{ review.comment }}
-              <small>by {{ review.user_id }} on {{ review.created_at }}</small>
-            </li>
-          </ul>
-
-          <h3>Add a Review</h3>
-          <form @submit.prevent="submitReview">
-            <label
-              >Rating:
+          <div class="add-reviews">
+            <form @submit.prevent="submitReview" class="d-flex flex-column">
+              <label class="fw-bold">Đánh giá: </label>
               <input
                 type="number"
                 v-model="newReview.rating"
@@ -135,13 +132,53 @@
                 max="5"
                 required
               />
-            </label>
-            <label
-              >Comment:
-              <textarea v-model="newReview.comment"></textarea>
-            </label>
-            <button type="submit">Submit</button>
-          </form>
+              <label class="fw-bold mt-3">Viết đánh giá:</label>
+              <textarea v-model="newReview.comment" class="mb-3"></textarea>
+              <button type="submit" class="add-review-btn fw-bold"  :disabled="!isFilledForm">
+                Thêm đánh giá sản phẩm
+              </button>
+            </form>
+          </div>
+          <div class="reviews-list">
+            <ul v-if="reviews.length > 0">
+              <li
+                v-for="review in reviews"
+                :key="review.id"
+                class="review-item"
+              >
+                <div class="review-header d-flex align-items-center">
+                  <div class="review-avatar me-3">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                  <div class="review-user-info">
+                    <p class="fw-bold mb-0">{{ review.user.name }}</p>
+                    <small class="review-date">{{
+                      formatDateTime(review.created_at)
+                    }}</small>
+                  </div>
+                </div>
+                <div class="review-content">
+                  <div class="review-stars">
+                    <span
+                      v-for="star in 5"
+                      :key="star"
+                      class="star"
+                      :class="{ active: star <= review.rating }"
+                    >
+                      <i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="review-rating-text"
+                      >{{ review.rating }}/5</span
+                    >
+                  </div>
+                  <p class="review-text">{{ review.review }}</p>
+                </div>
+              </li>
+            </ul>
+            <div v-else>
+              <p>Không có đánh giá nào!</p>
+            </div>
+          </div>
         </div>
       </div>
       <div class="product-info-section" v-if="relatedProducts.length > 0">
@@ -214,6 +251,8 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import CartSideBar from "@/components/SidebarCartComponent/SidebarCartComponent.vue";
 import ProductItemComponent from "@/components/ProductItemComponent/ProductItemComponent.vue";
+import ToastMessage from "@/components/Toast/Toast.vue";
+import { formatDateTime } from "@/utils/formatDateTime";
 
 const route = useRoute();
 const productDetail = ref({});
@@ -221,12 +260,13 @@ const productImages = ref([]);
 const relatedProducts = ref([]);
 const currentIndex = ref(0);
 const productsPerPage = 5;
-const errorMessage = ref("");
 const productId = ref(null);
 const isLoginModalVisible = ref(false);
 const store = useStore();
 const router = useRouter();
 const isLoading = ref(true);
+const successMessage = ref(null);
+const errorMessage = ref(null);
 let autoChangeImageInterval = null;
 
 productId.value = route.params.id;
@@ -388,13 +428,33 @@ onMounted(() => {
 
 // Reviews
 const reviews = ref([]);
+const newReview = ref({
+  rating: 0,
+  comment: "",
+});
 const fetchReviews = async () => {
   try {
     const response = await axios.get(`products/${productId.value}/reviews`);
-    console.log(response.data);
-    reviews.value = response.data.data.reviews;
+    reviews.value = response.data.data;
   } catch (error) {
     console.error(error);
+  }
+};
+
+const submitReview = async () => {
+  const response = await axios.post(`products/${productId.value}/reviews`, {
+    rating: newReview.value.rating,
+    review: newReview.value.comment,
+  });
+  if (response.data.success) {
+    successMessage.value = response.data.message;
+    $(".toast").toast("show");
+    fetchReviews();
+    newReview.value.rating = 1;
+    newReview.value.comment = "";
+  } else {
+    errorMessage.value = response.data.message;
+    $(".toast").toast("show");
   }
 };
 

@@ -80,7 +80,7 @@ class UserController extends Controller
         $user = new User();
         $user->firstname = $validatedInputs['firstname'];
         $user->lastname = $validatedInputs['lastname'];
-        $user->name = $validatedInputs['firstname'] . ' ' . $validatedInputs['lastname'];
+        $user->name = $validatedInputs['lastname'] . ' ' . $validatedInputs['firstname'];
         $user->email = $validatedInputs['email'];
         $user->address = $validatedInputs['address'];
         $user->gender = $request->gender ?? 1;

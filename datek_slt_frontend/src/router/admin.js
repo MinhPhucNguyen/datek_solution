@@ -41,6 +41,11 @@ const admin = [
         name: "admin.categories",
       },
       {
+        path: "reviews",
+        component: () => import("@/pages/Admin/ProductReviews/index.vue"),
+        name: "admin.reviews",
+      },
+      {
         path: "brands",
         component: () => import("@/pages/Admin/Brands/index.vue"),
         name: "admin.brands",

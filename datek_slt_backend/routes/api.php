@@ -86,7 +86,11 @@ Route::delete('products/remove-image/{image_id}', action: [ProductController::cl
 Route::get('products/get-by-brand/{brand_id}', [ProductController::class, 'getAllProductsByBrand']);
 
 //Review routes
+Route::get('products/reviews', [ReviewController::class, 'getReviews']);
 Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
+Route::middleware('auth:api')->group(function () {
+    Route::post('products/{product}/reviews', [ReviewController::class, 'store']);
+});
 
 //Product Images routes
 Route::get('products/{productId}/images', [ProductImagesController::class, 'index']);

@@ -19,7 +19,15 @@ class ReviewController extends Controller
      */
     public function index(Product $product)
     {
-        return response()->json($product->reviews()->where('status', 1)->get());
+        $reviews = $product->reviews()->where('status', 1)->with('user')->paginate(5);
+        return response()->json($reviews);
+    }
+
+    public function getReviews()
+    {
+        $paginate = 10;
+        $reviews = Review::with('user', 'product')->paginate($paginate);
+        return response()->json($reviews);
     }
 
     /**
@@ -31,20 +39,33 @@ class ReviewController extends Controller
      */
     public function store(Request $request, Product $product)
     {
-        $request->validate([
-            'review' => 'required|string',
-            'rating' => 'required|numeric|min:0|max:5',
-        ]);
+        try {
+            $request->validate([
+                'review' => 'required|string',
+                'rating' => 'required|numeric|min:0|max:5',
+            ]);
 
-        $review = new Review;
-        $review->review = $request->review;
-        $review->rating = $request->rating;
-        $review->user_id = auth()->user()->id;
-        $review->status = 0;
+            $review = new Review;
+            $review->review = $request->review;
+            $review->rating = $request->rating;
+            $review->user_id = auth()->user()->id;
+            $review->status = 0;
 
-        $product->reviews()->save($review);
-        return response()->json(['message' => 'Review Added', 'review' => $review]);
+            $product->reviews()->save($review);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Đã thêm đánh giá sản phẩm',
+                'review' => $review
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     /**
      * Update the specified resource in storage.

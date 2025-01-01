@@ -80,6 +80,17 @@
 
     <li class="nav-item border-bottom">
       <router-link
+        :to="{ name: 'admin.reviews' }"
+        class="nav-link collapsed fw-bold text-dark"
+        href="#"
+      >
+        <i class="fa-solid fa-star"></i>
+        <span>Đánh giá</span>
+      </router-link>
+    </li>
+
+    <li class="nav-item border-bottom">
+      <router-link
         :to="{ name: 'admin.brands' }"
         class="nav-link collapsed fw-bold text-dark"
         href="#"
