@@ -114,6 +114,38 @@
       </div>
       <div class="product-info-section" v-if="relatedProducts.length > 0">
         <div class="section-title border-0 mt-5 fs-3">
+          <span> Đánh giá sản phẩm </span>
+        </div>
+        <div class="section-content reviews">
+          <ul>
+            <li v-for="review in reviews" :key="review.id">
+              <strong>{{ review.rating }}⭐</strong> - {{ review.comment }}
+              <small>by {{ review.user_id }} on {{ review.created_at }}</small>
+            </li>
+          </ul>
+
+          <h3>Add a Review</h3>
+          <form @submit.prevent="submitReview">
+            <label
+              >Rating:
+              <input
+                type="number"
+                v-model="newReview.rating"
+                min="1"
+                max="5"
+                required
+              />
+            </label>
+            <label
+              >Comment:
+              <textarea v-model="newReview.comment"></textarea>
+            </label>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+      <div class="product-info-section" v-if="relatedProducts.length > 0">
+        <div class="section-title border-0 mt-5 fs-3">
           <span> Các sản phẩm liên quan </span>
         </div>
         <div class="section-content related-products">
@@ -352,6 +384,22 @@ const closeCart = () => {
 
 onMounted(() => {
   window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// Reviews
+const reviews = ref([]);
+const fetchReviews = async () => {
+  try {
+    const response = await axios.get(`products/${productId.value}/reviews`);
+    console.log(response.data);
+    reviews.value = response.data.data.reviews;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(() => {
+  fetchReviews();
 });
 </script>
 

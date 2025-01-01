@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\IncomeTrackerController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +84,9 @@ Route::delete('products/{id}/delete', [ProductController::class, 'destroy']);
 Route::delete('products/delete-multi-product/{products}', [ProductController::class, 'deleteMultiProduct']);
 Route::delete('products/remove-image/{image_id}', action: [ProductController::class, 'destroyImage']);
 Route::get('products/get-by-brand/{brand_id}', [ProductController::class, 'getAllProductsByBrand']);
+
+//Review routes
+Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
 
 //Product Images routes
 Route::get('products/{productId}/images', [ProductImagesController::class, 'index']);
