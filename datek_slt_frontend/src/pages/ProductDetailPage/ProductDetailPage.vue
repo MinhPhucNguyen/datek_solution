@@ -125,16 +125,28 @@
           <div class="add-reviews">
             <form @submit.prevent="submitReview" class="d-flex flex-column">
               <label class="fw-bold">Đánh giá: </label>
-              <input
-                type="number"
-                v-model="newReview.rating"
-                min="1"
-                max="5"
-                required
-              />
+              <div class="rating-stars">
+                <span
+                  v-for="star in 5"
+                  :key="star"
+                  class="star"
+                  :class="{
+                    active: star <= newReview.rating || star <= hoverRating,
+                  }"
+                  @click="setRating(star)"
+                  @mouseover="hoverRating = star"
+                  @mouseleave="hoverRating = 0"
+                >
+                  <i class="fa-solid fa-star"></i>
+                </span>
+              </div>
               <label class="fw-bold mt-3">Viết đánh giá:</label>
               <textarea v-model="newReview.comment" class="mb-3"></textarea>
-              <button type="submit" class="add-review-btn fw-bold"  :disabled="!isFilledForm">
+              <button
+                type="submit"
+                class="add-review-btn fw-bold"
+                :disabled="!isFilledForm"
+              >
                 Thêm đánh giá sản phẩm
               </button>
             </form>
@@ -167,9 +179,6 @@
                     >
                       <i class="fa-solid fa-star"></i>
                     </span>
-                    <span class="review-rating-text"
-                      >{{ review.rating }}/5</span
-                    >
                   </div>
                   <p class="review-text">{{ review.review }}</p>
                 </div>
@@ -244,7 +253,7 @@
 
 <script setup>
 import axios from "axios";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useStore } from "vuex";
@@ -267,6 +276,7 @@ const router = useRouter();
 const isLoading = ref(true);
 const successMessage = ref(null);
 const errorMessage = ref(null);
+const isFilledForm = ref(false);
 let autoChangeImageInterval = null;
 
 productId.value = route.params.id;
@@ -428,10 +438,23 @@ onMounted(() => {
 
 // Reviews
 const reviews = ref([]);
+const hoverRating = ref(0);
 const newReview = ref({
   rating: 0,
   comment: "",
 });
+
+watch(newReview.value, (value) => {
+  isFilledForm.value = true;
+  if (value.rating === "" || value.comment === "") {
+    isFilledForm.value = false;
+  }
+});
+
+const setRating = (star) => {
+  newReview.value.rating = star;
+};
+
 const fetchReviews = async () => {
   try {
     const response = await axios.get(`products/${productId.value}/reviews`);
@@ -450,7 +473,7 @@ const submitReview = async () => {
     successMessage.value = response.data.message;
     $(".toast").toast("show");
     fetchReviews();
-    newReview.value.rating = 1;
+    newReview.value.rating = 0;
     newReview.value.comment = "";
   } else {
     errorMessage.value = response.data.message;
