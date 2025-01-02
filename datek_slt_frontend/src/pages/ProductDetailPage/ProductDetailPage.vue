@@ -241,7 +241,7 @@
       @click="closeLoginModal"
     >
       <div class="modal-content" @click.stop>
-        <p>Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.</p>
+        <p>Vui lòng đăng nhập.</p>
         <div class="action-buttons">
           <button class="login-btn" @click="redirectToLogin">Đăng nhập</button>
           <button @click="closeLoginModal">Đóng</button>
@@ -445,9 +445,14 @@ const newReview = ref({
 });
 
 watch(newReview.value, (value) => {
+  checkLoginStatus();
   isFilledForm.value = true;
-  if (value.rating === "" || value.comment === "") {
-    isFilledForm.value = false;
+
+  if (isLoggedIn.value) {
+    isFilledForm.value = true;
+    if (value.rating === "" || value.comment === "") {
+      isFilledForm.value = false;
+    }
   }
 });
 
@@ -465,19 +470,24 @@ const fetchReviews = async () => {
 };
 
 const submitReview = async () => {
-  const response = await axios.post(`products/${productId.value}/reviews`, {
-    rating: newReview.value.rating,
-    review: newReview.value.comment,
-  });
-  if (response.data.success) {
-    successMessage.value = response.data.message;
-    $(".toast").toast("show");
-    fetchReviews();
-    newReview.value.rating = 0;
-    newReview.value.comment = "";
+  checkLoginStatus();
+  if (!isLoggedIn.value) {
+    isLoginModalVisible.value = true;
   } else {
-    errorMessage.value = response.data.message;
-    $(".toast").toast("show");
+    const response = await axios.post(`products/${productId.value}/reviews`, {
+      rating: newReview.value.rating,
+      review: newReview.value.comment,
+    });
+    if (response.data.success) {
+      successMessage.value = response.data.message;
+      $(".toast").toast("show");
+      fetchReviews();
+      newReview.value.rating = 0;
+      newReview.value.comment = "";
+    } else {
+      errorMessage.value = response.data.message;
+      $(".toast").toast("show");
+    }
   }
 };
 

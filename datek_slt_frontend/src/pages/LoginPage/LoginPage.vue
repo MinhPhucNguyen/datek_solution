@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -129,6 +129,10 @@ const clearError = (field) => {
     errors.value = null;
   }
 };
+
+onBeforeMount(() => {
+  window.scrollTo(0, 0);
+});
 </script>
 
 <style scoped>

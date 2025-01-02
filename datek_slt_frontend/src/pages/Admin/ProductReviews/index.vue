@@ -3,13 +3,13 @@
     <ToastMessage :message="successMessage" />
 
     <my-modal
-      @clickTo="handleDeleteBrand"
+      @clickTo="handleDeleteReview"
       idModal="deleteConfirmModal"
       bgColor="danger"
     >
-      <template v-slot:title>Xóa hãng</template>
+      <template v-slot:title>Xóa đánh giá</template>
       <h6 class="text-dark text-center fs-5 mt-4">
-        Bạn có chắc chắn muốn xóa hãng này?
+        Bạn có chắc chắn muốn xóa đánh giá này?
       </h6>
       <template v-slot:buttonName>
         <div
@@ -44,7 +44,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="review in reviews" :key="review.id">
+              <tr v-if="isLoading">
+                <td colspan="6" class="text-center">
+                  <state-loading />
+                </td>
+              </tr>
+              <tr v-else-if="reviews.length === 0">
+                <td colspan="6" class="text-center">Không có đánh giá nào!</td>
+              </tr>
+
+              <tr v-else v-for="review in reviews" :key="review.id">
                 <td class="text-center">{{ review.id }}</td>
                 <td class="text-center">{{ review.user.name }}</td>
                 <td class="text-center">{{ review.review }}</td>
@@ -79,7 +88,7 @@
                           @click="updateReviewStatus(review)"
                         >
                           <i class="fa-solid fa-check"></i>
-                          <span class="ml-2">Chấp thuận</span>
+                          <span class="ml-2">Hiển thị</span>
                         </button>
                       </li>
                       <li>
@@ -89,7 +98,7 @@
                           @click="updateReviewStatus(review)"
                         >
                           <i class="fa-solid fa-x"></i>
-                          <span class="ml-2">Không chấp thuận</span>
+                          <span class="ml-2">Không hiển thị</span>
                         </button>
                       </li>
                       <li>
@@ -104,11 +113,6 @@
                       </li>
                     </ul>
                   </div>
-                </td>
-              </tr>
-              <tr v-if="reviews.length === 0">
-                <td colspan="6" class="text-center">
-                  <stateLoading />
                 </td>
               </tr>
             </tbody>
@@ -132,8 +136,10 @@ const successMessage = ref(null);
 const isLoading = ref(false);
 
 const fetchReviews = async () => {
+  isLoading.value = true;
   try {
     const response = await axios.get(`products/reviews`);
+    isLoading.value = false;
     reviews.value = response.data.data;
   } catch (error) {
     console.error(error);
@@ -156,12 +162,17 @@ const updateReviewStatus = async (review) => {
   }
 };
 
-const deleteReview = async (review) => {
+const deleteReview = () => {
+  $("#deleteConfirmModal").modal("show");
+};
+
+const handleDeleteReview = async (review) => {
   isLoading.value = true;
   try {
     const response = await axios.delete(`products/reviews/${review.id}`);
     successMessage.value = response.data.message;
     $(".toast").toast("show");
+    isLoading.value = false;
     fetchReviews();
   } catch (error) {
     console.error(error);
