@@ -103,7 +103,7 @@ const actions = {
           user_id: userId,
           cart_id: response.data.cart_id,
           product_id: productId,
-          quantity,
+          quantity: response.data.quantity + quantity,
         });
         dispatch("toggleCartVisibility", true);
       } else {

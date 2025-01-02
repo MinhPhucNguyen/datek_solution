@@ -65,15 +65,6 @@
                 />
                 Thanh toán khi nhận hàng
               </label>
-              <!-- <label>
-                <input
-                  type="radio"
-                  name="payment-method"
-                  value="vnpay"
-                  v-model="selectedPaymentMethod"
-                />
-                Thanh toán qua VnPay
-              </label> -->
             </div>
           </div>
         </div>
@@ -81,25 +72,61 @@
         <div class="block-right">
           <div class="order-summary">
             <h3>Đơn hàng</h3>
-            <div class="order-summary-item d-flex align-items-center">
+            <div
+              class="order-summary-item d-flex align-items-center justify-content-between"
+            >
               <p class="fw-bold">Tạm tính:</p>
               <span>{{ formatCurrency(subtotal) }}</span>
             </div>
-            <div class="order-summary-item d-flex align-items-center">
+            <div
+              class="order-summary-item d-flex align-items-center justify-content-between"
+            >
               <p class="fw-bold">Phí vận chuyển:</p>
               <span>{{ formatCurrency(shippingFee) }}</span>
             </div>
-            <div class="order-summary-item d-flex align-items-center">
+            <div
+              class="order-summary-item d-flex align-items-center justify-content-between"
+            >
               <p class="fw-bold">VAT:</p>
               <span>{{ taxRate + "%" }}</span>
             </div>
-            <div class="order-summary-item d-flex align-items-center">
+            <div
+              class="order-summary-item d-flex align-items-center justify-content-between"
+            >
+              <p class="fw-bold">Giảm giá:</p>
+              <span class="text-danger"
+                >-{{ formatCurrency(totalDiscountAmount ?? 0) }}</span
+              >
+            </div>
+            <div
+              class="order-summary-item d-flex align-items-center justify-content-between"
+            >
               <p class="fw-bold">Thành tiền:</p>
               <span>{{ formatCurrency(totalPrice) }}</span>
             </div>
           </div>
-
-          <button class="btn order-button" @click="placeOrder">Đặt hàng</button>
+          <div class="discount-code">
+            <form
+              class="discount-code-container"
+              @submit.prevent="applyDiscount"
+            >
+              <input
+                type="text"
+                class="discount-code-input"
+                placeholder="Nhập mã giảm giá"
+                v-model="applyDiscountCode"
+              />
+              <button
+                type="submit"
+                class="discount-code-button"
+                @click="applyDiscount"
+                :disabled="!isFilled"
+              >
+                Áp dụng
+              </button>
+            </form>
+          </div>
+          <button class="order-button" @click="placeOrder">Đặt hàng</button>
         </div>
       </div>
     </div>
@@ -107,11 +134,12 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, ref, watch } from "vue";
+import { onBeforeMount, onMounted, ref, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
 import ToastMessage from "@/components/Toast/Toast.vue";
+import axios from "axios";
 
 const router = useRouter();
 const store = useStore();
@@ -127,6 +155,8 @@ const payload = ref({
 const successMessage = ref(null);
 const errorMessage = ref(null);
 const shippingFee = 30000;
+const isFilled = ref(false);
+const totalDiscountAmount = ref(0);
 
 onBeforeMount(() => {
   store.dispatch("cart/fetchCart").then(() => {
@@ -157,7 +187,8 @@ const calculateTotalPrice = () => {
     0
   );
   const tax = subtotal.value * (taxRate / 100);
-  totalPrice.value = subtotal.value + tax + shippingFee;
+  totalPrice.value =
+    subtotal.value + tax + shippingFee - totalDiscountAmount.value;
 };
 
 const placeOrder = async () => {
@@ -172,12 +203,55 @@ const placeOrder = async () => {
     .dispatch("orders/placeOrder", payload.value)
     .then(() => {
       store.dispatch("cart/clearCart");
+      localStorage.removeItem("discountCode");
+      localStorage.removeItem("totalDiscountAmount");
       router.push({ name: "success-page" });
     })
     .catch((error) => {
       errorMessage.value = error.response.data.message;
       $(".toast").toast("show");
     });
+};
+
+const applyDiscountCode = ref("");
+
+isFilled.value = computed(() => applyDiscountCode.value.trim().length > 0);
+
+onMounted(() => {
+  const savedDiscountCode = localStorage.getItem("discountCode");
+  const savedTotalDiscountAmount = localStorage.getItem("totalDiscountAmount");
+
+  if (savedDiscountCode) {
+    applyDiscountCode.value = savedDiscountCode;
+  }
+
+  if (savedTotalDiscountAmount) {
+    totalDiscountAmount.value = parseFloat(savedTotalDiscountAmount);
+  }
+
+  calculateTotalPrice();
+  payload.value.user_id = currentUser.value?.id;
+  payload.value.address = currentUser.value?.address || "";
+});
+
+const applyDiscount = async () => {
+  try {
+    const response = await axios.post("/apply-discount", {
+      coupon_code: applyDiscountCode.value,
+      user_id: currentUser.value.id,
+    });
+    successMessage.value = response.data.message;
+    errorMessage.value = "";
+    $(".toast").toast("show");
+    totalDiscountAmount.value = response.data.total_discount;
+    localStorage.setItem("discountCode", applyDiscountCode.value);
+    localStorage.setItem("totalDiscountAmount", response.data.total_discount);
+    calculateTotalPrice();
+  } catch (error) {
+    errorMessage.value = error.response.data.message;
+    successMessage.value = "";
+    $(".toast").toast("show");
+  }
 };
 </script>
 

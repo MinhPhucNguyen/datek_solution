@@ -12,12 +12,12 @@ class Sales extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'coupon_code',
+        'sale_percentage',
+        'is_active',
         'sale_begin_at',
-        'sale_end_at'
+        'sale_end_at',
+        'sale_name',
+        'is_active'
     ];
-
-    public function saleDetails()
-    {
-        return $this->hasMany(SaleDetails::class);
-    }
 }

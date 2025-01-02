@@ -24,7 +24,7 @@ class CartController extends Controller
             ->first();
 
         if ($cart) {
-            return response()->json(['exists' => true, 'cart_id' => $cart->id]);
+            return response()->json(['exists' => true, 'cart_id' => $cart->id, 'quantity' => $cart->quantity]);
         }
 
         return response()->json(['exists' => false]);

@@ -31,7 +31,11 @@
         <p class="product-name">{{ product.name || "Loading..." }}</p>
       </router-link>
     </div>
-    <div v-if="product.quantity > 0" class="product-item-price" :class="{ placeholder: !product.name }">
+    <div
+      v-if="product.quantity > 0"
+      class="product-item-price"
+      :class="{ placeholder: !product.name }"
+    >
       <p :class="{ placeholder: !product.price }">
         {{ product.price ? formatCurrency(product.price) : "0" }}
       </p>
@@ -49,7 +53,12 @@
           <font-awesome-icon :icon="['fas', 'plus']" />
         </button>
       </div>
-      <button class="add-to-cart-btn" @click="addToCart">
+      <button
+        class="add-to-cart-btn"
+        :class="{ 'not-logged-in': !isLoggedIn }"
+        @click="addToCart"
+        :disabled="!isLoggedIn"
+      >
         <font-awesome-icon :icon="['fas', 'cart-shopping']" />
       </button>
     </div>
@@ -57,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps, onBeforeMount } from "vue";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useStore } from "vuex";
 
@@ -90,10 +99,12 @@ const decrementQuantity = () => {
   }
 };
 
+onBeforeMount(() => {
+  checkLoginStatus();
+});
+
 const addToCart = async () => {
   try {
-    checkLoginStatus();
-
     if (!isLoggedIn.value) {
       isLoginModalVisible.value = true;
     } else {

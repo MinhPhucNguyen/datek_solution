@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saledetails', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('sale_id')->constrained('sales')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+        Schema::table('sales', function (Blueprint $table) {
+            $table->string('coupon_code')->nullable()->unique();
             $table->float('sale_percentage');
-            $table->timestamps();
+            $table->boolean('is_active')->default(true);
         });
     }
 
@@ -25,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saledetails');
+        Schema::table('sales', function (Blueprint $table) {
+            $table->dropColumn(['coupon_code', 'sale_percentage', 'is_active']);
+        });
     }
 };

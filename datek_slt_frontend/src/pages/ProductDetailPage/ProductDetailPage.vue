@@ -405,8 +405,6 @@ const addToCart = async () => {
 
       isCartVisible.value = true;
     }
-
-    isCartVisible.value = true;
   } catch (error) {
     console.error(error);
   }

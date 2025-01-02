@@ -129,6 +129,10 @@
         opacity: 1;
         visibility: visible;
       }
+
+      &.not-logged-in::after {
+        content: "Vui lòng đăng nhập";
+      }
     }
   }
 }
