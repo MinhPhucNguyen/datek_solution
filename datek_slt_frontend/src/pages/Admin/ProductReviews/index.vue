@@ -45,7 +45,7 @@
             </thead>
             <tbody>
               <tr v-for="review in reviews" :key="review.id">
-               <td class="text-center">{{ review.id }}</td>
+                <td class="text-center">{{ review.id }}</td>
                 <td class="text-center">{{ review.user.name }}</td>
                 <td class="text-center">{{ review.review }}</td>
                 <td class="text-center">
@@ -55,7 +55,11 @@
                   class="text-center"
                   :class="review.status === 1 ? 'text-success' : 'text-danger'"
                 >
-                  {{ review.status === 1 ? "Chấp thuận" : "Không chấp nhận" }}
+                  {{
+                    review.status === 1
+                      ? "Cho phép hiển thị"
+                      : "Không cho phép hiển thị"
+                  }}
                 </td>
                 <td class="text-center">
                   <div class="dropdown">
@@ -72,7 +76,7 @@
                         <button
                           type="button"
                           class="dropdown-item mb-3 fs-6 text-success bg-white"
-                          @click="editBrand(brand)"
+                          @click="updateReviewStatus(review)"
                         >
                           <i class="fa-solid fa-check"></i>
                           <span class="ml-2">Chấp thuận</span>
@@ -82,7 +86,7 @@
                         <button
                           type="button"
                           class="dropdown-item mb-3 fs-6 text-warning bg-white"
-                          @click="editBrand(brand)"
+                          @click="updateReviewStatus(review)"
                         >
                           <i class="fa-solid fa-x"></i>
                           <span class="ml-2">Không chấp thuận</span>
@@ -92,7 +96,7 @@
                         <button
                           type="button"
                           class="dropdown-item fs-6 text-danger bg-white"
-                          @click="deleteBrand(brand)"
+                          @click="deleteReview(review)"
                         >
                           <i class="fa-solid fa-trash"></i>
                           <span class="ml-2">Xóa</span>
@@ -103,7 +107,7 @@
                 </td>
               </tr>
               <tr v-if="reviews.length === 0">
-                <td colspan="5" class="text-center">
+                <td colspan="6" class="text-center">
                   <stateLoading />
                 </td>
               </tr>
@@ -138,6 +142,33 @@ const fetchReviews = async () => {
 onBeforeMount(() => {
   fetchReviews();
 });
+
+const updateReviewStatus = async (review) => {
+  try {
+    const response = await axios.put(`products/reviews/${review.id}`, {
+      status: review.status === 1 ? 0 : 1,
+    });
+    successMessage.value = response.data.message;
+    $(".toast").toast("show");
+    fetchReviews();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const deleteReview = async (review) => {
+  isLoading.value = true;
+  try {
+    const response = await axios.delete(`products/reviews/${review.id}`);
+    successMessage.value = response.data.message;
+    $(".toast").toast("show");
+    fetchReviews();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 onMounted(() => {
   $("#brandFormModal").on("hide.bs.modal", () => {

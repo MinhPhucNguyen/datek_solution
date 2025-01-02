@@ -90,6 +90,8 @@ Route::get('products/reviews', [ReviewController::class, 'getReviews']);
 Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
 Route::middleware('auth:api')->group(function () {
     Route::post('products/{product}/reviews', [ReviewController::class, 'store']);
+    Route::put('products/reviews/{id}', [ReviewController::class, 'updateReviewStatus']);
+    Route::delete('products/reviews/{id}', [ReviewController::class, 'destroy']);
 });
 
 //Product Images routes

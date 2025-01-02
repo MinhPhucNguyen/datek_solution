@@ -11,12 +11,6 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
     public function index(Product $product)
     {
         $reviews = $product->reviews()->where('status', 1)->with('user')->paginate(5);
@@ -30,13 +24,6 @@ class ReviewController extends Controller
         return response()->json($reviews);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request, Product $product)
     {
         try {
@@ -66,45 +53,25 @@ class ReviewController extends Controller
         }
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Product  $product
-     * @param  \App\Models\Review  $review
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Product $product, Review $review)
+    public function updateReviewStatus($review_id)
     {
-        if (auth()->user()->id !== $review->user_id) {
-            return response()->json(['message' => 'Action Forbidden']);
-        }
-        $request->validate([
-            'review' => 'required|string',
-            'rating' => 'required|numeric|min:0|max:5',
-        ]);
-
-        $review->review = $request->review;
-        $review->rating = $request->rating;
+        $review = Review::findOrFail($review_id);
+        $review->status = !$review->status;
         $review->save();
-
-        return response()->json(['message' => 'Review Updated', 'review' => $review]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã cập nhật trạng thái đánh giá',
+            'review' => $review
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Product  $product
-     * @param  \App\Models\Review  $review
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product, Review $review)
+    public function destroy($review_id)
     {
-        if (auth()->user()->id !== $review->user_id) {
-            return response()->json(['message' => 'Action Forbidden']);
-        }
+        $review = Review::findOrFail($review_id);
         $review->delete();
-        return response()->json(null, 204);
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã xóa đánh giá sản phẩm',
+        ]);
     }
 }
