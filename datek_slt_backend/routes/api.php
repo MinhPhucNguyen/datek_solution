@@ -87,6 +87,8 @@ Route::delete('products/remove-image/{image_id}', action: [ProductController::cl
 Route::get('products/get-by-brand/{brand_id}', [ProductController::class, 'getAllProductsByBrand']);
 
 //Salse routes
+Route::get('sales', [SalesController::class, 'index']);
+Route::post('sales/create-coupon', [SalesController::class, 'createCouponCode']);
 Route::post('apply-discount', [SalesController::class, 'applyDiscount']);
 
 //Review routes

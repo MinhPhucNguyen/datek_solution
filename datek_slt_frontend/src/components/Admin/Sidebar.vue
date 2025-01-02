@@ -67,7 +67,7 @@
       </router-link>
     </li>
 
-    <!-- <li class="nav-item border-bottom">
+    <li class="nav-item border-bottom">
       <router-link
         :to="{ name: 'admin.sales' }"
         class="nav-link collapsed fw-bold text-dark"
@@ -76,7 +76,7 @@
         <i class="fa-solid fa-box mr-2"></i>
         <span>Quản lý giảm giá</span>
       </router-link>
-    </li> -->
+    </li>
 
     <li class="nav-item border-bottom">
       <router-link
@@ -96,7 +96,7 @@
         href="#"
       >
         <i class="fa-solid fa-box mr-2"></i>
-        <span>Quản lý hãng</span>
+        <span>Hãng</span>
       </router-link>
     </li>
 

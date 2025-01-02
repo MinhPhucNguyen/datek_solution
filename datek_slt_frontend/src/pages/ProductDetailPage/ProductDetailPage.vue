@@ -141,7 +141,7 @@
                 </span>
               </div>
               <label class="fw-bold mt-3">Viết đánh giá:</label>
-              <textarea v-model="newReview.comment" class="mb-3"></textarea>
+              <textarea placeholder="Đánh giá của bạn..." v-model="newReview.comment" class="mb-3"></textarea>
               <button
                 type="submit"
                 class="add-review-btn fw-bold"
@@ -185,7 +185,7 @@
               </li>
             </ul>
             <div v-else>
-              <p>Không có đánh giá nào!</p>
+              <p class="fw-bold text-center">Không có đánh giá nào!</p>
             </div>
           </div>
         </div>

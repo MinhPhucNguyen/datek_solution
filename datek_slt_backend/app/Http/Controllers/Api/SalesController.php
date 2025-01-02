@@ -9,6 +9,54 @@ use App\Models\Cart;
 
 class SalesController extends Controller
 {
+
+    public function index()
+    {
+        try {
+            $paginate = 10;
+            $sales = Sales::orderBy('created_at', 'desc')->paginate($paginate);
+            return response()->json($sales, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Có lỗi xảy ra khi lấy danh sách mã giảm giá.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function createCouponCode(Request $request)
+    {
+        $validated = $request->validate([
+            'sale_name' => 'required',
+            'coupon_code' => 'required|string',
+            'sale_percentage' => 'required|numeric|min:1|max:100',
+            'sale_begin_at' => 'required|date',
+            'sale_end_at' => 'required|date',
+        ], [
+            'sale_name.required' => '*Vui lòng nhập tên mã giảm giá.',
+            'coupon_code.required' => '*Vui lòng nhập mã giảm giá',
+            'sale_percentage.required' => '*Vui lòng nhập mức giảm giá.',
+            'sale_percentage.numeric' => '*Mức giảm giá phải là số.',
+            'sale_percentage.min' => '*Mức giảm giá phải lớn hơn 0.',
+            'sale_percentage.max' => '*Mức giảm giá không được lớn hơn 100.',
+            'sale_begin_at.required' => '*Vui lòng nhập ngày bắt đầu.',
+            'sale_begin_at.date' => '*Ngày bắt đầu không hợp lệ.',
+            'sale_end_at.required' => '*Vui lòng nhập ngày kết thúc.',
+            'sale_end_at.date' => '*Ngày kết thúc không hợp lệ.',
+        ]);
+
+        $sale = new Sales();
+        $sale->sale_name = $validated['sale_name'];
+        $sale->coupon_code = $validated['coupon_code'];
+        $sale->sale_percentage = $validated['sale_percentage'];
+        $sale->sale_begin_at = $validated['sale_begin_at'];
+        $sale->sale_end_at = $validated['sale_end_at'];
+        $sale->is_active = true;
+        $sale->save();
+
+        return response()->json(['message' => 'Tạo mã giảm giá thành công.'], 200);
+    }
+
     public function applyDiscount(Request $request)
     {
         try {

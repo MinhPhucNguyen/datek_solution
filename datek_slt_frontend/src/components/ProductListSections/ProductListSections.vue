@@ -1,7 +1,10 @@
 <template>
   <div class="product-list-block">
     <div class="container">
-      <ProductListSection title="Laptop, Macbook, Surface" :slugs="['laptop', 'macbook']" />
+      <ProductListSection
+        title="Laptop, Macbook, Surface"
+        :slugs="['laptop', 'macbook']"
+      />
       <ProductListSection title="PC" slugs="pc" />
       <ProductListSection title="Màn hình" slugs="man-hinh" />
     </div>
@@ -10,7 +13,7 @@
 
 <script setup>
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onBeforeMount } from "vue";
 import ProductListSection from "./ProductListSectionComponent.vue";
 
 const computerProducts = ref([]);
@@ -23,7 +26,7 @@ const fetchProductsListByCategorySlug = async (slugs, categoryType) => {
 
     if (Array.isArray(slugs)) {
       responses = await Promise.all(
-        slugs.map(slug => axios.get(`/products/category/${slug}`))
+        slugs.map((slug) => axios.get(`/products/category/${slug}`))
       );
     } else {
       responses = [await axios.get(`/products/category/${slugs}`)];
@@ -31,8 +34,8 @@ const fetchProductsListByCategorySlug = async (slugs, categoryType) => {
 
     if (categoryType === "laptop") {
       const combinedProducts = responses
-        .map(response => response.data.data.products)
-        .flat();  
+        .map((response) => response.data.data.products)
+        .flat();
 
       computerProducts.value = combinedProducts;
     } else if (categoryType === "pc") {
@@ -45,10 +48,10 @@ const fetchProductsListByCategorySlug = async (slugs, categoryType) => {
   }
 };
 
-onMounted(() => {
-  fetchProductsListByCategorySlug(['laptop', 'macbook'], 'laptop');
-  fetchProductsListByCategorySlug('pc', 'pc');
-  fetchProductsListByCategorySlug('man-hinh', 'monitor');
+onBeforeMount(() => {
+  fetchProductsListByCategorySlug(["laptop", "macbook"], "laptop");
+  fetchProductsListByCategorySlug("pc", "pc");
+  fetchProductsListByCategorySlug("man-hinh", "monitor");
 });
 </script>
 

@@ -232,14 +232,7 @@
                   <input type="checkbox" :value="user.id" v-model="checked" />
                 </td>
                 <td class="text-center">
-                  <router-link
-                    :to="{
-                      name: 'admin.users.profile',
-                      params: { id: user.id },
-                    }"
-                    class="text-success"
-                    >{{ user.name }}</router-link
-                  >
+                  {{ user.lastname + ' ' + user.firstname}}
                 </td>
                 <td class="text-center">
                   {{ user.gender === 1 ? "Nam" : "Nữ" }}
@@ -404,74 +397,73 @@ watch(searchInput, () => {
 });
 
 const selectAllUsers = () => {
-   axios.get("users/all").then((response) => {
-      selectAll.value = true;
-      const usersIdArray = response.data;
-      checked.value = usersIdArray;
-   });
+  axios.get("users/all").then((response) => {
+    selectAll.value = true;
+    const usersIdArray = response.data;
+    checked.value = usersIdArray;
+  });
 };
 
 /**
  * TODO: DELETE A USER
  * @param {*} id
  */
- const deleteUser = (user_id) => {
-   store
-      .dispatch("users/deleteUser", user_id)
-      .then((response) => {
-         checked.value = checked.value.filter((id) => id != user_id);
-         successMessage.value = response.data.message;
-         getUserList();
-         $(`#deleteConfirmModal${user_id}`).modal("hide");
-         $(".toast").toast("show");
-      })
-      .catch((e) => {
-         if (e.response) {
-            alert(e.response.data.message);
-         }
-      });
+const deleteUser = (user_id) => {
+  store
+    .dispatch("users/deleteUser", user_id)
+    .then((response) => {
+      checked.value = checked.value.filter((id) => id != user_id);
+      successMessage.value = response.data.message;
+      getUserList();
+      $(`#deleteConfirmModal${user_id}`).modal("hide");
+      $(".toast").toast("show");
+    })
+    .catch((e) => {
+      if (e.response) {
+        alert(e.response.data.message);
+      }
+    });
 };
 
 /**
  * TODO: DELETE MULTIPLE USER
  */
- const deleteConfirm = () => {
-   $("#deleteConfirmModal").modal("show");
+const deleteConfirm = () => {
+  $("#deleteConfirmModal").modal("show");
 };
 
 const deleteMultiUser = () => {
-   axios
-      .delete("/users/delete-multi-user/" + checked.value)
-      .then((response) => {
-         checked.value = [];
-         selectPage.value = false;
-         successMessage.value = response.data.message;
-         getUserList();
-         $("#deleteConfirmModal").modal("hide");
-         $(".toast").toast("show");
-      })
-      .catch((e) => {
-         if (e.response) {
-            console.error(e.response.data.message);
-         }
-      });
+  axios
+    .delete("/users/delete-multi-user/" + checked.value)
+    .then((response) => {
+      checked.value = [];
+      selectPage.value = false;
+      successMessage.value = response.data.message;
+      getUserList();
+      $("#deleteConfirmModal").modal("hide");
+      $(".toast").toast("show");
+    })
+    .catch((e) => {
+      if (e.response) {
+        console.error(e.response.data.message);
+      }
+    });
 };
 
 /**
  * TODO: DELETE USER LIST ON A PAGE
  */
 watch(selectPage, (value) => {
-   checked.value = [];
-   if (value) {
-      users.value.forEach((user) => {
-         checked.value.push(user.id);
-      });
-   } else {
-      checked.value = [];
-      selectAll.value = false;
-   }
+  checked.value = [];
+  if (value) {
+    users.value.forEach((user) => {
+      checked.value.push(user.id);
+    });
+  } else {
+    checked.value = [];
+    selectAll.value = false;
+  }
 });
-
 </script>
 
 <style lang="scss" scoped>

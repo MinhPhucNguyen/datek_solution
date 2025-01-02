@@ -120,7 +120,7 @@
                 <td class="text-center">{{ product.id }}</td>
                 <td class="text-center">
                   <img
-                  class="product-image"
+                    class="product-image"
                     alt="product_image"
                     :src="product.product_images?.[0]?.image_url || ''"
                   />
