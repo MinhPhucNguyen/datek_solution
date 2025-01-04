@@ -90,6 +90,9 @@ Route::get('products/get-by-brand/{brand_id}', [ProductController::class, 'getAl
 Route::get('sales', [SalesController::class, 'index']);
 Route::post('sales/create-coupon', [SalesController::class, 'createCouponCode']);
 Route::post('apply-discount', [SalesController::class, 'applyDiscount']);
+Route::get('sales/{id}', [SalesController::class, 'getDiscountById']);
+Route::put('sales/{id}/update', [SalesController::class, 'update']);
+Route::delete('sales/{id}/delete', [SalesController::class, 'destroy']);
 
 //Review routes
 Route::get('products/reviews', [ReviewController::class, 'getReviews']);

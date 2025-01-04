@@ -1,18 +1,9 @@
 <template>
   <div>
-    <ToastMessage :message="successMessage" />
-
-    <my-modal
-      @clickTo="deleteMultiProduct"
-      :idModal="'deleteConfirmModal'"
-      bgColor="danger"
-    >
-      <template v-slot:title>Xóa mã giảm giá</template>
-      <h6 class="text-dark text-center fs-5 mt-4">
-        Bạn có chắc chắn muốn mã giảm giá này không?
-      </h6>
-      <template v-slot:buttonName>Xóa</template>
-    </my-modal>
+    <ToastMessage
+      :message="successMessage ? successMessage : errorMessage"
+      :type="errorMessage ? 'danger' : 'success'"
+    />
 
     <div v-if="salesList" class="col-md-12">
       <div class="card">
@@ -28,20 +19,6 @@
               <i class="fa-solid fa-plus"></i>
               Thêm mã giảm mới
             </router-link>
-          </div>
-        </div>
-        <div
-          class="w-100 d-flex align-items-center justify-content-between mt-4 pl-4 pr-4"
-        >
-          <div class="w-25 mt-3 d-flex align-items-center">
-            <i class="fa-solid fa-magnifying-glass fs-5 mr-2"></i>
-            <input
-              type="text"
-              name="search"
-              class="form-control small search-input border border-dark-subtletext-dark"
-              placeholder="Tìm kiếm..."
-              v-model="searchInput"
-            />
           </div>
         </div>
         <div class="card-body mt-0">
@@ -86,7 +63,7 @@
                       <li>
                         <router-link
                           :to="{
-                            name: 'admin.products.edit',
+                            name: 'admin.sales.edit',
                             params: { id: sale.id },
                           }"
                           class="dropdown-item mb-3 fs-6 text-success bg-white"
@@ -112,13 +89,13 @@
 
                 <!-- Modal Delete Confirm -->
                 <my-modal
-                  @clickTo="deleteProduct(sale.id)"
+                  @clickTo="deleteDiscount(sale.id)"
                   :idModal="`deleteConfirmModal${sale.id}`"
                   bgColor="danger"
                 >
-                  <template v-slot:title>Xóa sản phẩm</template>
+                  <template v-slot:title>Xóa mã giảm giá</template>
                   <h6 class="text-dark text-center fs-5 mt-4">
-                    Bạn có chắc chắn muốn xóa sản phẩm này không?
+                    Bạn có chắc chắn muốn xóa mã giảm giá này không?
                   </h6>
                   <template v-slot:buttonName>Xóa</template>
                 </my-modal>
@@ -158,6 +135,7 @@ const pagination = ref({});
 const isLoading = ref(false);
 const searchInput = ref("");
 const successMessage = ref(null);
+const errorMessage = ref(null);
 
 const isNotFound = computed(() => {
   return salesList.value.length === 0 ? true : false;
@@ -168,8 +146,6 @@ const getSalesList = (page = 1) => {
   axios
     .get(`/sales?page=${page}`)
     .then((response) => {
-      console.log(response.data);
-
       salesList.value = response.data.data;
       pagination.value = {
         currentPage: response.data.current_page,
@@ -188,6 +164,23 @@ watch(searchInput, () => {
 onBeforeMount(() => {
   getSalesList();
 });
+
+const deleteDiscount = (id) => {
+  axios
+    .delete(`/sales/${id}/delete`)
+    .then((response) => {
+      successMessage.value = response.data.message;
+      errorMessage.value = "";
+      $(".toast").toast("show");
+      $(`#deleteConfirmModal${id}`).modal("hide");
+      getSalesList();
+    })
+    .catch((error) => {
+      errorMessage.value = error.response.data.message;
+      successMessage.value = "";
+      $(".toast").toast("show");
+    });
+};
 </script>
 
 <style lang="scss" scoped>
