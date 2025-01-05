@@ -7,6 +7,8 @@
       />
       <ProductListSection title="PC" slugs="pc" />
       <ProductListSection title="Màn hình" slugs="man-hinh" />
+      <ProductListSection title="Phụ kiện" slugs="phu-kien" />
+      <ProductListSection title="Phần mềm" slugs="phan-mem" />
     </div>
   </div>
 </template>
