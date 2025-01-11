@@ -116,7 +116,15 @@
                       name="send"
                       id="send2"
                     >
-                      <span>Đăng ký</span>
+                      <div
+                        class="spinner-grow text-light"
+                        v-if="isLoading"
+                        style="width: 2rem; height: 2rem"
+                        role="status"
+                      >
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <span v-else>Đăng ký</span>
                     </button>
                   </div>
                 </div>
@@ -135,6 +143,11 @@
         </div>
       </div>
     </div>
+
+    <ToastMessage
+      :message="successMessage ? successMessage : errorMessage"
+      :type="errorMessage ? 'danger' : 'success'"
+    />
   </div>
 </template>
 
@@ -142,6 +155,7 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import ToastMessage from "@/components/Toast/Toast.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -153,16 +167,30 @@ const formRegister = ref({
   email: "",
   confirm_password: "",
 });
+const successMessage = ref(null);
+const errorMessage = ref(null);
+const isLoading = ref(false);
 
 const registerSubmit = () => {
+  isLoading.value = true;
   store
     .dispatch("auth/register", formRegister.value)
-    .then(() => {
-      router.push({ name: "home" });
+    .then((response) => {
+      successMessage.value = response.data.success;
+      isLoading.value = true;
+
+      $(".toast").toast("show");
+      setTimeout(() => {
+        successMessage.value = null;
+        $(".toast").toast("hide");
+        isLoading.value = false;
+        router.push({ name: "home" });
+      }, 3000);
     })
     .catch((e) => {
       errors.value = e.response.data.errors;
       console.error(e);
+      isLoading.value = false;
     });
 };
 

@@ -46,7 +46,8 @@ const auth = {
     },
     async login({ dispatch }, credentials) {
       const response = await axios.post("auth/login", credentials);
-      return dispatch("attempt", response.data.token);
+      dispatch("attempt", response.data.token);
+      return response;
     },
     async attempt({ commit, state }, token) {
       if (token) {

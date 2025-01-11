@@ -1,5 +1,10 @@
 <template>
   <div class="customer-account-login">
+    <ToastMessage
+      :message="successMessage ? successMessage : errorMessage"
+      :type="errorMessage ? 'danger' : 'success'"
+    />
+
     <div class="container">
       <div class="page-main">
         <div class="login-container">
@@ -66,7 +71,15 @@
                       name="send"
                       id="send2"
                     >
-                      <span>Đăng nhập</span>
+                      <div
+                        class="spinner-grow text-light"
+                        v-if="isLoading"
+                        style="width: 2rem; height: 2rem"
+                        role="status"
+                      >
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <span v-else>Đăng nhập</span>
                     </button>
                     <router-link
                       :to="{ name: 'forgotPassword' }"
@@ -89,6 +102,7 @@
 import { ref, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import ToastMessage from "@/components/Toast/Toast.vue";
 
 const store = useStore();
 const credentials = ref({
@@ -97,24 +111,38 @@ const credentials = ref({
 });
 const router = useRouter();
 const errors = ref(null);
+const successMessage = ref(null);
+const errorMessage = ref(null);
+const isLoading = ref(false);
 
 const loginSubmit = () => {
+  isLoading.value = true;
   store
     .dispatch("auth/login", credentials.value)
-    .then(() => {
+    .then((response) => {
       const redirectPath = localStorage.getItem("redirectAfterLogin");
       if (store.getters["auth/getUser"] && store.getters["auth/isAdmin"]) {
         router.push({ name: "admin.dashboard" });
+        successMessage.value = response.data.message;
+        $(".toast").toast("show");
       } else if (redirectPath) {
         localStorage.removeItem("redirectAfterLogin");
         router.push(redirectPath);
+        successMessage.value = response.data.message;
+        $(".toast").toast("show");
       } else {
-        router.push({ name: "home" });
+        successMessage.value = response.data.message;
+        $(".toast").toast("show");
+        isLoading.value = false;
+        setTimeout(() => {
+          router.push({ name: "home" });
+        }, 3000);
       }
     })
     .catch((e) => {
       if (e) {
         errors.value = e.response.data.errors;
+        isLoading.value = false;
         if (!errors.value.email && !errors.value.password) {
           errors.value = { global: e.response.data.errors };
         }

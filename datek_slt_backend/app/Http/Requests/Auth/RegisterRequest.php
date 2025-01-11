@@ -25,12 +25,12 @@ class RegisterRequest extends FormRequest
             'firstname' => [
                 'required',
                 'string',
-                'regex:/^[a-zA-Z\s]+$/'
+                'regex:/^[\p{L}\s]+$/u'
             ],
             'lastname' => [
                 'required',
                 'string',
-                'regex:/^[a-zA-Z\s]+$/'
+                'regex:/^[\p{L}\s]+$/u'
             ],
             'email' => [
                 'required',

@@ -73,6 +73,7 @@ import { useStore } from "vuex";
 const prop = defineProps({
   product: {
     type: Object,
+    default: () => ({}),
     required: true,
   },
 });
