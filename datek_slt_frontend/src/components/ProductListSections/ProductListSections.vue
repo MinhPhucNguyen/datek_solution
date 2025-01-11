@@ -2,7 +2,7 @@
   <div class="product-list-block">
     <div class="container">
       <ProductListSection
-        title="Laptop, Macbook, Surface"
+        title="Laptop - Macbook - Surface"
         :slugs="['laptop', 'macbook']"
       />
       <ProductListSection title="PC" slugs="pc" />
