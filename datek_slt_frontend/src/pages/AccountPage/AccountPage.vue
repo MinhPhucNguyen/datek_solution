@@ -1,5 +1,10 @@
 <template>
   <div>
+    <ToastMessage
+      :message="successMessage ? successMessage : errorMessage"
+      :type="errorMessage ? 'danger' : 'success'"
+    />
+
     <div class="content-item user-profile">
       <div class="container">
         <div class="dashboard">
@@ -154,9 +159,6 @@
                   @click="startEditingAddress"
                 >
                   Chỉnh sửa
-                </button>
-                <button class="btn btn-sm btn-danger" @click="clearAddress">
-                  Xóa
                 </button>
               </div>
               <div v-else>
@@ -344,7 +346,7 @@
                       @click="backOrderHistoryList"
                       class="fw-bold"
                       style="color: #4e43d8; cursor: pointer"
-                      >Quay lại</span
+                      ><i class="fa-solid fa-arrow-left"></i> Quay lại</span
                     >
                   </div>
                   <div class="order-detail">
@@ -436,7 +438,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeMount, watch } from "vue";
+import { ref, computed, onBeforeMount, watch, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -511,11 +513,16 @@ const saveProfile = () => {
   isLoading.value = true;
   store
     .dispatch("users/editUser", { id, model: formData.value })
-    .then(() => {
+    .then((response) => {
       userData.value = { ...formData.value };
       isEditing.value = false;
       isLoading.value = false;
-      window.location.reload();
+
+      localStorage.setItem("successMessage", response.data.message);
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     })
     .catch((e) => {
       if (e.response) {
@@ -524,6 +531,15 @@ const saveProfile = () => {
       }
     });
 };
+
+onMounted(() => {
+  const message = localStorage.getItem("successMessage");
+  if (message) {
+    successMessage.value = message;
+    $(".toast").toast("show");
+    localStorage.removeItem("successMessage");
+  }
+});
 
 const isEditingAddress = ref(false);
 const startEditingAddress = () => {

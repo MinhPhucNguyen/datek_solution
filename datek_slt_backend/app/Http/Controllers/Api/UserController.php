@@ -153,11 +153,11 @@ class UserController extends Controller
             }
             $user->update();
             return response()->json([
-                'message' => "Cập nhật người dùng thành công.",
+                'message' => "Cập nhật thành công.",
             ], 200);
         } else {
             return response()->json([
-                'message' => "Không tìm thấy người dùng."
+                'message' => "Không tìm thấy khách hàng."
             ], 404);
         }
     }
