@@ -43,7 +43,7 @@ class CategoryController extends Controller
 
         $category = new Category();
         $category->category_name = $request->category_name;
-        $category->description = $request->description;
+        $category->description = $request->description ?? "_";
         $category->slug = $request->slug;
         if (!$request->parent_id || $request->parent_id == 0) {
             $category->parent_id = null;

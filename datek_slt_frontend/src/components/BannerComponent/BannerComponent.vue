@@ -29,7 +29,7 @@
                   class="search-input"
                   name="q"
                   v-model="searchQuery"
-                  placeholder="Nhập tên sản phẩm hoặc SKU"
+                  placeholder="Nhập tên sản phẩm hoặc mã sản phẩm"
                   @keydown.enter="search"
                   @input="fetchSearchResults"
                 />

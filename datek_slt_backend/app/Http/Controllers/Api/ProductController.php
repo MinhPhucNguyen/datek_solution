@@ -40,7 +40,7 @@ class ProductController extends Controller
 
     public function getLatestProducts()
     {
-        $tenDaysAgo = now()->subDays(10);
+        $tenDaysAgo = now()->subDays(30);
         $products = Product::where('created_at', '>=', $tenDaysAgo)
             ->orderBy('created_at', 'desc')->take(10)->get();
         return new ProductCollection($products);

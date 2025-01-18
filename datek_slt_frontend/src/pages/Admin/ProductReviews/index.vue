@@ -2,28 +2,6 @@
   <div>
     <ToastMessage :message="successMessage" />
 
-    <my-modal
-      @clickTo="handleDeleteReview"
-      idModal="deleteConfirmModal"
-      bgColor="danger"
-    >
-      <template v-slot:title>Xóa đánh giá</template>
-      <h6 class="text-dark text-center fs-5 mt-4">
-        Bạn có chắc chắn muốn xóa đánh giá này?
-      </h6>
-      <template v-slot:buttonName>
-        <div
-          class="spinner-border"
-          role="status"
-          style="width: 24px; height: 24px; margin-right: 10px"
-          v-if="isLoading"
-        >
-          <span class="visually-hidden">Loading...</span>
-        </div>
-        Xóa
-      </template>
-    </my-modal>
-
     <div class="col-md-12">
       <div class="card">
         <div class="card-header bg-transparent d-flex align-items-center">
@@ -55,7 +33,7 @@
 
               <tr v-else v-for="review in reviews" :key="review.id">
                 <td class="text-center">{{ review.id }}</td>
-                <td class="text-center">{{ review.user.name }}</td>
+                <td class="text-center">{{ review.user.lastname + ' ' + review.user.firstname }}</td>
                 <td class="text-center">{{ review.review }}</td>
                 <td class="text-center">
                   {{ review.rating }}
@@ -114,6 +92,28 @@
                     </ul>
                   </div>
                 </td>
+
+                <my-modal
+                  @clickTo="handleDeleteReview(review)"
+                  :idModal="`deleteConfirmModal${review.id}`"
+                  bgColor="danger"
+                >
+                  <template v-slot:title>Xóa đánh giá</template>
+                  <h6 class="text-dark text-center fs-5 mt-4">
+                    Bạn có chắc chắn muốn xóa đánh giá này?
+                  </h6>
+                  <template v-slot:buttonName>
+                    <div
+                      class="spinner-border"
+                      role="status"
+                      style="width: 24px; height: 24px; margin-right: 10px"
+                      v-if="isLoading"
+                    >
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    Xóa
+                  </template>
+                </my-modal>
               </tr>
             </tbody>
           </table>
@@ -162,17 +162,19 @@ const updateReviewStatus = async (review) => {
   }
 };
 
-const deleteReview = () => {
-  $("#deleteConfirmModal").modal("show");
+const deleteReview = (review) => {
+  $(`#deleteConfirmModal${review.id}`).modal("show");
 };
 
 const handleDeleteReview = async (review) => {
+  console.log(review);
   isLoading.value = true;
   try {
     const response = await axios.delete(`products/reviews/${review.id}`);
     successMessage.value = response.data.message;
     $(".toast").toast("show");
     isLoading.value = false;
+    $(`#deleteConfirmModal${review.id}`).modal("hide");
     fetchReviews();
   } catch (error) {
     console.error(error);

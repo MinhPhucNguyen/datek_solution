@@ -78,6 +78,8 @@ axios
   .get("/categories")
   .then((response) => {
     categories.value = response.data.categories;
+    console.log("Danh mục sản phẩm:", categories.value);
+    
   })
   .catch((error) => {
     console.error(error);

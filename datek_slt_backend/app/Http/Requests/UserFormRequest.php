@@ -38,7 +38,6 @@ class UserFormRequest extends FormRequest
             ],
             'address' => [
                 $isUpdate ? 'sometimes' : 'required',
-                'string',
                 'regex:/^[\d\p{L}\s.,\-\/()]+$/u',
                 'max:150',
             ],

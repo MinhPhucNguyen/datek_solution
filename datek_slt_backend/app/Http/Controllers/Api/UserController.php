@@ -141,6 +141,7 @@ class UserController extends Controller
             $user->lastname = $validatedData['lastname'];
             $user->username = $validatedData['username'];
             $user->email = $validatedData['email'];
+            $user->address = $validatedData['address'];
             $user->phone = $validatedData['phone'];
             $user->role_as = $validatedData['role_as'];
 
