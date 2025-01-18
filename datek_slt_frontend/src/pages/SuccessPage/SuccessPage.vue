@@ -6,6 +6,9 @@
         <p>
           <strong>Đặt hàng thành công!</strong>
         </p>
+        <p>
+          Xem đơn hàng đã đặt tại mục quản lý tài khoản.
+        </p>
       </div>
       <div class="shipping-continue mt-5">
         <router-link to="/" style="color: #4e43d8" class="fw-bold"><i class="fa-solid fa-arrow-left me-2"></i>Tiếp tục mua hàng</router-link>

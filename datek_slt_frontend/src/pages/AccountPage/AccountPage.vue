@@ -95,7 +95,7 @@
               <div v-else>
                 <h3>Chỉnh sửa thông tin cá nhân</h3>
                 <form @submit.prevent="saveProfile">
-                  <div class="form-group">
+                  <div class="form-group mb-3">
                     <label for="firstname">Tên</label>
                     <input
                       type="text"
@@ -335,6 +335,9 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              <div v-else-if="!ordersHistory.length && !isOrdersDetail">
+                <p class="text-center">Bạn chưa có đơn hàng nào</p>
               </div>
               <div v-else>
                 <div
